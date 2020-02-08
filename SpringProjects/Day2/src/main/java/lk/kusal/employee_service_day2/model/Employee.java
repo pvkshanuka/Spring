@@ -19,8 +19,12 @@ public class Employee {
     @OneToOne(cascade = CascadeType.ALL)
     Address address;
 
-    @OneToMany(mappedBy ="employee")
+    @OneToMany(targetEntity = Telephone.class, mappedBy = "employee")
     List<Telephone> telephones;
+
+    @ManyToMany
+    @JoinTable(joinColumns={@JoinColumn(name="e_id", referencedColumnName = "id")}, inverseJoinColumns={@JoinColumn(name="p_id", referencedColumnName = "id")} )
+    List<Project> projects;
 
     public int getId() {
         return id;
