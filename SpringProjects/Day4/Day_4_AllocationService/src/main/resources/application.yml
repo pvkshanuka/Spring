@@ -2,7 +2,7 @@ server:
   port: 9191
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/springallocation?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost/springallocation?createDatabaseIfNotExist=true
     username: root
     password: 1234
     driver-class-name: com.mysql.jdbc.Driver

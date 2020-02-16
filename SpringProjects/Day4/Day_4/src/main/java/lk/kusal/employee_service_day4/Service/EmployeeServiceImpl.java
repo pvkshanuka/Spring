@@ -61,7 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             Employee employee = optional.get();
 
-            ResponseEntity<Allocation[]> responseEntity = restTemplate.exchange("http://localhost:9191/allo_service/fetch_f_emp/" + id, HttpMethod.POST, httpEntity, Allocation[].class);
+            ResponseEntity<Allocation[]> responseEntity = restTemplate.exchange("http://localhost:9191/alloservice/fetch_f_emp/" + id, HttpMethod.POST, httpEntity, Allocation[].class);
 
             employee.setAllocations(responseEntity.getBody());
 
