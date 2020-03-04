@@ -1,9 +1,14 @@
-server:
-  port: 8081
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
 spring:
-  application:
-    name: empservice
+  cloud:
+    config:
+      url: http://localhost:8191
+#server:
+#  port: 8081
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#spring:
+#  application:
+#    name: empservice
+

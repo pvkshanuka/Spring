@@ -1,0 +1,6 @@
+server:
+  port: 6969
+spring:
+  profiles:
+    active: native
+

@@ -1,0 +1,12 @@
+server:
+  port: 8191
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/pvkshanuka/spring-cloud-config-store
+#          username: abc
+#          passphrase: 1234
+          search-paths:
+            - '*service'
