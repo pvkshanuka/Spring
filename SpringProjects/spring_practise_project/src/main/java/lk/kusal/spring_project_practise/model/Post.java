@@ -27,12 +27,21 @@ public class Post {
     @NotBlank
     private String username;
 
-    public Post(Long id, @NotBlank String title, String content, Instant createdOn, Instant updatedOn, @NotBlank String username) {
+    public Post() {
+    }
+
+    public Post(@NotBlank String title, String content, Instant createdOn, @NotBlank String username) {
+        this.title = title;
+        this.content = content;
+        this.createdOn = createdOn;
+        this.username = username;
+    }
+
+    public Post(Long id, @NotBlank String title, String content, Instant createdOn, @NotBlank String username) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdOn = createdOn;
-        this.updatedOn = updatedOn;
         this.username = username;
     }
 
