@@ -3,6 +3,7 @@ package lk.kusal.spring_project_practise.controller;
 import lk.kusal.spring_project_practise.dto.LoginRequest;
 import lk.kusal.spring_project_practise.dto.RegisterRequest;
 import lk.kusal.spring_project_practise.service.AuthService;
+import lk.kusal.spring_project_practise.service.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity signUp(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity signUp(@RequestBody RegisterRequest registerRequest) {
 
         authService.signUp(registerRequest);
 
@@ -27,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest){
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
 
         return authService.login(loginRequest);
 

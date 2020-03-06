@@ -9,7 +9,12 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterSuccessComponent } from './components/auth/register-success/register-success.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {RouterModule} from '@angular/router';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {Ng2Webstorage} from 'ngx-webstorage';
+import { HomeComponent } from './components/home/home.component';
+import { AddPostComponent } from './components/auth/add-post/add-post.component';
+import {EditorModule} from '@tinymce/tinymce-angular';
+import {HttpClientIntercepter} from './components/auth/http-client-intercepter';
 
 @NgModule({
   declarations: [
@@ -17,7 +22,9 @@ import {HttpClientModule} from '@angular/common/http';
     HeaderComponent,
     RegisterComponent,
     LoginComponent,
-    RegisterSuccessComponent
+    RegisterSuccessComponent,
+    HomeComponent,
+    AddPostComponent
   ],
   imports: [
     BrowserModule,
@@ -25,11 +32,18 @@ import {HttpClientModule} from '@angular/common/http';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    EditorModule,
+    Ng2Webstorage.forRoot(),
     RouterModule.forRoot([
-      {path: 'register', component: RegisterComponent}
+      {path: '', component: HomeComponent},
+      {path: 'home', component: HomeComponent},
+      {path: 'register', component: RegisterComponent},
+      {path: 'login', component: LoginComponent},
+      {path: 'add-post', component: AddPostComponent},
+      {path: 'register-success', component: RegisterSuccessComponent}
     ])
   ],
-  providers: [],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: HttpClientIntercepter, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
