@@ -1,1 +1,14 @@
-<p>login works!</p>
+<div class="container">
+  <form class="form-signin" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+    <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
+    <div class="form-group">
+<!--      <lable for="inputUsername" class="sr-only">Username</lable>-->
+      <input type="text" id="inputUsername" [formControlName]="'username'" class="form-control" placeholder="Username" required="">
+    </div>
+    <div class="form-group">
+<!--      <lable for="inputPassword" class="sr-only">Password</lable>-->
+      <input type="text" id="inputPassword" [formControlName]="'password'" class="form-control" placeholder="Password" required="">
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+  </form>
+</div>

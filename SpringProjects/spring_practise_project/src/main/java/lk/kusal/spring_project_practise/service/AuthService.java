@@ -42,14 +42,22 @@ public class AuthService {
         return passwordEncoder.encode(password);
     }
 
-    public String login(LoginRequest loginRequest) {
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        System.out.println(loginRequest.getUsername());
+        System.out.println(loginRequest.getPassword());
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
-        return jwtProvider.generateToken(authenticate);
+        return new AuthenticationResponse(jwtProvider.generateToken(authenticate),loginRequest.getUsername());
+//        return jwtProvider.generateToken(authenticate);
     }
 
     public Optional<org.springframework.security.core.userdetails.User> getCurrentUser() {
+//        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        return Optional.of(principal);
+
+//        String sss = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        System.out.println(sss);
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return Optional.of(principal);
     }
