@@ -16,8 +16,8 @@ public interface HospitalService {
 
     public ResponseDto delete(@RequestBody int id);
 
-    public List<Hospital> search(@RequestBody Hospital hospital);
+//    public List<Hospital> search(@RequestBody Hospital hospital);
 
-    public List<Hospital> searchAll();
+    public List<Hospital> searchAll(@RequestBody Hospital hospital);
 
 }
