@@ -1,31 +1,30 @@
-package lk.e_channeling.hospital_service.models;
+package lk.e_channelling.patient_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+
 
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class Hospital {
+@RequiredArgsConstructor
+public class Patient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NonNull
+    @NotNull
     private String name;
 
     @NotNull
-    private String city;
+    private Integer age;
 
     @NotNull
     private String email;
@@ -33,6 +32,10 @@ public class Hospital {
     @NotNull
     private String contact;
 
+    @NotNull
     private String status;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Appointment> appointments;
 
 }

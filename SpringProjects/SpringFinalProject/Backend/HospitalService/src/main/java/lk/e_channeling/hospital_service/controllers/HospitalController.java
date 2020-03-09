@@ -24,6 +24,7 @@ public class HospitalController {
             return hospitalService.save(hospital);
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("log exception");
             return new ResponseDto(false, "Hospital Save Failed.!");
         }
@@ -37,6 +38,7 @@ public class HospitalController {
             return hospitalService.update(hospital);
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("log exception");
             return new ResponseDto(false, "Hospital Update Failed.!");
         }
@@ -49,6 +51,7 @@ public class HospitalController {
             return hospitalService.delete(id);
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("log exception");
             return new ResponseDto(false, "Hospital Delete Failed.!");
         }

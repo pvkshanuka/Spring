@@ -1,37 +1,31 @@
-package lk.e_channeling.hospital_service.models;
+package lk.e_channelling.doctor_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Hospital {
+public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NonNull
+    @NotNull
     private String name;
 
     @NotNull
-    private String city;
-
-    @NotNull
-    private String email;
-
-    @NotNull
     private String contact;
+
+    @ManyToMany
+    private List<Category> categories;
 
     private String status;
 
