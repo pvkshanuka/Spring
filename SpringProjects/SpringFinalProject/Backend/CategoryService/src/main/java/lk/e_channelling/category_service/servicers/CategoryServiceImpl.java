@@ -90,4 +90,19 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll(example).isEmpty();
 
     }
+
+    @Override
+    public boolean searchAllFromIds(List<Integer> integers) {
+
+
+        List<Category> allById = categoryRepository.findAllById(integers);
+
+        if (allById.size() == integers.size()) {
+
+            return true;
+
+        }else{
+            return false;
+        }
+    }
 }

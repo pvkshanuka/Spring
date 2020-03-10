@@ -27,7 +27,7 @@ public class CatrgoryController {
 
             if (search.isEmpty()) {
                 return categoryService.save(category);
-            }else{
+            } else {
                 return new ResponseDto(false, "Category Already Added.!");
             }
         } catch (Exception e) {
@@ -91,6 +91,12 @@ public class CatrgoryController {
 
         return category;
 
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/test2")
+    public boolean test(@RequestBody List<Integer> integers) {
+
+        return categoryService.searchAllFromIds(integers);
     }
 
 

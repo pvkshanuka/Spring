@@ -1,13 +1,16 @@
 package lk.e_channelling.doctor_service.controllers;
 
 import lk.e_channelling.doctor_service.dto.ResponseDto;
-import lk.e_channelling.doctor_service.models.Category;
 import lk.e_channelling.doctor_service.models.Doctor;
-import lk.e_channelling.doctor_service.servicers.CategoryService;
+import lk.e_channelling.doctor_service.models.DoctorCategory;
 import lk.e_channelling.doctor_service.servicers.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +22,13 @@ public class DoctorController {
     @Autowired
     DoctorService doctorService;
 
+    @Bean
+    RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
     @Autowired
-    CategoryService categoryService;
+    RestTemplate restTemplate;
 
     @Transactional
     @RequestMapping(method = RequestMethod.POST)
@@ -29,11 +37,13 @@ public class DoctorController {
         try {
 
             doctor.setStatus("1");
+//            if (true) {
             if (checkCategories(doctor)) {
                 return doctorService.save(doctor);
             } else {
                 return new ResponseDto(false, "Invalid Categories.!");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
@@ -48,6 +58,7 @@ public class DoctorController {
 
         try {
 
+//            if (true) {
             if (checkCategories(doctor)) {
                 doctor.setStatus("1");
                 return doctorService.update(doctor);
@@ -94,43 +105,55 @@ public class DoctorController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/test")
     public Doctor test() {
-        Category category1 = new Category();
-        category1.setId(1);
-        category1.setCategory("cat1");
+        DoctorCategory category1 = new DoctorCategory();
+        category1.setCategoryid(1);
         category1.setStatus("1");
 
-        Category category2 = new Category();
-        category2.setId(2);
-        category2.setCategory("cat2");
+        DoctorCategory category2 = new DoctorCategory();
+        category2.setCategoryid(2);
         category2.setStatus("1");
 
-        List<Category> categories = new ArrayList<>();
-        categories.add(category1);
-        categories.add(category2);
+        List<DoctorCategory> doctorCategories = new ArrayList<>();
+        doctorCategories.add(category1);
+        doctorCategories.add(category2);
 
-        Doctor doctor = new Doctor(1, "doc 1", "1234567890", categories, "1");
+        Doctor doctor = new Doctor(1, "doc 1", "1234567890", doctorCategories, "1");
 
         return doctor;
 
     }
 
+    @RequestMapping("/searchByCat/")
+    public List<Doctor> searchByCat(@RequestBody DoctorCategory doctorCategory){
+        try {
+            System.out.println("Awaaaaa");
+            return doctorService.searchByCategory(doctorCategory);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
+    }
+
     public boolean checkCategories(Doctor doctor) {
 
-        if (null == doctor.getCategories() || doctor.getCategories().isEmpty()) {
+        if (null == doctor.getDoctorCategories() || doctor.getDoctorCategories().isEmpty()) {
             return true;
         } else {
 
-            boolean isFound = true;
+            List<Integer> doctorCategoryIds = new ArrayList<>();
 
-            List<Category> categories = doctor.getCategories();
-            for (Category categorie : categories) {
-                if (categoryService.searchById(categorie.getId())) {
-                    isFound = false;
-                    break;
-                }
-            }
+            doctor.getDoctorCategories().forEach(doctorCategory -> doctorCategoryIds.add(doctorCategory.getCategoryid()));
 
-            return isFound;
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Object> httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
+
+            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://localhost:8030/category/test2", HttpMethod.POST, httpEntity, Boolean.class);
+
+            return responseEntity.getBody();
 
         }
 

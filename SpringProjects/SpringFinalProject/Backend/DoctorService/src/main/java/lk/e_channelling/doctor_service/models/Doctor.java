@@ -24,8 +24,8 @@ public class Doctor {
     @NotNull
     private String contact;
 
-    @ManyToMany
-    private List<Category> categories;
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    List<DoctorCategory> doctorCategories;
 
     private String status;
 

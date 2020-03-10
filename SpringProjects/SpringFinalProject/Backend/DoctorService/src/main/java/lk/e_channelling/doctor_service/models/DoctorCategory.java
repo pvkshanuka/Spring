@@ -13,18 +13,18 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+public class DoctorCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    private String category;
+    private Integer categoryid;
 
+    @ManyToOne
+    @JoinColumn
     @JsonIgnore
-    @ManyToMany(mappedBy = "categories")
-    private List<Doctor> doctors;
+    Doctor doctor;
 
     private String status;
 

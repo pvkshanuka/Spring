@@ -18,4 +18,6 @@ public interface CategoryService {
 
     public boolean searchById(int id);
 
+    public boolean searchAllFromIds(List<Integer> integers);
+
 }
