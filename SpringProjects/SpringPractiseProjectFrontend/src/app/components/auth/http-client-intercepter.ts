@@ -11,7 +11,11 @@ export class HttpClientIntercepter implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
+<<<<<<< HEAD
     const token = this.$localStorage.retrieve('authenticationtoke');
+=======
+    const token = this.$localStorage.retrieve('authenticationToken');
+>>>>>>> 915292cb496ecc187fee2cec86c649076bab19f4
     console.log('jwt token ' + token);
 
     if (token) {

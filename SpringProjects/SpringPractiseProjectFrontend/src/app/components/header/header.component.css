@@ -15,7 +15,11 @@
     padding-top: 10px;
 }
 
+<<<<<<< HEAD
 .new-post{
+=======
+.logout, .new-post{
+>>>>>>> 915292cb496ecc187fee2cec86c649076bab19f4
   float: right;
   color: aliceblue;
   padding-top: 10px;

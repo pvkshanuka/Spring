@@ -2,13 +2,21 @@
   <div class="container">
     <div class="row" *ngFor="let post of posts | async">
       <div>
+<<<<<<< HEAD
         <h3><a href="/post/{{post.id}}" class="blog-title">{{post.title}</a></h3>
+=======
+        <h3><a href="/post/{{post.id}}" class="blog-title">{{post.title}}</a></h3>
+>>>>>>> 915292cb496ecc187fee2cec86c649076bab19f4
         <div>
           <i class="fas fa-user"></i> Author: <p>{{post.id}}</p>
         </div>
         <p [innerHTML]="post.content"></p>
         <div>
+<<<<<<< HEAD
           <a type="button" href="/post/{{post.id}}" class="read-more btn btn-default">Read More</a>
+=======
+          <a type="button" href="/post/{{post.id}}" class="read-more btn btn-dark">Read More</a>
+>>>>>>> 915292cb496ecc187fee2cec86c649076bab19f4
         </div>
         <hr>
       </div>

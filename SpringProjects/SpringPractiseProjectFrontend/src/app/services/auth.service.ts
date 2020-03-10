@@ -32,7 +32,11 @@ export class AuthService {
   login(loginPayload: LoginPayload): Observable<boolean> {
 
     return this.httpClient.post<JwtAutResponse>(this.url + 'login', loginPayload).pipe(map(data => {
+<<<<<<< HEAD
       this.localStorageService.store('authenticationToke', data.authenticationToken);
+=======
+      this.localStorageService.store('authenticationToken', data.authenticationToken);
+>>>>>>> 915292cb496ecc187fee2cec86c649076bab19f4
       this.localStorageService.store('username', data.username);
       return true;
 
@@ -54,4 +58,11 @@ export class AuthService {
     return  this.localStorageService.retrieve('username') != null;
   }
 
+<<<<<<< HEAD
+=======
+  logout() {
+    this.localStorageService.clear('authenticationToken');
+    this.localStorageService.clear('username');
+  }
+>>>>>>> 915292cb496ecc187fee2cec86c649076bab19f4
 }

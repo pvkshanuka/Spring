@@ -16,8 +16,9 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity createPost(@RequestBody PostDto postDto) {
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> \n"+postDto.getTitle()+" - "+postDto.getContent());
         postService.createPost(postDto);
         return new ResponseEntity(HttpStatus.OK);
     }
