@@ -21,17 +21,7 @@ public class AppointmentController {
     public ResponseDto save(@RequestBody Appointment appointment) {
 
         try {
-
-            appointment.setId(null);
-            appointment.setStatus("1");
-
-            List<Appointment> search = search(appointment);
-
-            if (search.isEmpty()) {
-                return appointmentService.save(appointment);
-            }else{
-                return new ResponseDto(false, "Appointment Already Added.!");
-            }
+            return appointmentService.save(appointment);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
@@ -59,7 +49,6 @@ public class AppointmentController {
     public List<Appointment> search(@RequestBody Appointment appointment) {
         try {
 
-            appointment.setStatus("1");
             return appointmentService.search(appointment);
 
         } catch (Exception e) {
@@ -72,9 +61,16 @@ public class AppointmentController {
     @RequestMapping(method = RequestMethod.GET, value = "/test")
     public Appointment test() {
 
-        Appointment appointment = new Appointment(1,1,1, Instant.now(),"1");
+        Appointment appointment = new Appointment(1, 1, 1, Instant.now(), "1");
 
         return appointment;
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/searchByChannellingId/{id}")
+    public Boolean searchByChannellingId(@PathVariable Integer id) {
+        System.out.println("Channelling ID : "+id);
+        return appointmentService.searchByChannellingId(id);
 
     }
 

@@ -1,6 +1,7 @@
 package lk.e_channelling.category_service.servicers;
 
 import lk.e_channelling.category_service.dto.ResponseDto;
+import lk.e_channelling.category_service.exceptions.CategoryException;
 import lk.e_channelling.category_service.models.Category;
 import lk.e_channelling.category_service.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,51 +21,74 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseDto save(Category category) {
 
-        Category save = categoryRepository.save(category);
-        if (save.getId().equals(null)) {
-            System.out.println("Category Save Failed.!");
-            return new ResponseDto(false, "Category Save Failed.!");
-        } else {
-            System.out.println("Category Saved Successfully.!");
-            return new ResponseDto(true, "Category Saved Successfully.!");
-        }
+        try {
 
+            category.setId(null);
+
+            if (categoryRepository.findAllByCategory(category.getCategory()).isEmpty()) {
+
+                Category save = categoryRepository.save(category);
+
+                if (save.equals(null)) {
+                    System.out.println("Category Save Failed.!");
+                    return new ResponseDto(false, "Category Save Failed.!");
+                } else {
+                    System.out.println("Category Saved Successfully.!");
+                    return new ResponseDto(true, "Category Saved Successfully.!");
+                }
+
+            } else {
+                return new ResponseDto(false, "Category Already Added.!");
+            }
+        } catch (Exception e) {
+            throw new CategoryException("Category save exception occurred in AppointmentServiceImpl.save", e);
+        }
     }
 
     @Override
     public ResponseDto update(Category category) {
 
-        Optional<Category> optional = categoryRepository.findById(category.getId());
+        try {
 
-        if (optional.isPresent()) {
-            if (optional.get().getStatus().equals("1")) {
-                categoryRepository.save(category);
-                System.out.println("Category Updated Successfully.!");
-                return new ResponseDto(true, "Category Updated Successfully.!");
-            }else{
-                return new ResponseDto(true, "Deleted Category.!");
+            Optional<Category> optional = categoryRepository.findById(category.getId());
+
+            if (optional.isPresent()) {
+                if (optional.get().getStatus().equals("1")) {
+                    categoryRepository.save(category);
+                    System.out.println("Category Updated Successfully.!");
+                    return new ResponseDto(true, "Category Updated Successfully.!");
+                } else {
+                    return new ResponseDto(true, "Deleted Category.!");
+                }
+            } else {
+                System.out.println("Category Update Failed.!");
+                return new ResponseDto(false, "Invalid Category ID.!");
             }
-        } else {
-            System.out.println("Category Update Failed.!");
-            return new ResponseDto(false, "Invalid Category ID.!");
+        } catch (Exception e) {
+            throw new CategoryException("Category update exception occurred in AppointmentServiceImpl.update", e);
         }
-
     }
 
     @Override
     public ResponseDto delete(int id) {
 
-        Optional<Category> optional = categoryRepository.findById(id);
+        try {
 
-        if (optional.isPresent()) {
-            Category category = optional.get();
-            category.setStatus("0");
-            categoryRepository.save(category);
-            System.out.println("Category Deleted Successfully.!");
-            return new ResponseDto(true, "Category Deleted Successfully.!");
-        } else {
-            System.out.println("Category Delete Failed.!");
-            return new ResponseDto(false, "Invalid Category ID.!");
+            Optional<Category> optional = categoryRepository.findById(id);
+
+            if (optional.isPresent()) {
+                Category category = optional.get();
+                category.setStatus("0");
+                categoryRepository.save(category);
+                System.out.println("Category Deleted Successfully.!");
+                return new ResponseDto(true, "Category Deleted Successfully.!");
+            } else {
+                System.out.println("Category Delete Failed.!");
+                return new ResponseDto(false, "Invalid Category ID.!");
+            }
+
+        } catch (Exception e) {
+            throw new CategoryException("Category delete exception occurred in AppointmentServiceImpl.delete", e);
         }
 
     }
@@ -72,28 +96,43 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> search(Category category) {
 
-        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                .withMatcher("category", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
-                .withIgnorePaths("doctors")
-                .withIgnoreNullValues();
+        try {
 
-        Example<Category> example = Example.of(category, exampleMatcher);
-        return categoryRepository.findAll(example);
+            category.setStatus("1");
+
+            ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                    .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.startsWith())
+                    .withMatcher("category", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
+                    .withIgnorePaths("doctors")
+                    .withIgnoreNullValues();
+
+            Example<Category> example = Example.of(category, exampleMatcher);
+            return categoryRepository.findAll(example);
+
+        } catch (Exception e) {
+            throw new CategoryException("Category search exception occurred in AppointmentServiceImpl.search", e);
+        }
 
     }
 
     @Override
-    public boolean searchById(int id){
+    public boolean searchById(int id) {
 
-        Example<Category> example = Example.of(new Category(id,null,"1"));
-        return categoryRepository.findAll(example).isEmpty();
+        try {
+
+            Example<Category> example = Example.of(new Category(id, null, "1"));
+            return categoryRepository.findAll(example).isEmpty();
+
+        } catch (Exception e) {
+            throw new CategoryException("Category searchById exception occurred in AppointmentServiceImpl.searchById", e);
+        }
 
     }
 
     @Override
     public boolean searchAllFromIds(List<Integer> integers) {
 
+        try{
 
         List<Category> allById = categoryRepository.findAllById(integers);
 
@@ -101,8 +140,13 @@ public class CategoryServiceImpl implements CategoryService {
 
             return true;
 
-        }else{
+        } else {
             return false;
         }
+
+        } catch (Exception e) {
+            throw new CategoryException("Category searchAllFromIds exception occurred in AppointmentServiceImpl.searchAllFromIds", e);
+        }
+
     }
 }

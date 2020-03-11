@@ -20,16 +20,8 @@ public class CatrgoryController {
 
         try {
 
-            category.setId(null);
-            category.setStatus("1");
+            return categoryService.save(category);
 
-            List<Category> search = search(category);
-
-            if (search.isEmpty()) {
-                return categoryService.save(category);
-            } else {
-                return new ResponseDto(false, "Category Already Added.!");
-            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
@@ -71,7 +63,6 @@ public class CatrgoryController {
     public List<Category> search(@RequestBody Category category) {
         try {
 
-            category.setStatus("1");
             return categoryService.search(category);
 
         } catch (Exception e) {

@@ -1,7 +1,7 @@
 package lk.e_channelling.doctor_service.servicers;
 
 import lk.e_channelling.doctor_service.DoctorServiceApplication;
-import lk.e_channelling.doctor_service.Exceptions.DoctorSavingException;
+import lk.e_channelling.doctor_service.Exceptions.DoctorException;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
 import lk.e_channelling.doctor_service.models.DoctorCategory;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
@@ -91,7 +90,7 @@ public class DoctorServiceImpl implements DoctorService {
             }
 
         } catch (Exception e) {
-            throw new DoctorSavingException("Doctor saving exception occurred in DoctorServiceImpl.save", e);
+            throw new DoctorException("Doctor saving exception occurred in DoctorServiceImpl.save", e);
         }
     }
 
@@ -174,7 +173,7 @@ public class DoctorServiceImpl implements DoctorService {
             }
 
         } catch (Exception e) {
-            throw new DoctorSavingException("Doctor saving exception occurred in DoctorServiceImpl.update", e);
+            throw new DoctorException("Doctor updating exception occurred in DoctorServiceImpl.update", e);
         }
 
     }
@@ -211,7 +210,7 @@ public class DoctorServiceImpl implements DoctorService {
             }
 
         } catch (Exception e) {
-            throw new DoctorSavingException("Doctor saving exception occurred in DoctorServiceImpl.delete", e);
+            throw new DoctorException("Doctor deleting exception occurred in DoctorServiceImpl.delete", e);
         }
 
     }
@@ -237,7 +236,7 @@ public class DoctorServiceImpl implements DoctorService {
             return all;
 
         } catch (Exception e) {
-            throw new DoctorSavingException("Doctor saving exception occurred in DoctorServiceImpl.search", e);
+            throw new DoctorException("Doctor searching exception occurred in DoctorServiceImpl.search", e);
         }
     }
 
@@ -277,30 +276,37 @@ public class DoctorServiceImpl implements DoctorService {
             return doctorRepository.findAllDoctorsByCategory(id);
 
         } catch (Exception e) {
-            throw new DoctorSavingException("Doctor saving exception occurred in DoctorServiceImpl.searchByCategory", e);
+            throw new DoctorException("Doctor searchByCategory exception occurred in DoctorServiceImpl.searchByCategory", e);
         }
     }
 
     public boolean checkCategories(Doctor doctor) {
 
-        if (null == doctor.getDoctorCategories() || doctor.getDoctorCategories().isEmpty()) {
-            return true;
-        } else {
+        try {
 
-            List<Integer> doctorCategoryIds = new ArrayList<>();
+            if (null == doctor.getDoctorCategories() || doctor.getDoctorCategories().isEmpty()) {
+                return true;
+            } else {
 
-            doctor.getDoctorCategories().forEach(doctorCategory -> doctorCategoryIds.add(doctorCategory.getCategoryid()));
+                List<Integer> doctorCategoryIds = new ArrayList<>();
 
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                doctor.getDoctorCategories().forEach(doctorCategory -> doctorCategoryIds.add(doctorCategory.getCategoryid()));
 
-            HttpEntity<Object> httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + DoctorServiceApplication.DOMAIN_CATEGORY_SERVICE + "/test2", HttpMethod.POST, httpEntity, Boolean.class);
+                HttpEntity<Object> httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
 
-            return responseEntity.getBody();
+                ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + DoctorServiceApplication.DOMAIN_CATEGORY_SERVICE + "/test2", HttpMethod.POST, httpEntity, Boolean.class);
 
+                return responseEntity.getBody();
+
+            }
+
+        } catch (Exception e) {
+            throw new DoctorException("Doctor checkCategories exception occurred in DoctorServiceImpl.searchByCategory", e);
         }
+
 
     }
 

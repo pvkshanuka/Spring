@@ -115,4 +115,9 @@ public class ClientServiceImpl implements ClientService {
 
     }
 
+    @Override
+    public Boolean findById(Integer id) {
+        return clientRepository.findById(id).isPresent();
+    }
+
 }

@@ -18,5 +18,7 @@ public interface ClientService {
 
     public List<Client> searchBeforeSave(@RequestBody Client client);
 
+    public Boolean findById(Integer id);
+
 
 }

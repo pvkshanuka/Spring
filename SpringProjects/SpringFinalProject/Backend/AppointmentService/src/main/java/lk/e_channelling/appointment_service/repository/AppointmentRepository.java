@@ -9,4 +9,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Integer
 
     List<Appointment> findByClientAndChannellingAndStatus(Integer client, Integer channelling,String status);
 
+    List<Appointment> findByChannelling(Integer id);
+
 }

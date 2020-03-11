@@ -20,4 +20,10 @@ public interface AppointmentService {
 
     List<Appointment> findByClientAndChannellingAndStatus(Appointment appointment);
 
+    public boolean checkClient(Integer id);
+
+    public boolean checkChannelling(Integer id);
+
+    public boolean searchByChannellingId(Integer id);
+
 }

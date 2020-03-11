@@ -15,12 +15,14 @@ import java.util.List;
 @NoArgsConstructor
 public class DoctorCategory {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Integer id;
 
+    @Id
     private Integer categoryid;
 
+    @Id
     @ManyToOne
     @JoinColumn
     @JsonIgnore

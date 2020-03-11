@@ -97,6 +97,11 @@ public class ClientController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/findBYId/{id}")
+    public boolean findById(Integer id){
+        return patientService.findById(id);
+    }
+
 //    public boolean checkAppointments(Patient patient) {
 //
 //        if (null == patient.getAppointments() || patient.getAppointments().isEmpty()) {
