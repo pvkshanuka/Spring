@@ -29,4 +29,10 @@ public class Doctor {
 
     private String status;
 
+    public Doctor(Integer id, @NotNull String name, @NotNull String contact, String status) {
+        this.id = id;
+        this.name = name;
+        this.contact = contact;
+        this.status = status;
+    }
 }

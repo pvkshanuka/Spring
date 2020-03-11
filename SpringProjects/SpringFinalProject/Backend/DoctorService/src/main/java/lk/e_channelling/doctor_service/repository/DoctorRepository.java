@@ -10,8 +10,14 @@ import java.util.List;
 
 public interface DoctorRepository extends JpaRepository<Doctor,Integer> {
 
-//    @Query("SELECT dc FROM echannelling_doctor.DoctorCategory dc WHERE dc.categoryid = :categoryid")
-//    List<DoctorCategory> findAllDoctorsByCategory(@Param("categoryid") Integer categoryid);
+    @Query("SELECT DISTINCT new lk.e_channelling.doctor_service.models.Doctor(d.id,d.name,d.contact,d.status) FROM Doctor d JOIN d.doctorCategories c WHERE c.categoryid = :categoryid")
+    List<Doctor> findAllDoctorsByCategory(@Param("categoryid") Integer categoryid);
+
     List<Doctor> findByDoctorCategories(DoctorCategory doctorCategory);
+
+    List<Doctor> findByName(String name);
+
+
+
 
 }

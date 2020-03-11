@@ -1,5 +1,6 @@
 package lk.e_channelling.doctor_service.controllers;
 
+import lk.e_channelling.doctor_service.Exceptions.InvalidArgumentException;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
 import lk.e_channelling.doctor_service.models.DoctorCategory;
@@ -22,28 +23,21 @@ public class DoctorController {
     @Autowired
     DoctorService doctorService;
 
-    @Bean
-    RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
-    @Autowired
-    RestTemplate restTemplate;
-
-    @Transactional
     @RequestMapping(method = RequestMethod.POST)
+    @ExceptionHandler(InvalidArgumentException.class)
     public ResponseDto save(@RequestBody Doctor doctor) {
 
         try {
 
             doctor.setStatus("1");
-//            if (true) {
-            if (checkCategories(doctor)) {
-                return doctorService.save(doctor);
-            } else {
-                return new ResponseDto(false, "Invalid Categories.!");
-            }
+            doctor.setId(null);
+            if (search(doctor).isEmpty()) {
 
+                return doctorService.save(doctor);
+
+            } else {
+                return new ResponseDto(false, "Doctor Already Added.!");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
@@ -52,19 +46,15 @@ public class DoctorController {
 
     }
 
-    @Transactional
     @RequestMapping(method = RequestMethod.PUT)
+    @ExceptionHandler(InvalidArgumentException.class)
     public ResponseDto update(@RequestBody Doctor doctor) {
 
         try {
 
-//            if (true) {
-            if (checkCategories(doctor)) {
-                doctor.setStatus("1");
-                return doctorService.update(doctor);
-            } else {
-                return new ResponseDto(false, "Invalid Categories.!");
-            }
+
+            return doctorService.update(doctor);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,6 +65,7 @@ public class DoctorController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    @ExceptionHandler(InvalidArgumentException.class)
     public ResponseDto delete(@PathVariable int id) {
 
         try {
@@ -90,10 +81,10 @@ public class DoctorController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @ExceptionHandler(InvalidArgumentException.class)
     public List<Doctor> search(@RequestBody Doctor doctor) {
         try {
 
-            doctor.setStatus("1");
             return doctorService.search(doctor);
 
         } catch (Exception e) {
@@ -123,40 +114,19 @@ public class DoctorController {
 
     }
 
-    @RequestMapping("/searchByCat/")
-    public List<Doctor> searchByCat(@RequestBody DoctorCategory doctorCategory){
+    @RequestMapping(method = RequestMethod.GET, value = "/searchByCat/{id}")
+    @ExceptionHandler(InvalidArgumentException.class)
+    public List<Doctor> searchByCat(@PathVariable Integer id) {
+//    public List<Doctor> searchByCat(@RequestBody Doctor doctor) {
         try {
-            System.out.println("Awaaaaa");
-            return doctorService.searchByCategory(doctorCategory);
+
+            return doctorService.searchByCategory(id);
 
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
             return null;
         }
-    }
-
-    public boolean checkCategories(Doctor doctor) {
-
-        if (null == doctor.getDoctorCategories() || doctor.getDoctorCategories().isEmpty()) {
-            return true;
-        } else {
-
-            List<Integer> doctorCategoryIds = new ArrayList<>();
-
-            doctor.getDoctorCategories().forEach(doctorCategory -> doctorCategoryIds.add(doctorCategory.getCategoryid()));
-
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<Object> httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
-
-            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://localhost:8030/category/test2", HttpMethod.POST, httpEntity, Boolean.class);
-
-            return responseEntity.getBody();
-
-        }
-
     }
 
 }
