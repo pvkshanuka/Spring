@@ -20,4 +20,6 @@ public interface HospitalService {
 
     public List<Hospital> searchAll(@RequestBody Hospital hospital);
 
+    public Boolean findByIdAndStatus(Integer id,String status);
+
 }

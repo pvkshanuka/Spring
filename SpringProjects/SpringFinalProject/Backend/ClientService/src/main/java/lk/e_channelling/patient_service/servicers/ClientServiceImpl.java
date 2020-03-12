@@ -1,8 +1,10 @@
 package lk.e_channelling.patient_service.servicers;
 
 import lk.e_channelling.patient_service.dto.ResponseDto;
+import lk.e_channelling.patient_service.exception.ClientException;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.repository.ClientRepository;
+import lk.e_channelling.patient_service.support.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -17,52 +19,86 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     ClientRepository clientRepository;
 
+    @Autowired
+    Validation validation;
+
     @Override
     public ResponseDto save(Client client) {
 //
 //        for (Appointment appointment : patient.getAppointments()) {
 //            appointment.setPatient_id(patient.getId());
 //        }
+        try {
 
-        client.setId(null);
-        client.setStatus("1");
+            if (validation.saveValidator(client)) {
 
-        if (searchBeforeSave(client).isEmpty()) {
+                client.setId(null);
+                client.setStatus("1");
 
-            Client save = clientRepository.save(client);
+                if (searchBeforeSave(client).isEmpty()) {
 
-            if (save.getId().equals(null)) {
-                System.out.println("Client Save Failed.!");
-                return new ResponseDto(false, "Client Save Failed.!");
+                    Client save = clientRepository.save(client);
+
+                    if (save.getId().equals(null)) {
+                        System.out.println("Client Save Failed.!");
+                        return new ResponseDto(false, "Client Save Failed.!");
+                    } else {
+                        System.out.println("Client Saved Successfully.!");
+                        return new ResponseDto(true, "Client Saved Successfully.!");
+                    }
+
+                } else {
+                    System.out.println("Client Already Added.!");
+                    return new ResponseDto(true, "Client Already Added.!");
+                }
+
             } else {
-                System.out.println("Client Saved Successfully.!");
-                return new ResponseDto(true, "Client Saved Successfully.!");
+                System.out.println("Invalid Client Details.!");
+                return new ResponseDto(true, "Invalid Client Details.!");
             }
 
-        }else{
-            System.out.println("Client Already Added.!");
-            return new ResponseDto(true, "Client Already Added.!");
+        } catch (Exception e) {
+            throw new ClientException("Client saving exception occurred in ClientServiceImpl.save", e);
         }
-
     }
 
     @Override
     public ResponseDto update(Client client) {
 
-        Optional<Client> optional = clientRepository.findById(client.getId());
+        try {
 
-        if (optional.isPresent()) {
-            if (optional.get().getStatus().equals("1")) {
-                System.out.println(client);
-                clientRepository.save(client);
-                System.out.println("Client Updated Successfully.!");
-                return new ResponseDto(true, "Client Updated Successfully.!");
+            Optional<Client> optional = clientRepository.findById(client.getId());
+
+
+            if (optional.isPresent()) {
+
+                Client clientDB = optional.get();
+
+                if (clientDB.getStatus().equals("1")) {
+
+//                client.setContact(clientDB.getContact());
+                    client.setEmail(clientDB.getEmail());
+                    client.setStatus("1");
+
+                    if (validation.saveValidator(client)) {
+
+                        clientRepository.save(client);
+
+                        System.out.println("Client Updated Successfully.!");
+                        return new ResponseDto(true, "Client Updated Successfully.!");
+                    } else {
+                        return new ResponseDto(true, "Invalid Client Details.!");
+                    }
+                } else {
+                    return new ResponseDto(true, "Deleted Client.!");
+                }
             } else {
-                return new ResponseDto(true, "Deleted Client.!");
+                System.out.println("Invalid Client ID.!");
+                return new ResponseDto(false, "Invalid Client ID.!");
             }
-        } else {
-            System.out.println("Client Update Failed.!");
-            return new ResponseDto(false, "Invalid Client ID.!");
+
+        } catch (Exception e) {
+            throw new ClientException("Client update exception occurred in ClientServiceImpl.update", e);
         }
 
     }
@@ -70,23 +106,42 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ResponseDto delete(int id) {
 
-        Optional<Client> optional = clientRepository.findById(id);
+        try {
 
-        if (optional.isPresent()) {
-            Client client = optional.get();
-            client.setStatus("0");
-            clientRepository.save(client);
-            System.out.println("Client Deleted Successfully.!");
-            return new ResponseDto(true, "Client Deleted Successfully.!");
-        } else {
-            System.out.println("Client Delete Failed.!");
-            return new ResponseDto(false, "Invalid Client ID.!");
+            Optional<Client> optional = clientRepository.findById(id);
+
+            if (optional.isPresent()) {
+                Client client = optional.get();
+
+                if ("1".equals(client.getStatus())){
+
+                    client.setStatus("0");
+                    clientRepository.save(client);
+                    System.out.println("Client Deleted Successfully.!");
+                    return new ResponseDto(true, "Invalid Clinet.!");
+
+                }else{
+
+                    System.out.println("Invalid Clinet ID.!");
+                    return new ResponseDto(true, "Invalid Clinet ID.!");
+
+                }
+
+            } else {
+                System.out.println("Invalid Clinet ID.!");
+                return new ResponseDto(false, "Invalid Client ID.!");
+            }
+
+        } catch (Exception e) {
+            throw new ClientException("Client delete exception occurred in ClientServiceImpl.delete", e);
         }
 
     }
 
     @Override
     public List<Client> search(Client client) {
+
+        client.setStatus("1");
 
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.startsWith())
@@ -104,10 +159,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> searchBeforeSave(Client client) {
 
+//        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+//                .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.contains())
+//                .withMatcher("contact", ExampleMatcher.GenericPropertyMatchers.contains())
+//                .withIgnorePaths("id", "name", "age", "appointments")
+//                .withIgnoreNullValues();
+//
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.contains())
-                .withMatcher("contact", ExampleMatcher.GenericPropertyMatchers.contains())
-                .withIgnorePaths("id","name","age","appointments")
+                .withIgnorePaths("id", "name", "age", "appointments")
                 .withIgnoreNullValues();
 
         Example<Client> example = Example.of(client, exampleMatcher);

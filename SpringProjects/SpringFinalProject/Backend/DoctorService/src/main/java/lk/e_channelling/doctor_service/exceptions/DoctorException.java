@@ -1,4 +1,4 @@
-package lk.e_channelling.doctor_service.Exceptions;
+package lk.e_channelling.doctor_service.exceptions;
 
 public class DoctorException extends RuntimeException {
 

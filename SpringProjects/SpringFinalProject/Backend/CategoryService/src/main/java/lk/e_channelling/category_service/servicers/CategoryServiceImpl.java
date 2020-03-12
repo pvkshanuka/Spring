@@ -4,6 +4,8 @@ import lk.e_channelling.category_service.dto.ResponseDto;
 import lk.e_channelling.category_service.exceptions.CategoryException;
 import lk.e_channelling.category_service.models.Category;
 import lk.e_channelling.category_service.repository.CategoryRepository;
+import lk.e_channelling.category_service.support.Validation;
+import lk.e_channelling.category_service.support.ValidationImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -18,6 +20,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    Validation validation;
+
     @Override
     public ResponseDto save(Category category) {
 
@@ -27,14 +32,21 @@ public class CategoryServiceImpl implements CategoryService {
 
             if (categoryRepository.findAllByCategory(category.getCategory()).isEmpty()) {
 
-                Category save = categoryRepository.save(category);
+                if (validation.stringLengthValidator(category.getCategory(), 4)) {
 
-                if (save.equals(null)) {
-                    System.out.println("Category Save Failed.!");
-                    return new ResponseDto(false, "Category Save Failed.!");
+
+                    Category save = categoryRepository.save(category);
+
+                    if (save.equals(null)) {
+                        System.out.println("Category Save Failed.!");
+                        return new ResponseDto(false, "Category Save Failed.!");
+                    } else {
+                        System.out.println("Category Saved Successfully.!");
+                        return new ResponseDto(true, "Category Saved Successfully.!");
+                    }
+
                 } else {
-                    System.out.println("Category Saved Successfully.!");
-                    return new ResponseDto(true, "Category Saved Successfully.!");
+                    return new ResponseDto(false, "Invalid Category.!");
                 }
 
             } else {
@@ -132,17 +144,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public boolean searchAllFromIds(List<Integer> integers) {
 
-        try{
+        try {
 
-        List<Category> allById = categoryRepository.findAllById(integers);
+            List<Category> allById = categoryRepository.findAllById(integers);
 
-        if (allById.size() == integers.size()) {
+            if (allById.size() == integers.size()) {
 
-            return true;
+                return true;
 
-        } else {
-            return false;
-        }
+            } else {
+                return false;
+            }
 
         } catch (Exception e) {
             throw new CategoryException("Category searchAllFromIds exception occurred in AppointmentServiceImpl.searchAllFromIds", e);

@@ -99,4 +99,15 @@ public class HospitalServiceImpl implements HospitalService {
         return hospitalRepository.findAll(example);
 
     }
+
+    @Override
+    public Boolean findByIdAndStatus(Integer id,String status) {
+
+        System.out.println("Hospital Checked");
+
+        Optional<Hospital> optional = hospitalRepository.findByIdAndStatus(id, status);
+
+        return optional.isPresent();
+
+    }
 }

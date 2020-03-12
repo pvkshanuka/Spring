@@ -5,6 +5,7 @@ import lk.e_channelling.appointment_service.dto.ResponseDto;
 import lk.e_channelling.appointment_service.exceptions.AppointmentException;
 import lk.e_channelling.appointment_service.models.Appointment;
 import lk.e_channelling.appointment_service.repository.AppointmentRepository;
+import lk.e_channelling.appointment_service.support.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
@@ -31,50 +32,60 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    Validation validation;
+
 
     @Override
     public ResponseDto save(Appointment appointment) {
 
         try {
 
-            if (checkClient(appointment.getClient())) {
-//??CHANNELLING CHECK KARANNA ONA EKATA ONA METHOD EKA HADALA THIYENNE
-                appointment.setId(null);
-//
-//        List<Appointment> search = search(appointment);
-//
-//        if (search.isEmpty()) {
-//
+            if (validation.saveValidator(appointment)) {
 
-                if (findByClientAndChannellingAndStatus(appointment).isEmpty()) {
+                if (checkClient(appointment.getClient())) {
 
-                    appointment.setStatus("1");
-                    appointment.setDate(Instant.now());
+                    appointment.setId(null);
 
-                    Appointment save = appointmentRepository.save(appointment);
-                    if (save.equals(null)) {
-                        System.out.println("Appointment Adding Failed.!");
-                        return new ResponseDto(false, "Appointment Adding Failed.!");
+                    if (checkChannelling(appointment.getChannelling())) {
+
+                        if (findByClientAndChannellingAndStatus(appointment).isEmpty()) {
+
+                            appointment.setStatus("1");
+                            appointment.setDate(Instant.now());
+
+                            Appointment save = appointmentRepository.save(appointment);
+                            if (save.equals(null)) {
+                                System.out.println("Appointment Adding Failed.!");
+                                return new ResponseDto(false, "Appointment Adding Failed.!");
+                            } else {
+                                System.out.println("Appointment Added Successfully.!");
+                                return new ResponseDto(true, "Appointment Added Successfully.!");
+                            }
+                        } else {
+                            System.out.println("Appointment Already Added.!");
+                            return new ResponseDto(true, "Appointment Already Added.!");
+                        }
+
                     } else {
-                        System.out.println("Appointment Added Successfully.!");
-                        return new ResponseDto(true, "Appointment Added Successfully.!");
+                        System.out.println("Invalid Channelling.!");
+                        return new ResponseDto(false, "Invalid Channelling.!");
                     }
+
                 } else {
-                    System.out.println("Appointment Already Added.!");
-                    return new ResponseDto(true, "Appointment Already Added.!");
+                    System.out.println("Invalid Client.!");
+                    return new ResponseDto(false, "Invalid Client.!");
                 }
-
-//            } else {
-//                return new ResponseDto(false, "Invalid Channelling.!");
-//            }
-
             } else {
-                return new ResponseDto(false, "Invalid Client.!");
+                System.out.println("Invalid Appointment Details.!");
+                return new ResponseDto(false, "Invalid Appointment Details.!");
             }
 
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             throw new AppointmentException("Appointment saving exception occurred in AppointmentServiceImpl.save", e);
         }
+
     }
 
     @Override
@@ -148,7 +159,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
 
-            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "/findBYId/" + id, HttpMethod.GET, httpEntity, Boolean.class);
+            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "/client/findBYId/" + id, HttpMethod.GET, httpEntity, Boolean.class);
 
             return responseEntity.getBody();
 
@@ -166,7 +177,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
 
-            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "/findBYId/" + id, HttpMethod.GET, httpEntity, Boolean.class);
+            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CHANNELLING_SERVICE + "/channelling/findByIdAndStatus/" + id, HttpMethod.GET, httpEntity, Boolean.class);
 
             return responseEntity.getBody();
 

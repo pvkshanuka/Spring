@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface ChannellingRepository extends JpaRepository<Channelling,Integer> {
 
     public List<Channelling> findByHospitalAndRoomAndDayAndStartTimeBetween(Integer hospital, String room, String day, Instant startTime, Instant endTime);
+
+    public Optional<Channelling> findByIdAndStatus(Integer id,String status);
 
 }

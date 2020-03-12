@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/channelling")
@@ -84,6 +85,11 @@ public class ChannellingController {
 
         return channelling;
 
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/findByIdAndStatus/{id}")
+    public Boolean findByIdAndStatus(@PathVariable Integer id){
+        return channellingService.findByIdAndStatus(id,"1");
     }
 
 }

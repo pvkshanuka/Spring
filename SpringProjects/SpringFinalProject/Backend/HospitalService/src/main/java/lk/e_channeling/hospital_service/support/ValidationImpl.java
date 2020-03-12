@@ -1,7 +1,7 @@
-package lk.e_channelling.doctor_service.support;
+package lk.e_channeling.hospital_service.support;
 
-import lk.e_channelling.doctor_service.DoctorServiceApplication;
-import lk.e_channelling.doctor_service.models.Doctor;
+import lk.e_channeling.hospital_service.HospitalServiceApplication;
+import lk.e_channeling.hospital_service.models.Hospital;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class ValidationImpl implements Validation {
 
     public Pattern patternContact = Pattern.compile("(^\\d{9,10}$)");
+    public Pattern patternEmail = Pattern.compile("^[a-zA-Z0-9_.]+@[a-zA-Z0-9.-]+\\.[a-zA-Z0-9.]+$");
 
     @Override
     public boolean stringLengthValidator(String string, int length) {
@@ -58,11 +59,11 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
-    public boolean doctorSaveValidator(Doctor doctor) {
-        if (null == doctor.getName() || null == doctor.getContact()) {
+    public boolean doctorSaveValidator(Hospital hospital) {
+        if (null == hospital.getName() || null == hospital.getCity() || null == hospital.getEmail() || null == hospital.getContact()) {
             return false;
         } else {
-            if (stringMinLengthValidator(doctor.getName(), DoctorServiceApplication.NAME_MIN_LENGTH) && patternContact.matcher(doctor.getContact()).find())
+            if (stringMinLengthValidator(hospital.getName(), HospitalServiceApplication.NAME_MIN_LENGTH) && patternContact.matcher(hospital.getContact()).find() && patternEmail.matcher(hospital.getEmail()).find())
                 return true;
             return false;
         }

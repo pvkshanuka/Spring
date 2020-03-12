@@ -73,4 +73,9 @@ public class HospitalController {
         return new Hospital(1, "ABC", "DEF", "GHI", "123456789","1");
     }
 
+    @RequestMapping(method = RequestMethod.GET,value = "/findByIdAndStatus/{id}")
+    public Boolean findByIdAndStatus(@PathVariable Integer id){
+        return hospitalService.findByIdAndStatus(id,"1");
+    }
+
 }

@@ -1,17 +1,12 @@
 package lk.e_channelling.doctor_service.controllers;
 
-import lk.e_channelling.doctor_service.Exceptions.InvalidArgumentException;
+import lk.e_channelling.doctor_service.exceptions.InvalidArgumentException;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
 import lk.e_channelling.doctor_service.models.DoctorCategory;
 import lk.e_channelling.doctor_service.servicers.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +24,8 @@ public class DoctorController {
 
         try {
 
-            doctor.setStatus("1");
-            doctor.setId(null);
-            if (search(doctor).isEmpty()) {
-
                 return doctorService.save(doctor);
 
-            } else {
-                return new ResponseDto(false, "Doctor Already Added.!");
-            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
@@ -52,9 +40,7 @@ public class DoctorController {
 
         try {
 
-
             return doctorService.update(doctor);
-
 
         } catch (Exception e) {
             e.printStackTrace();

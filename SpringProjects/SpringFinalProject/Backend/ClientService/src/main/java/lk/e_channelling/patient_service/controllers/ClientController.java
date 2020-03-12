@@ -23,8 +23,6 @@ public class ClientController {
 
         try {
 
-            client.setId(null);
-            client.setStatus("1");
             return patientService.save(client);
 
         } catch (Exception e) {
@@ -40,14 +38,7 @@ public class ClientController {
     public ResponseDto update(@RequestBody Client client) {
 
         try {
-
-//            if (checkAppointments(patient)) {
-            if (true) {
-                client.setStatus("1");
                 return patientService.update(client);
-            } else {
-                return new ResponseDto(false, "Invalid Appointments.!");
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,7 +67,6 @@ public class ClientController {
     public List<Client> search(@RequestBody Client client) {
         try {
 
-            client.setStatus("1");
             return patientService.search(client);
 
         } catch (Exception e) {
@@ -98,7 +88,10 @@ public class ClientController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findBYId/{id}")
-    public boolean findById(Integer id){
+    public boolean findById(@PathVariable Integer id){
+
+        System.out.println("findBYId");
+
         return patientService.findById(id);
     }
 

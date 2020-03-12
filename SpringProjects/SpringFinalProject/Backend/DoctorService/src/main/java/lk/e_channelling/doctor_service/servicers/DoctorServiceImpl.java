@@ -1,7 +1,7 @@
 package lk.e_channelling.doctor_service.servicers;
 
 import lk.e_channelling.doctor_service.DoctorServiceApplication;
-import lk.e_channelling.doctor_service.Exceptions.DoctorException;
+import lk.e_channelling.doctor_service.exceptions.DoctorException;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
 import lk.e_channelling.doctor_service.models.DoctorCategory;
@@ -41,6 +41,8 @@ public class DoctorServiceImpl implements DoctorService {
     public ResponseDto save(Doctor doctor) {
 
         try {
+            doctor.setStatus("1");
+            doctor.setId(null);
 
             if (validation.doctorSaveValidator(doctor)) {
 
@@ -51,7 +53,7 @@ public class DoctorServiceImpl implements DoctorService {
                 if (checkCategories(doctor)) {
 
 //Checking about doctors that have same mobile.
-                    if (doctorRepository.findByName(doctor.getName()).isEmpty()) {
+                    if (doctorRepository.findByContact(doctor.getContact()).isEmpty()) {
 
                         if (null != doctor.getDoctorCategories()) {
                             for (DoctorCategory doctorCategory : doctor.getDoctorCategories()) {
@@ -148,6 +150,8 @@ public class DoctorServiceImpl implements DoctorService {
 
                                 doctor.setDoctorCategories(doctorCategories);
                             }
+
+                            doctor.setContact(doctorfromDB.getContact());
 
                             doctorRepository.save(doctor);
 

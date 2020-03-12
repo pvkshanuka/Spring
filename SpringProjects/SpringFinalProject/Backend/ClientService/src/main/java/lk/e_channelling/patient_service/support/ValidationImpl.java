@@ -1,7 +1,8 @@
-package lk.e_channelling.doctor_service.support;
+package lk.e_channelling.patient_service.support;
 
-import lk.e_channelling.doctor_service.DoctorServiceApplication;
-import lk.e_channelling.doctor_service.models.Doctor;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
+import lk.e_channelling.patient_service.ClientServiceApplication;
+import lk.e_channelling.patient_service.models.Client;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
@@ -10,6 +11,8 @@ import java.util.regex.Pattern;
 public class ValidationImpl implements Validation {
 
     public Pattern patternContact = Pattern.compile("(^\\d{9,10}$)");
+    public Pattern patternEmail = Pattern.compile("^[a-zA-Z0-9_.]+@[a-zA-Z0-9.-]+\\.[a-zA-Z0-9.]+$");
+
 
     @Override
     public boolean stringLengthValidator(String string, int length) {
@@ -48,7 +51,7 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
-    public boolean intValidator(String string) {
+    public boolean isInt(String string) {
         try {
             Integer.parseInt(string);
             return true;
@@ -58,13 +61,14 @@ public class ValidationImpl implements Validation {
     }
 
     @Override
-    public boolean doctorSaveValidator(Doctor doctor) {
-        if (null == doctor.getName() || null == doctor.getContact()) {
+    public boolean saveValidator(Client client) {
+        if (null == client.getName() || null == client.getAge() || null == client.getContact() || null == client.getEmail()) {
             return false;
         } else {
-            if (stringMinLengthValidator(doctor.getName(), DoctorServiceApplication.NAME_MIN_LENGTH) && patternContact.matcher(doctor.getContact()).find())
+            if (stringLengthValidator(client.getName(), ClientServiceApplication.CLIENT_NAME_MIN_LENGTH) && patternContact.matcher(client.getContact()).find() && patternEmail.matcher(client.getEmail()).find())
                 return true;
             return false;
         }
     }
+
 }
