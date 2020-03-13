@@ -9,13 +9,13 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
-
 @Component({
-  selector: 'app-client-reg',
-  templateUrl: './client-reg.component.html',
-  styleUrls: ['./client-reg.component.css']
+  selector: 'app-client-login',
+  templateUrl: './client-login.component.html',
+  styleUrls: ['./client-login.component.css']
 })
-export class ClientRegComponent implements OnInit {
+export class ClientLoginComponent implements OnInit {
+
 
   emailFormControl = new FormControl('', [
     Validators.required,

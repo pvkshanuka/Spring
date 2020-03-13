@@ -1,0 +1,46 @@
+<mat-grid-list cols="6" rowHeight="fit" class="mygridlist">
+  <mat-grid-tile></mat-grid-tile>
+  <mat-grid-tile colspan="4">
+    <div class="mycontainer">
+
+      <div class="title">
+        <h2>Place an appointment</h2>
+      </div>
+
+
+      <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort (matSortChange)="onMatSortChange()">
+        <!-- Position Column -->
+        <ng-container matColumnDef="position">
+          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> No. </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Name </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="weight">
+          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Weight </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="symbol">
+          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Symbol </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns" class="tableheader"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" class="tablerow"></mat-row>
+      </mat-table>
+      <!-- <mat-paginator [pageSizeOptions]="[5,10,20]" ></mat-paginator> -->
+
+
+</div>
+
+  </mat-grid-tile>
+  <mat-grid-tile></mat-grid-tile>
+</mat-grid-list>
