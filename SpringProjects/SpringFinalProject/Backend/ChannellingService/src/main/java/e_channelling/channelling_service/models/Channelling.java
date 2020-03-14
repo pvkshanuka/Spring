@@ -27,6 +27,9 @@ public class Channelling {
     private Integer hospital;
 
     @NotNull
+    private Integer doctor;
+
+    @NotNull
     private String room;
 
     @NotNull

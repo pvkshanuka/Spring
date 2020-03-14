@@ -21,4 +21,5 @@ public interface DoctorService {
 //    List<Doctor> searchByCategory(@RequestBody Doctor doctor);
     List<Doctor> searchByCategory(@RequestBody Integer id);
 
+    public boolean findById(Integer id);
 }

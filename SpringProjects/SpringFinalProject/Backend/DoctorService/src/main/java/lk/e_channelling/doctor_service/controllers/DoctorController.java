@@ -115,4 +115,18 @@ public class DoctorController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/findById/{id}")
+    public boolean findById(@PathVariable Integer id) {
+//    public List<Doctor> searchByCat(@RequestBody Doctor doctor) {
+        try {
+
+            return doctorService.findById(id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return false;
+        }
+    }
+
 }

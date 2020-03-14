@@ -1,7 +1,6 @@
 .mycontainer{
-  margin-top: 5rem;
   width: 100%;
-  height: 100%;
+  height: max-content;
 }
 
 table {
@@ -26,12 +25,35 @@ table {
 }
 
 .tablerow:hover{
-  /* border: 2px gray solid; */
-  /* border-radius: 5px; */
-  font-weight: bold;
   padding-bottom: 5px;
   -webkit-box-shadow: inset 0px 0px 75px -63px rgba(104,58,183,0.98);
 -moz-box-shadow: inset 0px 0px 75px -63px rgba(104,58,183,0.98);
 box-shadow: inset 0px 0px 75px -63px rgba(104,58,183,0.98);
 
+}
+
+.twolinecell{
+  margin: 0px;
+}
+
+.myhint{
+  color: lightslategray;
+}
+
+.mat-paginator.paginator--centered {
+  display: flex;
+  justify-content: center;
+}
+
+.header-align-right{
+  justify-content: flex-end;
+}
+
+.example-full-width-height {
+  width: 100%;
+  height: 100%;
+}
+
+.default-option{
+  color: lightslategray;
 }

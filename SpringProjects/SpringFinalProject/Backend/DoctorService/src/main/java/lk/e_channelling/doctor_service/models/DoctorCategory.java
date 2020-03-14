@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctorCategory {
+public class DoctorCategory implements Serializable {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)

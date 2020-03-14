@@ -1,41 +1,135 @@
 <mat-grid-list cols="6" rowHeight="fit" class="mygridlist">
   <mat-grid-tile></mat-grid-tile>
   <mat-grid-tile colspan="4">
-    <div class="mycontainer">
+
+
+
+    <div class="mycontainer mat-elevation-z8">
+
+
 
       <div class="title">
         <h2>Place an appointment</h2>
       </div>
 
+      <!-- Serch Buttons -->
+      <div>
+        <mat-grid-list cols="6" rowHeight="50px">
 
-      <mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort (matSortChange)="onMatSortChange()">
+          <mat-grid-tile>
+
+            <mat-form-field class="example-full-width-height">
+              <mat-label>City</mat-label>
+              <input matInput type="text" >
+            </mat-form-field>
+
+          </mat-grid-tile>
+          <mat-grid-tile>
+
+            <mat-form-field class="example-full-width-height">
+              <mat-label>Doctor</mat-label>
+              <input matInput type="text" >
+            </mat-form-field>
+
+          </mat-grid-tile>
+          <mat-grid-tile>
+
+            <mat-form-field class="example-full-width-height">
+              <mat-label>Category</mat-label>
+              <mat-select>
+                  <mat-option ><span class="default-option">None</span></mat-option>
+                  <mat-option value="Kusal">Kusal</mat-option>
+                  <mat-option value="Shanuka">Shanuka</mat-option>
+                  <mat-option value="Abc">Abc</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+                  <mat-option value="Def">Def</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </mat-grid-tile>
+          <mat-grid-tile>
+
+            <mat-form-field class="example-full-width-height">
+              <!-- <mat-label>Date</mat-label> -->
+              <input matInput [matDatepicker]="myDatePicker" placeholder="Date" [min]="minDate">
+              <mat-datepicker-toggle [for]="myDatePicker" matSuffix></mat-datepicker-toggle>
+              <mat-datepicker #myDatePicker></mat-datepicker>
+            </mat-form-field>
+
+          </mat-grid-tile>
+          <mat-grid-tile>
+
+            <mat-form-field class="example-full-width-height">
+              <mat-label>Time</mat-label>
+              <input matInput type="time" >
+            </mat-form-field>
+
+          </mat-grid-tile>
+          <mat-grid-tile>
+
+            <mat-form-field class="example-full-width-height">
+              <mat-label>Price</mat-label>
+              <input matInput type="number" >
+              <span matPrefix>Rs&nbsp;</span>
+                    <span matSuffix></span>
+            </mat-form-field>
+
+          </mat-grid-tile>
+
+        </mat-grid-list>
+      </div>
+
+      <mat-table [dataSource]="dataSource" matSort (matSortChange)="onMatSortChange()">
         <!-- Position Column -->
-        <ng-container matColumnDef="position">
-          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> No. </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
+        <ng-container matColumnDef="hospital">
+          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Hospital </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <p class="twolinecell">
+              <span class="mat-h3">{{element.id+'-'+element.hospital}}</span><br>
+              <span class="mat-small myhint">{{element.city}}</span>
+            </p>
+          </mat-cell>
         </ng-container>
 
         <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Name </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        <ng-container matColumnDef="doctor">
+          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Doctor </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <p class="twolinecell">
+              <span class="mat-h3">{{element.doctor}}</span><br>
+              <span class="mat-small myhint">{{element.dtype}}</span>
+            </p>
+          </mat-cell>
         </ng-container>
 
         <!-- Weight Column -->
-        <ng-container matColumnDef="weight">
-          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Weight </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
+        <ng-container matColumnDef="start">
+          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Date & Time </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.start}} </mat-cell>
         </ng-container>
 
         <!-- Symbol Column -->
-        <ng-container matColumnDef="symbol">
-          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Symbol </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
+        <ng-container matColumnDef="price">
+          <mat-header-cell *matHeaderCellDef class="tableheadercell" mat-sort-header> Price </mat-header-cell>
+          <mat-cell *matCellDef="let element" style="justify-content: flex-end;"> {{element.price}} </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns" class="tableheader"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" class="tablerow"></mat-row>
       </mat-table>
+
+      <mat-paginator class="paginator--centered" [pageSizeOptions]="[5,10,15]" showFirstLastButtons style="align-items: center !important;"></mat-paginator>
 
 </div>
 

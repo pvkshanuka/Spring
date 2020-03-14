@@ -9,6 +9,8 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { ClientRegComponent } from './components/client-reg/client-reg.component';
 import { ClientLoginComponent } from './components/client-login/client-login.component';
 import { ChannellingSearchComponent } from './components/channelling-search/channelling-search.component';
+import { HospitalFormComponent } from './components/hospital-form/hospital-form.component';
+import { DoctorFormComponent } from './components/doctor-form/doctor-form.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { ChannellingSearchComponent } from './components/channelling-search/chan
     NavBarComponent,
     ClientRegComponent,
     ClientLoginComponent,
-    ChannellingSearchComponent
+    ChannellingSearchComponent,
+    HospitalFormComponent,
+    DoctorFormComponent
   ],
   entryComponents: [ClientRegComponent, ClientLoginComponent],
   imports: [

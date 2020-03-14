@@ -1,0 +1,62 @@
+<mat-grid-list cols="5" rowHeight="fit" class="mygridlist">
+  <mat-grid-tile></mat-grid-tile>
+  <mat-grid-tile colspan="3">
+    <div class="mycontainer">
+      <div class="title">
+        <h2>Add Doctor</h2>
+      </div>
+
+      <mat-form-field class="example-full-width-height">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" />
+        <span matPrefix>Dr.&nbsp;</span>
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>Contact Number</mat-label>
+        <input type="number" matInput placeholder="Ex. 771234567" required />
+        <span matPrefix>+94&nbsp;</span>
+        <span matSuffix></span>
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>Category</mat-label>
+        <mat-select multiple>
+          <mat-option><span class="default-option">None</span></mat-option>
+          <mat-option value="Kusal">Kusal</mat-option>
+          <mat-option value="Shanuka">Shanuka</mat-option>
+          <mat-option value="Abc">Abc</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+          <mat-option value="Def">Def</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-placeholder>New Category</mat-placeholder>
+        <input matInput type="search" />
+        <button mat-button matSuffix mat-stroked-button aria-label="search">
+          Add
+        </button>
+      </mat-form-field>
+
+      <div align="end">
+        <button mat-raised-button mat-dialog-close>Close</button>&nbsp;
+        <button mat-raised-button mat-dialog-close color="primary">
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile></mat-grid-tile>
+</mat-grid-list>

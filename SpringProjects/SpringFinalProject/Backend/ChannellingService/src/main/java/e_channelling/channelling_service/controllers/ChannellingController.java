@@ -81,7 +81,7 @@ public class ChannellingController {
 
 
 
-        Channelling channelling = new Channelling(1,1,"34",1200.00, Instant.now(),Instant.now().plusSeconds(60*60*2),"Monday","1");
+        Channelling channelling = new Channelling(1,1,1,"34",1200.00, Instant.now(),Instant.now().plusSeconds(60*60*2),"Monday","1");
 
         return channelling;
 

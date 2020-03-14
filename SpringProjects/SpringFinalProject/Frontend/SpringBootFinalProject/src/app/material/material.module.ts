@@ -11,7 +11,12 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule } from '@angular/material/sort';
-// import {MatPaginatorModule, MatPaginator} from '@angular/material/paginator';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatListModule} from '@angular/material/list';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+
 
 
 const MaterialComponents = [
@@ -27,8 +32,12 @@ const MaterialComponents = [
   MatTabsModule,
   MatTableModule,
   MatSortModule,
-  BrowserModule
-  // MatPaginatorModule,
+  BrowserModule,
+  MatPaginatorModule,
+  MatListModule,
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule
   // MatPaginator
 ];
 

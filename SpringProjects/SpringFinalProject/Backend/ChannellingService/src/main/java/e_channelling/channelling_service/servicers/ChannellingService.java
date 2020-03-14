@@ -21,6 +21,8 @@ public interface ChannellingService {
 
     public boolean checkHospital(Integer id);
 
+    public boolean checkDoctor(Integer id);
+
     public boolean checkAppointments(Integer id);
 
     public Boolean findByIdAndStatus(Integer id, String status);

@@ -1,0 +1,53 @@
+<mat-grid-list cols="5" rowHeight="fit" class="mygridlist">
+  <mat-grid-tile></mat-grid-tile>
+  <mat-grid-tile colspan="3">
+
+    <div class="mycontainer">
+
+      <div class="title">
+        <h2>Add Hospital</h2>
+      </div>
+
+      <mat-form-field class="example-full-width-height">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" />
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>City</mat-label>
+        <input matInput type="text" />
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>Contact Number</mat-label>
+        <input type="number" matInput placeholder="Ex. 771234567" required>
+        <span matPrefix>+94&nbsp;</span>
+        <span matSuffix></span>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width-height">
+        <mat-label>Email</mat-label>
+        <input matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+          placeholder="Ex. pat@example.com" required>
+        <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
+        <mat-error align="end" *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+          Please enter a valid email address
+        </mat-error>
+        <mat-error *ngIf="emailFormControl.hasError('required')">
+          Email is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <div align="end">
+
+        <button mat-raised-button mat-dialog-close>Close</button>&nbsp;
+        <button mat-raised-button mat-dialog-close color="primary">Sign Up</button>
+
+      </div>
+
+    </div>
+
+
+  </mat-grid-tile>
+  <mat-grid-tile></mat-grid-tile>
+</mat-grid-list>

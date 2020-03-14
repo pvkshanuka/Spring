@@ -284,6 +284,17 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
 
+    @Override
+    public boolean findById(Integer id) {
+        try {
+            System.out.println("Doctor Check");
+            return doctorRepository.findById(id).isPresent();
+
+        } catch (Exception e) {
+            throw new DoctorException("Doctor searchByCategory exception occurred in DoctorServiceImpl.searchByCategory", e);
+        }
+    }
+
     public boolean checkCategories(Doctor doctor) {
 
         try {

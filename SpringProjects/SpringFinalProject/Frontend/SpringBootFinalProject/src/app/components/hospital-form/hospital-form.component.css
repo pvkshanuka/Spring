@@ -1,0 +1,22 @@
+.mygridlist{
+  height: 100%;
+}
+
+.example-full-width-height {
+  width: 100%;
+  height: 100%;
+}
+
+.example-half-width-full-height {
+  width: 50%;
+  height: 100%;
+}
+
+.mycontainer{
+  width: 100%;
+  height: fit-content;
+}
+
+.title{
+  text-align: center;
+}
