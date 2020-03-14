@@ -11,6 +11,7 @@ import { ClientLoginComponent } from './components/client-login/client-login.com
 import { ChannellingSearchComponent } from './components/channelling-search/channelling-search.component';
 import { HospitalFormComponent } from './components/hospital-form/hospital-form.component';
 import { DoctorFormComponent } from './components/doctor-form/doctor-form.component';
+import { ChannellingFormComponent } from './components/channelling-form/channelling-form.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { DoctorFormComponent } from './components/doctor-form/doctor-form.compon
     ClientLoginComponent,
     ChannellingSearchComponent,
     HospitalFormComponent,
-    DoctorFormComponent
+    DoctorFormComponent,
+    ChannellingFormComponent
   ],
   entryComponents: [ClientRegComponent, ClientLoginComponent],
   imports: [

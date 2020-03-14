@@ -1,0 +1,79 @@
+<mat-grid-list cols="5" rowHeight="fit" class="mygridlist">
+  <mat-grid-tile></mat-grid-tile>
+  <mat-grid-tile colspan="3">
+    <div class="mycontainer">
+      <div class="title">
+        <h2>Add Channelling</h2>
+      </div>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>Assignee</mat-label>
+        <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
+        <span matPrefix>+94&nbsp;</span>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{option.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>Day</mat-label>
+        <mat-select>
+          <mat-option value="Monday">Monday</mat-option>
+          <mat-option value="Tuesday">Tuesday</mat-option>
+          <mat-option value="Wednesday">Wednesday</mat-option>
+          <mat-option value="Thursday">Thursday</mat-option>
+          <mat-option value="Friday">Friday</mat-option>
+          <mat-option value="Saturday">Saturday</mat-option>
+          <mat-option value="Sunday">Sunday</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="example-qua-width-full-height">
+        <!-- <mat-label>Date</mat-label> -->
+        <input matInput [matDatepicker]="myDatePicker" (dateChange)="onStartDateChange($event)" placeholder="Start Date" [min]="minDate">
+        <mat-datepicker-toggle [for]="myDatePicker" matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #myDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="example-qua-width-full-height">
+        <mat-placeholder>Start Time</mat-placeholder>
+        <input matInput type="time" [min]="minDate"/>
+      </mat-form-field>
+
+      <mat-form-field class="example-qua-width-full-height">
+        <!-- <mat-label>Date</mat-label> -->
+        <input matInput [matDatepicker]="myDatePickerE" [value]="selectedDate" placeholder="End Date" [min]="selectedDate">
+        <mat-datepicker-toggle [for]="myDatePickerE" matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #myDatePickerE></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="example-qua-width-full-height">
+        <mat-placeholder>End Time</mat-placeholder>
+        <input matInput type="time"/>
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>Room</mat-label>
+        <input matInput type="text" >
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>Price</mat-label>
+        <input matInput type="number" >
+        <span matPrefix>Rs-&nbsp;</span>
+                    <span matSuffix>.00</span>
+      </mat-form-field>
+
+      <div align="end">
+        <button mat-raised-button mat-dialog-close>Close</button>&nbsp;
+        <button mat-raised-button mat-dialog-close color="primary">
+          Sign Up
+        </button>
+      </div>
+
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile></mat-grid-tile>
+</mat-grid-list>

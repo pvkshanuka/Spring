@@ -14,8 +14,10 @@ import {MatSortModule } from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatListModule} from '@angular/material/list';
 import {MatSelectModule} from '@angular/material/select';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatDatepickerModule, MatDatepickerInput} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+// import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 
 
 
@@ -37,8 +39,9 @@ const MaterialComponents = [
   MatListModule,
   MatSelectModule,
   MatDatepickerModule,
-  MatNativeDateModule
-  // MatPaginator
+  MatNativeDateModule,
+  MatAutocompleteModule
+  // MatDatepickerInputEvent
 ];
 
 @NgModule({
