@@ -3,8 +3,11 @@
     <span class="myspacer"></span>
     <span>E-Channeling</span>
     <span class="example-spacer"></span>
-    <button mat-button (click)="openLoginDialog()" >Login</button>
-    <button mat-button (click)="openSignUpDialog()">Sign-Up</button>
+    <div class="nav_item" routerLink="/hospital" routerLinkActive="active"><span>Hospital</span></div>
+    <div class="nav_item" (click)="openLoginDialog()"><span>Login</span></div>
+    <div class="nav_item" (click)="openSignUpDialog()"><span>Sign Up</span></div>
+    <!-- <button mat-button (click)="openLoginDialog()" >Login</button>
+    <button mat-button (click)="openSignUpDialog()">Sign-Up</button> -->
     <span class="myspacer"></span>
   </mat-toolbar-row>
 </mat-toolbar>

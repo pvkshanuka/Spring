@@ -37,7 +37,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         }else{
             System.out.println("Hospital Already Added.!");
-            return new ResponseDto(true, "Hospital Already Added.!");
+            return new ResponseDto(false, "Hospital Already Added.!");
         }
     }
 

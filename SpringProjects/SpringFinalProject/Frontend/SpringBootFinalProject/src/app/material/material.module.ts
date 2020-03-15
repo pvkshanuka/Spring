@@ -17,6 +17,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule, MatDatepickerInput} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 // import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 
 
@@ -40,7 +41,8 @@ const MaterialComponents = [
   MatSelectModule,
   MatDatepickerModule,
   MatNativeDateModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatSnackBarModule
   // MatDatepickerInputEvent
 ];
 

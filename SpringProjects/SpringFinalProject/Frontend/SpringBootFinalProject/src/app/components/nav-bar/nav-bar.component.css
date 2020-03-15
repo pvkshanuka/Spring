@@ -6,6 +6,42 @@
   flex: 1 1 auto;
 }
 
-.myspacer{
+.myspacer {
   padding: 0 30px !important;
+}
+
+.nav_item {
+  height: inherit;
+  color: #ffffff;
+  border-left: 2px solid #ffffff;
+  text-align: center;
+  width: 100px;
+  cursor: pointer;
+  font-size: 15px;
+
+  display: flex;
+  box-sizing: border-box;
+  padding: 0 10px;
+  flex-direction: row;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.nav_item > span {
+  width: 100%;
+  text-align: center;
+}
+
+.nav_item.active {
+  background-color: #8062b3;
+  border-bottom: 10px solid #ffffff;
+  font-size: 17px;
+}
+
+.nav_item:hover{
+/* transform: 2s; */
+font-size: 17px;
+border-bottom: 10px solid #ffffff;
+  transition: 500ms;
+  background-color: #490bb4;
 }
