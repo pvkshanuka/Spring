@@ -32,9 +32,9 @@ public class CategoryServiceImpl implements CategoryService {
 
             if (categoryRepository.findAllByCategory(category.getCategory()).isEmpty()) {
 
-                if (validation.stringLengthValidator(category.getCategory(), 4)) {
+                if (validation.stringMinLengthValidator(category.getCategory(), 4)) {
 
-
+                    category.setStatus("1");
                     Category save = categoryRepository.save(category);
 
                     if (save.equals(null)) {

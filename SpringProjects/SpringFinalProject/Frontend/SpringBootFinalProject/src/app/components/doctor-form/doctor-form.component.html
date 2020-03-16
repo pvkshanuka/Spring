@@ -43,16 +43,16 @@
       </mat-form-field>
 
       <mat-form-field class="example-half-width-full-height">
-        <mat-placeholder>New Category</mat-placeholder>
-        <input matInput type="search" />
-        <button mat-button matSuffix mat-stroked-button aria-label="search">
+        <mat-label>New Category</mat-label>
+        <input #newcat matInput type="text" />
+        <button mat-button matSuffix mat-stroked-button aria-label="search" [disabled]="inProcess" [class.spinner]="inProcess" (click)="addNewCat(newcat.value)">
           Add
         </button>
       </mat-form-field>
 
       <div align="end">
-        <button mat-raised-button mat-dialog-close>Close</button>&nbsp;
-        <button mat-raised-button mat-dialog-close color="primary">
+        <button mat-raised-button >Close</button>&nbsp;
+        <button mat-raised-button color="primary">
           Sign Up
         </button>
       </div>
