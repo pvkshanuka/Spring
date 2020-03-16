@@ -59,11 +59,24 @@ public class CatrgoryController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public List<Category> search(@RequestBody Category category) {
+    @RequestMapping(method = RequestMethod.POST, value = "/search")
+    public List<Category> searchExample(@RequestBody Category category) {
         try {
 
             return categoryService.search(category);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Category> searchAll() {
+        try {
+
+            return categoryService.search();
 
         } catch (Exception e) {
             e.printStackTrace();

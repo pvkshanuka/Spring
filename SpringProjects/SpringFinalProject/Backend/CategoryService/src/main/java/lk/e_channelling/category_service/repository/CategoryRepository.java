@@ -8,4 +8,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category,Integer> {
 
     List<Category> findAllByCategory(String category);
+
+    List<Category> findAllByStatus(String status);
+
 }

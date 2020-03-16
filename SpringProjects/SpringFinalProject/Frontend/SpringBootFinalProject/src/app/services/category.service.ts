@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,10 @@ export class CategoryService {
 
   save(category) {
     return this._http.post<any>(this._url, category);
+  }
+
+  get(category){
+    return this._http.get<any>(this._url, category);
   }
 
 }

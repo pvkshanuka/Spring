@@ -22,23 +22,11 @@
       <mat-form-field class="example-half-width-full-height">
         <mat-label>Category</mat-label>
         <mat-select multiple>
-          <mat-option><span class="default-option">None</span></mat-option>
-          <mat-option value="Kusal">Kusal</mat-option>
-          <mat-option value="Shanuka">Shanuka</mat-option>
-          <mat-option value="Abc">Abc</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
-          <mat-option value="Def">Def</mat-option>
+          <!-- <mat-option><span class="default-option">None</span></mat-option> -->
+          <div *ngFor="let cat of categorys" >
+            <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
+
+          </div>
         </mat-select>
       </mat-form-field>
 

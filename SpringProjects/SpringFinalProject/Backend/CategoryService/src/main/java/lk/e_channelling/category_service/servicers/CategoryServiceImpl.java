@@ -128,6 +128,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> search() {
+        try {
+
+
+            return categoryRepository.findAllByStatus("1");
+
+        } catch (Exception e) {
+            throw new CategoryException("Category search exception occurred in AppointmentServiceImpl.search", e);
+        }
+    }
+
+    @Override
     public boolean searchById(int id) {
 
         try {
