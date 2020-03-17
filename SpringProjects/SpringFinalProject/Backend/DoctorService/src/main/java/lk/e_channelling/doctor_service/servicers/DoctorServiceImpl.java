@@ -49,7 +49,7 @@ public class DoctorServiceImpl implements DoctorService {
                 doctor.setId(null);
                 doctor.setStatus("1");
 
-//Cheacking categories are available or not
+//Checking categories are available or not
                 if (checkCategories(doctor)) {
 
 //Checking about doctors that have same mobile.
@@ -64,7 +64,7 @@ public class DoctorServiceImpl implements DoctorService {
 
                         Doctor save = doctorRepository.save(doctor);
 
-//Cheacking about doctor is successfully deleted or not
+//Checking about doctor is successfully deleted or not
                         if (save.equals(null)) {
 
                             System.out.println("Doctor Save Failed.!");
@@ -79,7 +79,7 @@ public class DoctorServiceImpl implements DoctorService {
                     } else {
 
                         System.out.println("Doctor Already Added.!");
-                        return new ResponseDto(true, "Doctor Already Added.!");
+                        return new ResponseDto(false, "Doctor Already Added.!");
 
                     }
 
@@ -103,19 +103,19 @@ public class DoctorServiceImpl implements DoctorService {
 
             if (validation.doctorSaveValidator(doctor)) {
 
-//Cheacking categories are available or not
+//Checking categories are available or not
                 if (checkCategories(doctor)) {
 
                     doctor.setStatus("1");
 
                     Optional<Doctor> optional = doctorRepository.findById(doctor.getId());
 
-//Cheacking Doctor is available or not
+//Checking Doctor is available or not
                     if (optional.isPresent()) {
 
                         Doctor doctorfromDB = optional.get();
 
-//Cheacking Doctor is deleted or not
+//Checking Doctor is deleted or not
                         if (doctorfromDB.getStatus().equals("1")) {
 
                             if (null != doctor.getDoctorCategories()) {
@@ -124,19 +124,49 @@ public class DoctorServiceImpl implements DoctorService {
 
                                 List<DoctorCategory> doctorCategories = new ArrayList<>();
 
+                                List<DoctorCategory> doctorCategoriesDB = doctorfromDB.getDoctorCategories();
+
+//                                for (DoctorCategory doctorCategory : doctor.getDoctorCategories()) {
+//
+//                                    for (DoctorCategory doctorCategoryDB : doctorfromDB.getDoctorCategories()) {
+//
+////Checking if received doctor's categories equal to db loaded doctor's categories
+//                                        if (doctorCategory.getCategoryid() == doctorCategoryDB.getCategoryid()) {
+//
+//                                            //Checking if db loaded doctor's category status equal 1
+//                                            if (doctorCategoryDB.getStatus().equals("1")) {
+//                                                isFound = true;
+//                                                break;
+//                                            }
+//
+//                                        }
+//                                    }
+//
+//                                    if (!isFound) {
+//                                        doctorCategory.setStatus("1");
+//                                        doctorCategory.setDoctor(doctor);
+//                                        doctorCategories.add(doctorCategory);
+//                                    }
+//                                    isFound = false;
+//                                }
+
                                 for (DoctorCategory doctorCategory : doctor.getDoctorCategories()) {
 
                                     for (DoctorCategory doctorCategoryDB : doctorfromDB.getDoctorCategories()) {
 
-//Cheacking if recived doctor's categorys equal to db loaded doctor's categorys
+//Checking if received doctor's categories equal to db loaded doctor's categories
                                         if (doctorCategory.getCategoryid() == doctorCategoryDB.getCategoryid()) {
 
-                                            //Cheacking if db loaded doctor's category status equal 1
-                                            if (doctorCategoryDB.getStatus().equals("1")) {
-                                                isFound = true;
-                                                break;
+                                            //Checking if db loaded doctor's category status equal 1
+                                            if (!doctorCategoryDB.getStatus().equals("1")) {
+                                                doctorCategoryDB.setStatus("1");
+                                                doctorCategories.add(doctorCategoryDB);
+                                            }else {
+                                                doctorCategoriesDB.remove(doctorCategoryDB);
                                             }
 
+                                            isFound = true;
+                                            break;
                                         }
                                     }
 
@@ -148,10 +178,18 @@ public class DoctorServiceImpl implements DoctorService {
                                     isFound = false;
                                 }
 
+                                doctorCategoriesDB.forEach(doctorCategory -> doctorCategory.setStatus("0"));
+
+                                doctorCategories.forEach(doctorCategory -> System.out.println("DC - Cat ID : "+doctorCategory.getCategoryid()+"| Doctor :"+doctorCategory.getDoctor().getId()+"| Status : "+doctorCategory.getStatus()));
+                                doctorCategoriesDB.forEach(doctorCategory -> System.out.println("DCDB - Cat ID : "+doctorCategory.getCategoryid()+"| Doctor :"+doctorCategory.getDoctor().getId()+"| Status : "+doctorCategory.getStatus()));
+
+                                doctorCategories.addAll(doctorCategoriesDB);
+
                                 doctor.setDoctorCategories(doctorCategories);
                             }
 
                             doctor.setContact(doctorfromDB.getContact());
+
 
                             doctorRepository.save(doctor);
 
@@ -160,7 +198,7 @@ public class DoctorServiceImpl implements DoctorService {
                             return new ResponseDto(true, "Doctor Updated Successfully.!");
 
                         } else {
-                            return new ResponseDto(true, "Invalid Doctor.!");
+                            return new ResponseDto(false, "Invalid Doctor.!");
                         }
 
                     } else {
@@ -236,12 +274,24 @@ public class DoctorServiceImpl implements DoctorService {
             AtomicBoolean ok = new AtomicBoolean(false);
 
             Example<Doctor> example = Example.of(doctor, exampleMatcher);
-            List<Doctor> all = doctorRepository.findAll(example);
-            return all;
+            return doctorRepository.findAll(example);
 
         } catch (Exception e) {
             throw new DoctorException("Doctor searching exception occurred in DoctorServiceImpl.search", e);
         }
+    }
+
+    @Override
+    public List<Doctor> searchAll() {
+
+        try {
+
+            return doctorRepository.findAllByStatus("1");
+
+        } catch (Exception e) {
+            throw new DoctorException("Doctor searching exception occurred in DoctorServiceImpl.search", e);
+        }
+
     }
 
     @Override

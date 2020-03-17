@@ -19,7 +19,6 @@ public class DoctorController {
     DoctorService doctorService;
 
     @RequestMapping(method = RequestMethod.POST)
-    @ExceptionHandler(InvalidArgumentException.class)
     public ResponseDto save(@RequestBody Doctor doctor) {
 
         try {
@@ -35,7 +34,6 @@ public class DoctorController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    @ExceptionHandler(InvalidArgumentException.class)
     public ResponseDto update(@RequestBody Doctor doctor) {
 
         try {
@@ -51,7 +49,6 @@ public class DoctorController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    @ExceptionHandler(InvalidArgumentException.class)
     public ResponseDto delete(@PathVariable int id) {
 
         try {
@@ -67,11 +64,10 @@ public class DoctorController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @ExceptionHandler(InvalidArgumentException.class)
-    public List<Doctor> search(@RequestBody Doctor doctor) {
+    public List<Doctor> searchAll() {
         try {
 
-            return doctorService.search(doctor);
+            return doctorService.searchAll();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +97,6 @@ public class DoctorController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/searchByCat/{id}")
-    @ExceptionHandler(InvalidArgumentException.class)
     public List<Doctor> searchByCat(@PathVariable Integer id) {
 //    public List<Doctor> searchByCat(@RequestBody Doctor doctor) {
         try {

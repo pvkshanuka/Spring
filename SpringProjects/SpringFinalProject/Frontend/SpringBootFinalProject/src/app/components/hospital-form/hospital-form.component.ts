@@ -1,4 +1,4 @@
-import { HospitalService } from './../../services/hospital.service';
+import { HospitalService } from '../../services/hospital/hospital.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';

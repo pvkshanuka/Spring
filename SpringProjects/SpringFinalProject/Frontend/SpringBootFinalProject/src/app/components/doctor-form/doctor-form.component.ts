@@ -1,9 +1,10 @@
-import { CategoryService } from './../../services/category.service';
+import { CategoryDTO } from './../../DTOs/category-dto';
+import { DoctorService } from './../../services/doctor/doctor.service';
+import { CategoryService } from '../../services/category/category.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Component, OnInit, NgModule } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Category } from 'src/app/modles/category-model';
-
 
 @Component({
   selector: 'app-doctor-form',
@@ -14,7 +15,11 @@ export class DoctorFormComponent implements OnInit {
   isEmpty = true;
   isLength = false;
   inProcess = false;
+  inProcessSave = false;
+
   catObj;
+
+  categortDTO: CategoryDTO;
 
   categorys;
 
@@ -22,10 +27,17 @@ export class DoctorFormComponent implements OnInit {
     category: ['', [Validators.required, Validators.minLength(4)]]
   });
 
+  doctorForm = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(4)]],
+    contact: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
+    doctorCategories: []
+  });
+
   constructor(
     private fb: FormBuilder,
     private _snackBar: MatSnackBar,
-    private _categoryService: CategoryService
+    private _categoryService: CategoryService,
+    private _doctorService: DoctorService
   ) {}
 
   ngOnInit(): void {
@@ -34,6 +46,18 @@ export class DoctorFormComponent implements OnInit {
 
   get category() {
     return this.categoryForm.get('category');
+  }
+
+  get name() {
+    return this.doctorForm.get('name');
+  }
+
+  get contact() {
+    return this.doctorForm.get('contact');
+  }
+
+  get categories() {
+    return this.doctorForm.get('doctorCategories');
   }
 
   addNewCat(cat: string) {
@@ -93,6 +117,68 @@ export class DoctorFormComponent implements OnInit {
       error => {
         console.log(error);
         this.inProcess = false;
+      }
+    );
+  }
+
+  save() {
+    this.inProcessSave = true;
+    if (this.doctorForm.valid) {
+      console.log(this.doctorForm.value);
+
+      const cats = this.categories.value;
+
+      if (cats != null) {
+        const catArray = [];
+
+        for (let i = 0; i < cats.length; i++) {
+          catArray.push({
+            categoryid: cats[i]
+          });
+        }
+
+        this.doctorForm.controls.doctorCategories.setValue(catArray);
+
+        console.log('>>>>>>>>>>>>>>>');
+        console.log(this.doctorForm.value);
+      } else {
+        this.doctorForm.controls.doctorCategories.setValue(null);
+      }
+
+      this._doctorService.save(this.doctorForm.value).subscribe(
+        response => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
+
+            this.doctorForm.reset();
+
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    }
+
+    this.inProcessSave = false;
+  }
+
+  test() {
+    this._doctorService.test().subscribe(
+      responce => {
+        console.log(responce);
+      },
+      error => {
+        console.log(error);
       }
     );
   }

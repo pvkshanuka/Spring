@@ -16,16 +16,16 @@ import java.util.List;
 @NoArgsConstructor
 public class DoctorCategory implements Serializable {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Integer id;
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+//    @Id
     private Integer categoryid;
 
-    @Id
+//    @Id
+//    @JoinColumn
     @ManyToOne
-    @JoinColumn
     @JsonIgnore
     Doctor doctor;
 

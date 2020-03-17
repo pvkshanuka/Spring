@@ -18,7 +18,10 @@ public interface DoctorService {
 
     public List<Doctor> search(@RequestBody Doctor doctor);
 
-//    List<Doctor> searchByCategory(@RequestBody Doctor doctor);
+    public List<Doctor> searchAll();
+
+
+    //    List<Doctor> searchByCategory(@RequestBody Doctor doctor);
     List<Doctor> searchByCategory(@RequestBody Integer id);
 
     public boolean findById(Integer id);
