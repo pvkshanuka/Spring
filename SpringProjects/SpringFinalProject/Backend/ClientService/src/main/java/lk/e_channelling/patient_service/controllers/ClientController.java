@@ -81,7 +81,7 @@ public class ClientController {
 
 
 
-        Client client = new Client(1, "Kusal Shanuka", 24, "pvkshanuka@gmail.com", "0772101676", "1");
+        Client client = new Client(1, "Kusal Shanuka", 24, "pvkshanuka@gmail.com", "0772101676", "1234", "1");
 
         return client;
 

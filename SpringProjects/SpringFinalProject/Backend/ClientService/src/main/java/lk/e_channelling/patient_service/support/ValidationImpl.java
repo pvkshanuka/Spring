@@ -65,7 +65,7 @@ public class ValidationImpl implements Validation {
         if (null == client.getName() || null == client.getAge() || null == client.getContact() || null == client.getEmail()) {
             return false;
         } else {
-            if (stringLengthValidator(client.getName(), ClientServiceApplication.CLIENT_NAME_MIN_LENGTH) && patternContact.matcher(client.getContact()).find() && patternEmail.matcher(client.getEmail()).find())
+            if (stringMinLengthValidator(client.getName(), ClientServiceApplication.CLIENT_NAME_MIN_LENGTH) && patternContact.matcher(client.getContact()).find() && patternEmail.matcher(client.getEmail()).find())
                 return true;
             return false;
         }

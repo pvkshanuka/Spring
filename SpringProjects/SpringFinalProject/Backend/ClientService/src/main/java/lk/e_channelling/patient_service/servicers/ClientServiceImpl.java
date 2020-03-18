@@ -29,7 +29,7 @@ public class ClientServiceImpl implements ClientService {
 //            appointment.setPatient_id(patient.getId());
 //        }
         try {
-
+            System.out.println(client);
             if (validation.saveValidator(client)) {
 
                 client.setId(null);
@@ -49,12 +49,12 @@ public class ClientServiceImpl implements ClientService {
 
                 } else {
                     System.out.println("Client Already Added.!");
-                    return new ResponseDto(true, "Client Already Added.!");
+                    return new ResponseDto(false, "Client Already Added.!");
                 }
 
             } else {
                 System.out.println("Invalid Client Details.!");
-                return new ResponseDto(true, "Invalid Client Details.!");
+                return new ResponseDto(false, "Invalid Client Details.!");
             }
 
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class ClientServiceImpl implements ClientService {
                         System.out.println("Client Updated Successfully.!");
                         return new ResponseDto(true, "Client Updated Successfully.!");
                     } else {
-                        return new ResponseDto(true, "Invalid Client Details.!");
+                        return new ResponseDto(false, "Invalid Client Details.!");
                     }
                 } else {
                     return new ResponseDto(true, "Deleted Client.!");
@@ -142,6 +142,7 @@ public class ClientServiceImpl implements ClientService {
     public List<Client> search(Client client) {
 
         client.setStatus("1");
+        client.setPassword(null);
 
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.startsWith())

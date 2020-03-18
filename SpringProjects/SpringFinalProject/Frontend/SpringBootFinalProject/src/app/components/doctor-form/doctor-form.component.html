@@ -44,7 +44,7 @@
 
       <div align="end">
         <button mat-raised-button (click)="test()">Close</button>&nbsp;
-        <button type="submit" mat-raised-button color="primary" [disabled]="inProcessSave" [class.spinner]="inProcessSave" >
+        <button type="submit" mat-raised-button color="primary" [disabled]="doctorForm.invalid || inProcessSave" [class.spinner]="inProcessSave" >
           Add Doctor
         </button>
       </div>

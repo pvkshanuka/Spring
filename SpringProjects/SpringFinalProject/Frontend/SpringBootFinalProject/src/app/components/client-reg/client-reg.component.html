@@ -1,87 +1,71 @@
 <h2 mat-dialog-title>Register From Here</h2>
 
+<form class="example-form" [formGroup]="clientForm" (ngSubmit)="save()">
+
 <mat-dialog-content>
-
-
-      <div class="mycontainer">
-        <!-- <mat-grid-list cols="6">
+  <div class="mycontainer">
+    <!-- <mat-grid-list cols="6">
           <mat-grid-tile></mat-grid-tile>
           <mat-grid-tile colspan="4"> -->
 
+      <!-- <h2 class="example-full-width, form_header">Register From Here</h2> -->
 
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input formControlName="name" matInput type="text" placeholder="Ex: Firstname Lastname" required />
+        <mat-error align="end" *ngIf="name.errors?.required">Name is required</mat-error>
+        <mat-error align="end" *ngIf="name.errors?.minlength">Name must be at least 4 characters</mat-error>
+      </mat-form-field>
 
-            <form class="example-form">
-              <!-- <h2 class="example-full-width, form_header">Register From Here</h2> -->
+      <mat-grid-list cols="2" rowHeight="60px" gutterSize="5px">
+        <mat-grid-tile>
+          <mat-form-field class="example-full-width" required>
+            <mat-label>Age</mat-label>
+            <input type="number" formControlName="age" matInput placeholder="Ex. 99" required />
+            <mat-error align="end" *ngIf="age.errors?.required">Name is required</mat-error>
+            <mat-error align="end" *ngIf="age.errors?.min || age.errors?.max">Invalid age</mat-error>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
 
-              <mat-form-field class="example-full-width">
-                <mat-label>Name</mat-label>
-                <input matInput placeholder="Ex. Firstname Lastname" required>
-                <mat-hint align="end">Minimum 4 characters</mat-hint>
-              </mat-form-field>
+          <mat-form-field class="example-full-width">
+            <mat-label>Contact Number</mat-label>
+            <input formControlName="contact" type="number" matInput placeholder="Ex. 771234567" required />
+            <span matPrefix>+94&nbsp;</span>
+            <span matSuffix></span>
+            <mat-error align="end" *ngIf="contact.errors?.required">Contact is required</mat-error>
+            <mat-error align="end" *ngIf="contact.errors?.pattern">Invalid contact number</mat-error>
+          </mat-form-field>
 
+        </mat-grid-tile>
+      </mat-grid-list>
 
+      <mat-form-field class="example-full-width">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput type="text" required />
+        <mat-error align="end" *ngIf="email.errors?.required">Email is required</mat-error>
+        <mat-error align="end" *ngIf="email.errors?.email">Invalid email</mat-error>
+      </mat-form-field>
 
-              <mat-grid-list cols="2" rowHeight="60px" gutterSize="5px">
+      <mat-form-field class="example-full-width">
+        <mat-label>Password</mat-label>
+        <input formControlName="password" matInput type="password" required />
+        <mat-error align="end" *ngIf="password.errors?.required">Password is required</mat-error>
+        <mat-error align="end" *ngIf="password.errors?.pattern">Password atlease contain one special character, one uppercase & lowercase letter, & number with 6 character length</mat-error>
+      </mat-form-field>
 
-                <mat-grid-tile>
+      <mat-form-field class="example-full-width">
+        <mat-label>Confirm Password</mat-label>
+        <input formControlName="cpword" matInput type="password" required />
+        <mat-error align="end" *ngIf="cpword.errors?.required">Confirm Password is required</mat-error>
+        <mat-error align="end" *ngIf="cpword.errors?.mustMatch">Confirm Password & Password not matching</mat-error>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
 
-                  <mat-form-field class="example-full-width">
-                    <mat-label>Age</mat-label>
-                    <input type="number" matInput placeholder="Ex. 99" required>
-                    <!-- <mat-hint align="end">Minimum 4 characters</mat-hint> -->
-                  </mat-form-field>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close>Close</button>
+    <button type="submit" mat-raised-button mat-dialog-close color="primary" [disabled]="clientForm.invalid || inProcess" [class.spinner]="inProcess" >Sign Up</button>
+  </mat-dialog-actions>
 
-                </mat-grid-tile>
-                <mat-grid-tile>
-
-                  <mat-form-field class="example-full-width">
-                    <mat-label>Contact Number</mat-label>
-                    <input type="number" matInput placeholder="Ex. 771234567" required>
-                    <span matPrefix>+94&nbsp;</span>
-                    <span matSuffix></span>
-                    <!-- <mat-hint align="end">Minimum 4 characters</mat-hint> -->
-                  </mat-form-field>
-
-                </mat-grid-tile>
-
-              </mat-grid-list>
-
-
-              <mat-form-field class="example-full-width">
-                <mat-label>Email</mat-label>
-                <input matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-                  placeholder="Ex. pat@example.com" required>
-                <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
-                <mat-error align="end" *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-                  Please enter a valid email address
-                </mat-error>
-                <mat-error *ngIf="emailFormControl.hasError('required')">
-                  Email is <strong>required</strong>
-                </mat-error>
-              </mat-form-field>
-
-
-              <mat-form-field class="example-full-width">
-                <mat-label>Password</mat-label>
-                <input matInput type="password" required>
-                <mat-hint align="end">Minimum 4 characters</mat-hint>
-              </mat-form-field>
-
-              <mat-form-field class="example-full-width">
-                <mat-label>Confirm Password</mat-label>
-                <input matInput type="password" required>
-                <!-- <mat-hint align="end">Minimum 4 characters</mat-hint> -->
-              </mat-form-field>
-
-            </form>
-      </div>
-
-
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-
-  <button mat-raised-button mat-dialog-close>Close</button>
-  <button mat-raised-button mat-dialog-close color="primary">Sign Up</button>
-
-</mat-dialog-actions>
+</form>

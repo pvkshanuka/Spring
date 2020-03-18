@@ -33,6 +33,9 @@ public class Client {
     private String contact;
 
     @NotNull
+    private String password;
+
+    @NotNull
     private String status;
 
 }
