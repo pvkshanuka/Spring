@@ -97,8 +97,8 @@ public class CatrgoryController {
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/test2")
-    public boolean test(@RequestBody List<Integer> integers) {
+    @RequestMapping(method = RequestMethod.POST, value = "/checkCategories")
+    public List<Category> checkCategories(@RequestBody List<Integer> integers) {
 
         return categoryService.searchAllFromIds(integers);
     }

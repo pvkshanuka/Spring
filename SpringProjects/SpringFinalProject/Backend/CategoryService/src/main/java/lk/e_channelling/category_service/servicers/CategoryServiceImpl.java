@@ -154,19 +154,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public boolean searchAllFromIds(List<Integer> integers) {
+    public List<Category> searchAllFromIds(List<Integer> integers) {
 
         try {
 
-            List<Category> allById = categoryRepository.findAllById(integers);
-
-            if (allById.size() == integers.size()) {
-
-                return true;
-
-            } else {
-                return false;
-            }
+            return categoryRepository.findAllById(integers);
 
         } catch (Exception e) {
             throw new CategoryException("Category searchAllFromIds exception occurred in AppointmentServiceImpl.searchAllFromIds", e);

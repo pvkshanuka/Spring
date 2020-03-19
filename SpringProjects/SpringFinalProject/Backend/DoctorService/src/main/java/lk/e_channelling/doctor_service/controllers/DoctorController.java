@@ -1,6 +1,6 @@
 package lk.e_channelling.doctor_service.controllers;
 
-import lk.e_channelling.doctor_service.exceptions.InvalidArgumentException;
+import lk.e_channelling.doctor_service.commonModels.Category;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
 import lk.e_channelling.doctor_service.models.DoctorCategory;
@@ -121,6 +121,20 @@ public class DoctorController {
             e.printStackTrace();
             System.out.println("log exception");
             return false;
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getCats/{id}")
+    public Category[] getCats(@PathVariable Integer id) {
+//    public List<Doctor> searchByCat(@RequestBody Doctor doctor) {
+        try {
+
+            return doctorService.getCats(id);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
         }
     }
 

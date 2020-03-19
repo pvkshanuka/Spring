@@ -4,9 +4,9 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class DoctorService {
+export class ChannellingService {
 
-  _url = 'http://localhost:8020/doctor';
+  _url = 'http://localhost:8060/channelling';
 
   constructor(private _http: HttpClient) { }
 
@@ -14,20 +14,7 @@ export class DoctorService {
     return this._http.post<any>(this._url, doctorData);
   }
 
-  get(category) {
-    return this._http.get<any>(this._url, category);
-  }
-
-  getAll() {
-    return this._http.get<any>(this._url);
-  }
-
-  getCats(doctor_id) {
-    return this._http.get<any>(this._url + '/getCats/' + doctor_id);
-  }
-
   test() {
     return this._http.get<any>(this._url + '/test');
   }
-
 }

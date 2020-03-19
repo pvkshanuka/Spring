@@ -18,6 +18,7 @@ import {MatDatepickerModule, MatDatepickerInput} from '@angular/material/datepic
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 // import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 
 
@@ -42,7 +43,9 @@ const MaterialComponents = [
   MatDatepickerModule,
   MatNativeDateModule,
   MatAutocompleteModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  OwlDateTimeModule,
+  OwlNativeDateTimeModule
   // MatDatepickerInputEvent
 ];
 

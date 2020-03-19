@@ -1,25 +1,39 @@
 <mat-grid-list cols="5" rowHeight="fit" class="mygridlist">
   <mat-grid-tile></mat-grid-tile>
   <mat-grid-tile colspan="3">
-    <div class="mycontainer">
+    <form [formGroup]="channellingForm" (ngSubmit)="save()" class="mycontainer">
       <div class="title">
         <h2>Add Channelling</h2>
       </div>
 
-      <mat-form-field class="example-half-width-full-height">
-        <mat-label>Assignee</mat-label>
+      <!-- <mat-form-field class="example-half-width-full-height">
+        <mat-label>Doctor</mat-label>
         <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
-        <span matPrefix>+94&nbsp;</span>
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
           <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
             {{option.name}}
           </mat-option>
         </mat-autocomplete>
+      </!-->
+
+      <mat-form-field class="example-half-width-full-height">
+        <mat-label>Doctor</mat-label>
+        <mat-select formControlName="doctor" (selectionChange)="getCats($event)" required>
+          <mat-option *ngFor="let doctor of doctors" [value]="doctor.id">
+            {{ doctor.name }}
+          </mat-option>
+        </mat-select>
+        <mat-hint align="start" class="color_primary">
+          <strong *ngFor="let cat of categoryies">
+            {{ cat.category + " |" }}
+          </strong>
+        </mat-hint>
+        <mat-error align="end" *ngIf="day.errors?.required">Doctor is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-half-width-full-height">
         <mat-label>Day</mat-label>
-        <mat-select>
+        <mat-select formControlName="day" required>
           <mat-option value="Monday">Monday</mat-option>
           <mat-option value="Tuesday">Tuesday</mat-option>
           <mat-option value="Wednesday">Wednesday</mat-option>
@@ -28,52 +42,75 @@
           <mat-option value="Saturday">Saturday</mat-option>
           <mat-option value="Sunday">Sunday</mat-option>
         </mat-select>
+        <mat-error align="end" *ngIf="day.errors?.required">Day is required</mat-error>
       </mat-form-field>
 
-      <mat-form-field class="example-qua-width-full-height">
-        <!-- <mat-label>Date</mat-label> -->
-        <input matInput [matDatepicker]="myDatePicker" (dateChange)="onStartDateChange($event)" placeholder="Start Date" [min]="minDate">
+      <!-- <mat-form-field class="example-qua-width-full-height">
+        <input matInput formControlName="startday" [matDatepicker]="myDatePicker"
+          (dateChange)="onStartDateChange($event)" placeholder="Start Date" [min]="minDate" required />
         <mat-datepicker-toggle [for]="myDatePicker" matSuffix></mat-datepicker-toggle>
         <mat-datepicker #myDatePicker></mat-datepicker>
+        <mat-error align="end" *ngIf="startday.errors?.required">Start date is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-qua-width-full-height">
         <mat-placeholder>Start Time</mat-placeholder>
-        <input matInput type="time" [min]="minDate"/>
+        <input matInput formControlName="starttime" type="time" [min]="minDate" required />
+        <mat-error align="end" *ngIf="starttime.errors?.required">Start time is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-qua-width-full-height">
-        <!-- <mat-label>Date</mat-label> -->
-        <input matInput [matDatepicker]="myDatePickerE" [value]="selectedDate" placeholder="End Date" [min]="selectedDate">
+        <input matInput formControlName="endday" [matDatepicker]="myDatePickerE" [value]="selectedDate"
+          placeholder="End Date" [min]="selectedDate" required />
         <mat-datepicker-toggle [for]="myDatePickerE" matSuffix></mat-datepicker-toggle>
         <mat-datepicker #myDatePickerE></mat-datepicker>
+        <mat-error align="end" *ngIf="endday.errors?.required">End date is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-qua-width-full-height">
         <mat-placeholder>End Time</mat-placeholder>
-        <input matInput type="time"/>
+        <input matInput formControlName="endtime" type="time" required />
+        <mat-error align="end" *ngIf="endtime.errors?.required">End time is required</mat-error>
+      </mat-form-field> -->
+
+      <mat-form-field class="example-half-width-full-height">
+        <input class="cursor_pointer" readonly="readonly" formControlName="startTime" matInput [min]="minDate" (dateTimeInput)="onStartDateChange($event)" [owlDateTime]="dt1"
+          [owlDateTimeTrigger]="dt1" placeholder="Start Date Time" />
+        <owl-date-time #dt1></owl-date-time>
+        <mat-error align="end" *ngIf="startTime.errors?.required">Start date time is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-half-width-full-height">
+        <input class="cursor_pointer" readonly="readonly" formControlName="endTime" matInput [min]="selectedDate" (dateTimeInput)="show($event)" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
+          placeholder="End Date Time" />
+        <owl-date-time #dt2></owl-date-time>
+        <mat-error align="end" *ngIf="endTime.errors?.required">End date time is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-half-width-full-height">
         <mat-label>Room</mat-label>
-        <input matInput type="text" >
+        <input matInput formControlName="room" type="text" required />
+        <mat-error align="end" *ngIf="room.errors?.required">Room is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-half-width-full-height">
         <mat-label>Price</mat-label>
-        <input matInput type="number" >
+        <input matInput formControlName="price" type="number" required />
         <span matPrefix>Rs-&nbsp;</span>
-                    <span matSuffix>.00</span>
+        <span matSuffix>.00</span>
+        <mat-error align="end" *ngIf="price.errors?.required">Price is required</mat-error>
       </mat-form-field>
-
+      <br />
+      <br />
       <div align="end">
-        <button mat-raised-button mat-dialog-close>Close</button>&nbsp;
-        <button mat-raised-button mat-dialog-close color="primary">
-          Sign Up
+        <button mat-raised-button (click)="test()">Close</button>&nbsp;
+        <button type="submit" mat-raised-button color="primary" [disabled]="channellingForm.invalid || inProcessSave"
+          [class.spinner]="inProcessSave">
+          Save
         </button>
       </div>
+    </form>
 
-    </div>
   </mat-grid-tile>
   <mat-grid-tile></mat-grid-tile>
 </mat-grid-list>

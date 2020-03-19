@@ -88,31 +88,31 @@ export class ClientRegComponent implements OnInit {
 
   save() {
     console.log('awaaa');
-    this.inProcess = true;
-    if (this.clientForm.valid) {
-      console.log(this.clientForm.value);
-      this._clientService.save(this.clientForm.value).subscribe(
-        response => {
-          // console.log(response);
-          if (response.success) {
-            this._snackBar.open(response.message, '', {
-              duration: 3000,
-              panelClass: ['snackbar-success']
-            });
-          } else {
-            this._snackBar.open(response.message, '', {
-              duration: 3000,
-              panelClass: ['snackbar-error']
-            });
+      this.inProcess = true;
+      if (this.clientForm.valid) {
+        console.log(this.clientForm.value);
+        this._clientService.save(this.clientForm.value).subscribe(
+          response => {
+            // console.log(response);
+            if (response.success) {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-success']
+              });
+            } else {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-error']
+              });
+            }
+            this.inProcess = false;
+          },
+          error => {
+            console.log(error);
+            this.inProcess = false;
           }
-          this.inProcess = false;
-        },
-        error => {
-          console.log(error);
-          this.inProcess = false;
-        }
-      );
-    }
+        );
+      }
   }
 
 

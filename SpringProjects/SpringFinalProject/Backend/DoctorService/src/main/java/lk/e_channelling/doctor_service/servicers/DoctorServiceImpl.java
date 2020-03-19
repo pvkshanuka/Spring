@@ -1,6 +1,7 @@
 package lk.e_channelling.doctor_service.servicers;
 
 import lk.e_channelling.doctor_service.DoctorServiceApplication;
+import lk.e_channelling.doctor_service.commonModels.Category;
 import lk.e_channelling.doctor_service.exceptions.DoctorException;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
@@ -345,6 +346,37 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
 
+    @Override
+    public Category[] getCats(Integer id) {
+        try {
+
+            Optional<Doctor> optional = doctorRepository.findById(id);
+
+            if (optional.isPresent()){
+
+                List<Integer> doctorCategoryIds = new ArrayList<>();
+
+                optional.get().getDoctorCategories().forEach(doctorCategory -> doctorCategoryIds.add(doctorCategory.getCategoryid()));
+
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+                HttpEntity<Object> httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
+
+                ResponseEntity<Category[]> responseEntity = restTemplate.exchange("http://" + DoctorServiceApplication.DOMAIN_CATEGORY_SERVICE + "/checkCategories", HttpMethod.POST, httpEntity, Category[].class);
+
+                return responseEntity.getBody();
+
+            }else{
+                System.out.println("Invalid doctor id to get categories");
+                return null;
+            }
+
+        } catch (Exception e) {
+            throw new DoctorException("Doctor category getting exception occurred in DoctorServiceImpl.getCats", e);
+        }
+    }
+
     public boolean checkCategories(Doctor doctor) {
 
         try {
@@ -362,9 +394,11 @@ public class DoctorServiceImpl implements DoctorService {
 
                 HttpEntity<Object> httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
 
-                ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + DoctorServiceApplication.DOMAIN_CATEGORY_SERVICE + "/test2", HttpMethod.POST, httpEntity, Boolean.class);
+                ResponseEntity<Category[]> responseEntity = restTemplate.exchange("http://" + DoctorServiceApplication.DOMAIN_CATEGORY_SERVICE + "/checkCategories", HttpMethod.POST, httpEntity, Category[].class);
 
-                return responseEntity.getBody();
+                Category[]allById = responseEntity.getBody();
+
+                return allById != null && allById.length == doctorCategoryIds.size();
 
             }
 
