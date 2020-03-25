@@ -42,9 +42,6 @@ public class Channelling {
     private Instant endTime;
 
     @NotNull
-    private String day;
-
-    @NotNull
     private String status;
 
 }

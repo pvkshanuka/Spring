@@ -1,15 +1,22 @@
 package lk.e_channelling.patient_service.servicers;
 
+import lk.e_channelling.patient_service.ClientServiceApplication;
+import lk.e_channelling.patient_service.dto.Login;
 import lk.e_channelling.patient_service.dto.ResponseDto;
 import lk.e_channelling.patient_service.exception.ClientException;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.repository.ClientRepository;
 import lk.e_channelling.patient_service.support.Validation;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +29,14 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     Validation validation;
 
+    @Bean
+    RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    @Autowired
+    RestTemplate restTemplate;
+
     @Override
     public ResponseDto save(Client client) {
 //
@@ -29,28 +44,41 @@ public class ClientServiceImpl implements ClientService {
 //            appointment.setPatient_id(patient.getId());
 //        }
         try {
-            System.out.println(client);
+//            System.out.println(client.getPassword());
             if (validation.saveValidator(client)) {
 
                 client.setId(null);
+                client.setUser_id(1);
                 client.setStatus("1");
+
+                System.out.println("AWAAA");
 
                 if (searchBeforeSave(client).isEmpty()) {
 
-                    Client save = clientRepository.save(client);
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-                    if (save.getId().equals(null)) {
-                        System.out.println("Client Save Failed.!");
-                        return new ResponseDto(false, "Client Save Failed.!");
-                    } else {
+                    HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(client.getEmail(), client.getPassword(), 1), httpHeaders);
+
+                    ResponseEntity<Integer> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate", HttpMethod.POST, httpEntity, Integer.class);
+
+                    if (null != responseEntity.getBody()) {
+
+                        client.setUser_id(responseEntity.getBody());
+                        Client save = clientRepository.save(client);
+
                         System.out.println("Client Saved Successfully.!");
                         return new ResponseDto(true, "Client Saved Successfully.!");
-                    }
 
+                    } else {
+                        System.out.println("Client Saving Failed.!");
+                        return new ResponseDto(false, "Client Saving Failed.!");
+                    }
                 } else {
                     System.out.println("Client Already Added.!");
                     return new ResponseDto(false, "Client Already Added.!");
                 }
+
 
             } else {
                 System.out.println("Invalid Client Details.!");
@@ -113,17 +141,17 @@ public class ClientServiceImpl implements ClientService {
             if (optional.isPresent()) {
                 Client client = optional.get();
 
-                if ("1".equals(client.getStatus())){
+                if ("1".equals(client.getStatus())) {
 
                     client.setStatus("0");
                     clientRepository.save(client);
                     System.out.println("Client Deleted Successfully.!");
-                    return new ResponseDto(true, "Invalid Clinet.!");
+                    return new ResponseDto(true, "Client Deleted Successfully.!");
 
-                }else{
+                } else {
 
                     System.out.println("Invalid Clinet ID.!");
-                    return new ResponseDto(true, "Invalid Clinet ID.!");
+                    return new ResponseDto(false, "Invalid Clinet ID.!");
 
                 }
 
@@ -142,7 +170,6 @@ public class ClientServiceImpl implements ClientService {
     public List<Client> search(Client client) {
 
         client.setStatus("1");
-        client.setPassword(null);
 
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.startsWith())
@@ -167,7 +194,7 @@ public class ClientServiceImpl implements ClientService {
 //                .withIgnoreNullValues();
 //
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.contains())
+                .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
                 .withIgnorePaths("id", "name", "age", "appointments")
                 .withIgnoreNullValues();
 

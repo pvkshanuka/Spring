@@ -62,13 +62,10 @@ public class ValidationImpl implements Validation {
 
     @Override
     public boolean saveValidator(Client client) {
-        if (null == client.getName() || null == client.getAge() || null == client.getContact() || null == client.getEmail()) {
-            return false;
-        } else {
-            if (stringMinLengthValidator(client.getName(), ClientServiceApplication.CLIENT_NAME_MIN_LENGTH) && patternContact.matcher(client.getContact()).find() && patternEmail.matcher(client.getEmail()).find())
-                return true;
-            return false;
+        if (null != client.getName() && null != client.getAge() && null != client.getContact() && null != client.getEmail() && null != client.getType()) {
+            return stringMinLengthValidator(client.getName(), ClientServiceApplication.CLIENT_NAME_MIN_LENGTH) && patternContact.matcher(client.getContact()).find() && patternEmail.matcher(client.getEmail()).find();
         }
+        return false;
     }
 
 }

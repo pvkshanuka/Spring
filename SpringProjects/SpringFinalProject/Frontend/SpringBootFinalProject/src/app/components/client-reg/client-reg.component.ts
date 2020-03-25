@@ -1,14 +1,14 @@
-import { ClientService } from "./../../services/client/client.service";
-import { Component, OnInit, NgModule } from "@angular/core";
+import { ClientService } from './../../services/client/client.service';
+import { Component, OnInit, NgModule } from '@angular/core';
 import {
   FormControl,
   FormGroupDirective,
   NgForm,
   Validators,
   FormBuilder
-} from "@angular/forms";
-import { ErrorStateMatcher } from "@angular/material/core";
-import { MatSnackBar } from "@angular/material/snack-bar";
+} from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MustMatch } from 'src/support/mustmatch';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -26,12 +26,12 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: "app-client-reg",
-  templateUrl: "./client-reg.component.html",
-  styleUrls: ["./client-reg.component.css"]
+  selector: 'app-client-reg',
+  templateUrl: './client-reg.component.html',
+  styleUrls: ['./client-reg.component.css']
 })
 export class ClientRegComponent implements OnInit {
-  emailFormControl = new FormControl("", [
+  emailFormControl = new FormControl('', [
     Validators.required,
     Validators.email
   ]);
@@ -46,7 +46,7 @@ export class ClientRegComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{6,}')]],
     cpword: ['', [Validators.required]]
-  },{
+  }, {
     validator: MustMatch('password', 'cpword')
   }
   );
@@ -88,8 +88,8 @@ export class ClientRegComponent implements OnInit {
 
   save() {
     console.log('awaaa');
-      this.inProcess = true;
-      if (this.clientForm.valid) {
+    this.inProcess = true;
+    if (this.clientForm.valid) {
         console.log(this.clientForm.value);
         this._clientService.save(this.clientForm.value).subscribe(
           response => {

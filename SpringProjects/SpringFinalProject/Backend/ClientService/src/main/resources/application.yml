@@ -11,4 +11,11 @@ spring:
       ddl-auto: create
 server:
   port: 8040
+security:
+  oauth2:
+    resource:
+      token-info-uri: http://localhost:9191/oauth/check_token
+    client:
+      client-id: mobile
+      client-secret: pin
 

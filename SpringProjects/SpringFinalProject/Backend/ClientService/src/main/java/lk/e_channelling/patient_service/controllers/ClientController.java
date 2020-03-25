@@ -1,5 +1,6 @@
 package lk.e_channelling.patient_service.controllers;
 
+import lk.e_channelling.patient_service.ClientServiceApplication;
 import lk.e_channelling.patient_service.dto.ResponseDto;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.servicers.ClientService;
@@ -11,19 +12,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/client")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ClientController {
 
 
     @Autowired
-    ClientService patientService;
+    ClientService clientService;
 
     @Transactional
     @RequestMapping(method = RequestMethod.POST)
     public ResponseDto save(@RequestBody Client client) {
-
+        System.out.println("SAVE AWA");
         try {
 
-            return patientService.save(client);
+            client.setType(ClientServiceApplication.CLIENT_TYPE_CUSTOMER);
+            return clientService.save(client);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,7 +41,7 @@ public class ClientController {
     public ResponseDto update(@RequestBody Client client) {
 
         try {
-                return patientService.update(client);
+                return clientService.update(client);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +56,7 @@ public class ClientController {
 
         try {
 
-            return patientService.delete(id);
+            return clientService.delete(id);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +70,7 @@ public class ClientController {
     public List<Client> search(@RequestBody Client client) {
         try {
 
-            return patientService.search(client);
+            return clientService.search(client);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,10 +83,7 @@ public class ClientController {
     public Client test() {
 
 
-
-        Client client = new Client(1, "Kusal Shanuka", 24, "pvkshanuka@gmail.com", "0772101676", "1234", "1");
-
-        return client;
+        return new Client(1, 1, "Kusal Shanuka", 24, "pvkshanuka@gmail.com","", "0772101676", "1",1);
 
     }
 
@@ -92,7 +92,7 @@ public class ClientController {
 
         System.out.println("findBYId");
 
-        return patientService.findById(id);
+        return clientService.findById(id);
     }
 
 //    public boolean checkAppointments(Patient patient) {

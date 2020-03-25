@@ -10,7 +10,10 @@ import java.util.Optional;
 
 public interface ChannellingRepository extends JpaRepository<Channelling,Integer> {
 
-    public List<Channelling> findByHospitalAndRoomAndDayAndStartTimeBetween(Integer hospital, String room, String day, Instant startTime, Instant endTime);
+    public List<Channelling> findByHospitalAndRoomAndStartTimeBetween(Integer hospital, String room, Instant startTime, Instant endTime);
+
+    public List<Channelling> findByHospitalAndDoctorAndStartTimeBetween(Integer hospital, Integer doctor, Instant startTime, Instant endTime);
+
 
     public Optional<Channelling> findByIdAndStatus(Integer id,String status);
 

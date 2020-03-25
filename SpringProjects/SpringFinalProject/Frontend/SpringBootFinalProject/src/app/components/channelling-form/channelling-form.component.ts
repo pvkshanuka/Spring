@@ -36,7 +36,6 @@ export class ChannellingFormComponent implements OnInit {
   channellingForm = this.fb.group({
     hospital: [''],
     doctor: ['', [Validators.required]],
-    day: ['', [Validators.required]],
     startTime: ['', [Validators.required]],
     endTime: ['', [Validators.required]],
     room: ['', [Validators.required]],
@@ -101,10 +100,6 @@ export class ChannellingFormComponent implements OnInit {
 
   get doctor() {
     return this.channellingForm.get('doctor');
-  }
-
-  get day() {
-    return this.channellingForm.get('day');
   }
 
   get startTime() {

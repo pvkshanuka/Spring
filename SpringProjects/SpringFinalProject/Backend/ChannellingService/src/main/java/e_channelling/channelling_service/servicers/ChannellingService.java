@@ -19,6 +19,8 @@ public interface ChannellingService {
 
     public boolean checkChannelling(Channelling channelling);
 
+    public boolean checkDoctorAvailabilityInHospital(Channelling channelling);
+
     public boolean checkHospital(Integer id);
 
     public boolean checkDoctor(Integer id);

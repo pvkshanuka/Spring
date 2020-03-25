@@ -21,21 +21,25 @@ public class Client {
     private Integer id;
 
     @NotNull
-    private String name;
+    private Integer user_id;
 
     @NotNull
+    private String name;
+
     private Integer age;
 
     @NotNull
     private String email;
 
-    @NotNull
+    @Transient
+    private String password;
+
     private String contact;
 
     @NotNull
-    private String password;
+    private String status;
 
     @NotNull
-    private String status;
+    private Integer type;
 
 }

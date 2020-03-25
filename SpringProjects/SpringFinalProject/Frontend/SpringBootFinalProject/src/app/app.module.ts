@@ -1,3 +1,4 @@
+import { HttpInterceptorService } from './services/httpInterceptor/http-interceptor.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -11,7 +12,7 @@ import { ClientLoginComponent } from './components/client-login/client-login.com
 import { ChannellingSearchComponent } from './components/channelling-search/channelling-search.component';
 import { DoctorFormComponent } from './components/doctor-form/doctor-form.component';
 import { ChannellingFormComponent } from './components/channelling-form/channelling-form.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,11 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

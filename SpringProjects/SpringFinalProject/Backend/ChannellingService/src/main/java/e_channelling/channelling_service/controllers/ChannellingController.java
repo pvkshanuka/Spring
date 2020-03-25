@@ -79,7 +79,7 @@ public class ChannellingController {
     @RequestMapping(method = RequestMethod.GET, value = "/test")
     public Channelling test() {
 
-        return new Channelling(1,1,1,"34",1200.00, Instant.now(),Instant.now().plusSeconds(60*60*2),"Monday","1");
+        return new Channelling(1,1,1,"34",1200.00, Instant.now(),Instant.now().plusSeconds(60*60*2),"1");
 
     }
 

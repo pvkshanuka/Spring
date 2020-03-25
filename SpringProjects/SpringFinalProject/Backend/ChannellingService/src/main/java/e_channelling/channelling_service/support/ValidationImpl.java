@@ -56,7 +56,7 @@ public class ValidationImpl implements Validation {
     @Override
     public boolean saveValidator(Channelling channelling) {
         System.out.println(channelling);
-        if (null == channelling.getHospital() || null == channelling.getRoom() || null == channelling.getPrice() || null == channelling.getStartTime() || null == channelling.getEndTime() || null == channelling.getDay())
+        if (null == channelling.getHospital() || null == channelling.getRoom() || null == channelling.getPrice() || null == channelling.getStartTime() || null == channelling.getEndTime())
             return false;
         return true;
     }

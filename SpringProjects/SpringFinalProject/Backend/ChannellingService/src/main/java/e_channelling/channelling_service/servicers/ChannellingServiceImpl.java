@@ -30,7 +30,6 @@ public class ChannellingServiceImpl implements ChannellingService {
     @Autowired
     Validation validation;
 
-
     @Bean
     RestTemplate getRestTemplate() {
         return new RestTemplate();
@@ -50,44 +49,51 @@ public class ChannellingServiceImpl implements ChannellingService {
 
                 if (checkChannelling(channelling)) {
 
-                    if (checkHospital(channelling.getHospital())) {
+                    if (checkDoctorAvailabilityInHospital(channelling)) {
 
-                        if (checkDoctor(channelling.getDoctor())) {
+                        if (checkHospital(channelling.getHospital())) {
 
-                            Duration gap = Duration.between(channelling.getEndTime(), channelling.getStartTime());
+                            if (checkDoctor(channelling.getDoctor())) {
+
+                                Duration gap = Duration.between(channelling.getEndTime(), channelling.getStartTime());
 
 //                        System.out.println(">>>>>>>> " + Duration.between(channelling.getEndTime(), channelling.getStartTime()).abs().toMinutes());
 
-                            if (channelling.getStartTime().isBefore(channelling.getEndTime()) && Instant.now().isBefore(channelling.getStartTime()) && gap.abs().toMinutes() >= ChannellingServiceApplication.CHANNELLING_DURATION_MIN && gap.abs().toMinutes() <= ChannellingServiceApplication.CHANNELLING_DURATION_MAX) {
+                                if (channelling.getStartTime().isBefore(channelling.getEndTime()) && Instant.now().isBefore(channelling.getStartTime()) && gap.abs().toMinutes() >= ChannellingServiceApplication.CHANNELLING_DURATION_MIN && gap.abs().toMinutes() <= ChannellingServiceApplication.CHANNELLING_DURATION_MAX) {
 //                    if (channelling.getStartTime().isBefore(channelling.getEndTime()) && Instant.now().isBefore(channelling.getStartTime()) && gap.abs().toMinutes() >= ChannellingServiceApplication.CHANNELLING_DURATION_MIN && gap.abs().toMinutes() <= ChannellingServiceApplication.CHANNELLING_DURATION_MAX) {
 
-                                Channelling save = channellingRepository.save(channelling);
+                                    Channelling save = channellingRepository.save(channelling);
 
-                                if (save.equals(null)) {
-                                    System.out.println("Channelling Save Failed.!");
-                                    return new ResponseDto(false, "Channelling Save Failed.!");
+                                    if (save.equals(null)) {
+                                        System.out.println("Channelling Save Failed.!");
+                                        return new ResponseDto(false, "Channelling Save Failed.!");
+                                    } else {
+                                        System.out.println("Channelling Saved Successfully.!");
+                                        return new ResponseDto(true, "Channelling Saved Successfully.!");
+                                    }
                                 } else {
-                                    System.out.println("Channelling Saved Successfully.!");
-                                    return new ResponseDto(true, "Channelling Saved Successfully.!");
+                                    System.out.println("Invalid Channelling Times.!");
+                                    return new ResponseDto(false, "Invalid Channelling Times.!");
                                 }
+
                             } else {
-                                System.out.println("Invalid Channelling Times.!");
-                                return new ResponseDto(false, "Invalid Channelling Times.!");
+                                System.out.println("Channelling Save Failed (Invalid Doctor).!");
+                                return new ResponseDto(false, "Channelling Save Failed (Invalid Doctor).!");
                             }
 
                         } else {
-                            System.out.println("Channelling Save Failed (Invalid Doctor).!");
-                            return new ResponseDto(false, "Channelling Save Failed (Invalid Doctor).!");
+                            System.out.println("Channelling Save Failed (Invalid Hospital).!");
+                            return new ResponseDto(false, "Channelling Save Failed (Invalid Hospital).!");
                         }
 
                     } else {
-                        System.out.println("Channelling Save Failed (Invalid Hospital).!");
-                        return new ResponseDto(false, "Channelling Save Failed (Invalid Hospital).!");
+                        System.out.println("Doctor is not available.!");
+                        return new ResponseDto(false, "Doctor is not available.!");
                     }
 
                 } else {
-                    System.out.println("Channelling Already Added.!");
-                    return new ResponseDto(false, "Channelling Already Added.!");
+                    System.out.println("Channelling Already Added to Room " + channelling.getRoom() + ".!");
+                    return new ResponseDto(false, "Channelling Already Added to Room "+channelling.getRoom()+".!");
                 }
             } else {
                 System.out.println("Invalid Channelling Details.!");
@@ -116,47 +122,49 @@ public class ChannellingServiceImpl implements ChannellingService {
 
                     if (checkChannelling(channelling)) {
 
-                        if (checkHospital(channelling.getDoctor())) {
+                        if (checkDoctorAvailabilityInHospital(channelling)) {
 
-                            if (checkAppointments(channelling.getId())) {
+                            if (checkHospital(channelling.getDoctor())) {
+
+                                if (checkAppointments(channelling.getId())) {
 
 
-                                Duration gap = Duration.between(channelling.getEndTime(), channelling.getStartTime());
+                                    Duration gap = Duration.between(channelling.getEndTime(), channelling.getStartTime());
 
-                                System.out.println(">>>>>>>> " + Duration.between(channelling.getEndTime(), channelling.getStartTime()).abs().toMinutes());
+                                    System.out.println(">>>>>>>> " + Duration.between(channelling.getEndTime(), channelling.getStartTime()).abs().toMinutes());
 
-                                if (channelling.getStartTime().isBefore(channelling.getEndTime()) && Instant.now().isBefore(channelling.getStartTime()) && gap.abs().toMinutes() >= ChannellingServiceApplication.CHANNELLING_DURATION_MIN && gap.abs().toMinutes() <= ChannellingServiceApplication.CHANNELLING_DURATION_MAX) {
+                                    if (channelling.getStartTime().isBefore(channelling.getEndTime()) && Instant.now().isBefore(channelling.getStartTime()) && gap.abs().toMinutes() >= ChannellingServiceApplication.CHANNELLING_DURATION_MIN && gap.abs().toMinutes() <= ChannellingServiceApplication.CHANNELLING_DURATION_MAX) {
 
-                                    channelling.setHospital(channellingDB.getHospital());
+                                        channelling.setHospital(channellingDB.getHospital());
 
-                                    Channelling save = channellingRepository.save(channelling);
+                                        Channelling save = channellingRepository.save(channelling);
 
-                                    if (save.equals(null)) {
-                                        System.out.println("Channelling Update Failed.!");
-                                        return new ResponseDto(false, "Channelling Update Failed.!");
-                                    } else {
                                         System.out.println("Channelling Updated Successfully.!");
                                         return new ResponseDto(true, "Channelling Updated Successfully.!");
+                                    } else {
+                                        System.out.println("Invalid Channelling Times.!");
+                                        return new ResponseDto(false, "Invalid Channelling Times.!");
                                     }
+
+
                                 } else {
-                                    System.out.println("Invalid Channelling Times.!");
-                                    return new ResponseDto(false, "Invalid Channelling Times.!");
+                                    System.out.println("Unable to Update Channelling (Channelling have Appointments you can delete it Channelling).!");
+                                    return new ResponseDto(false, "Unable to Update Channelling (Channelling have Appointments you can delete it Channelling).!");
                                 }
 
-
                             } else {
-                                System.out.println("Unable to Update Channelling (Channelling have Appointments you can delete it Channelling).!");
-                                return new ResponseDto(false, "Unable to Update Channelling (Channelling have Appointments you can delete it Channelling).!");
+                                System.out.println("Channelling Save Failed (Invalid Doctor).!");
+                                return new ResponseDto(false, "Channelling Save Failed (Invalid Doctor).!");
                             }
 
                         } else {
-                            System.out.println("Channelling Save Failed (Invalid Doctor).!");
-                            return new ResponseDto(false, "Channelling Save Failed (Invalid Doctor).!");
+                            System.out.println("Doctor is not available.!");
+                            return new ResponseDto(false, "Doctor is not available.!");
                         }
 
                     } else {
-                        System.out.println("Channelling Already Added.!");
-                        return new ResponseDto(false, "Channelling Already Added.!");
+                        System.out.println("Channelling Already Added to Room " + channelling.getRoom() + ".!");
+                        return new ResponseDto(false, "Channelling Already Added to Room "+channelling.getRoom()+".!");
                     }
 
                 } else {
@@ -236,7 +244,13 @@ public class ChannellingServiceImpl implements ChannellingService {
 
     @Override
     public boolean checkChannelling(Channelling channelling) {
-        return channellingRepository.findByHospitalAndRoomAndDayAndStartTimeBetween(channelling.getHospital(), channelling.getRoom(), channelling.getDay(), channelling.getStartTime(), channelling.getEndTime()).isEmpty();
+
+        return channellingRepository.findByHospitalAndRoomAndStartTimeBetween(channelling.getHospital(), channelling.getRoom(), channelling.getStartTime(), channelling.getEndTime()).isEmpty();
+    }
+
+    @Override
+    public boolean checkDoctorAvailabilityInHospital(Channelling channelling) {
+        return channellingRepository.findByHospitalAndDoctorAndStartTimeBetween(channelling.getHospital(), channelling.getDoctor(), channelling.getStartTime(), channelling.getEndTime()).isEmpty();
     }
 
     @Override
@@ -247,7 +261,11 @@ public class ChannellingServiceImpl implements ChannellingService {
 
         ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findByIdAndStatus/" + id, HttpMethod.GET, httpEntity, Boolean.class);
 
-        return responseEntity.getBody();
+        if(null != responseEntity.getBody()) {
+            return responseEntity.getBody();
+        }else{
+            return false;
+        }
 
     }
 
@@ -259,7 +277,11 @@ public class ChannellingServiceImpl implements ChannellingService {
 
         ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_DOCTOR_SERVICE + "/doctor/findById/" + id, HttpMethod.GET, httpEntity, Boolean.class);
 
-        return responseEntity.getBody();
+        if(null != responseEntity.getBody()) {
+            return responseEntity.getBody();
+        }else{
+            return false;
+        }
 
     }
 
@@ -269,7 +291,11 @@ public class ChannellingServiceImpl implements ChannellingService {
         HttpEntity<String> httpEntity = new HttpEntity<>("", httpHeaders);
         System.out.println("Channelling ID : " + id);
         ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_APPOINTMENT_SERVICE + "/appointment/searchByChannellingId/" + id, HttpMethod.GET, httpEntity, Boolean.class);
-        return responseEntity.getBody();
+        if(null != responseEntity.getBody()) {
+            return responseEntity.getBody();
+        }else{
+            return false;
+        }
     }
 
     @Override
