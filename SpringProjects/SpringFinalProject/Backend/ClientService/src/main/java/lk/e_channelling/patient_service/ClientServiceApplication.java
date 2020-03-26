@@ -13,11 +13,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ClientServiceApplication {
 
-	public static int CLIENT_NAME_MIN_LENGTH = 4;
-	public static int CLIENT_TYPE_ADMIN = 1;
-	public static int CLIENT_TYPE_MANAGER = 2;
-	public static int CLIENT_TYPE_CUSTOMER = 3;
+	public static final int CLIENT_NAME_MIN_LENGTH = 4;
+	public static final int CLIENT_TYPE_ADMIN = 1;
+	public static final int CLIENT_TYPE_MANAGER = 2;
+	public static final int CLIENT_TYPE_CUSTOMER = 3;
 	public static final String DOMAIN_OAUTH_SERVICE = "localhost:9191";
+	public static final String OAUTH_CLIENT_ID = "mobile";
+	public static final String OAUTH_CLIENT_SECRET = "pin";
+	public static final String OAUTH_GRANT_TYPE = "password";
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(ClientServiceApplication.class, args);

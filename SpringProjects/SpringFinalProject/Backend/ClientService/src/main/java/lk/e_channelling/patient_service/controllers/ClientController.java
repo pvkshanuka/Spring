@@ -1,6 +1,8 @@
 package lk.e_channelling.patient_service.controllers;
 
 import lk.e_channelling.patient_service.ClientServiceApplication;
+import lk.e_channelling.patient_service.dto.LoginRequestDto;
+import lk.e_channelling.patient_service.dto.LoginResponseDto;
 import lk.e_channelling.patient_service.dto.ResponseDto;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.servicers.ClientService;
@@ -77,6 +79,21 @@ public class ClientController {
             System.out.println("log exception");
             return null;
         }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
+        System.out.println("LOGIN");
+        try {
+
+            return clientService.login(loginRequestDto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new LoginResponseDto("","","","","Client Login Failed.!", false);
+        }
+
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/test")

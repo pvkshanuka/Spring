@@ -1,39 +1,28 @@
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { url } from 'inspector';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OauthService {
 
+  _url = 'http://localhost:9191/oauth/token';
+
   constructor(
-    private httpClient: HttpClient
+    private _http: HttpClient
   ) {}
 
-  logIn(username, password) {
-    return this.httpClient.post<any>('http://localhost:9191/oauth', { username, password }).pipe(
-      map(
-        data => {
-          sessionStorage.setItem('username', username);
-          const token = 'Bearer ' + data.token;
-          sessionStorage.setItem('token', data);
-          return data;
-        }
-      )
 
-    );
-  }
+  // isUserLoggedIn() {
+  //   const user = sessionStorage.getItem('username');
+  //   // console.log(!(user === null))
+  //   return !(user === null);
+  // }
 
-
-  isUserLoggedIn() {
-    const user = sessionStorage.getItem('username');
-    // console.log(!(user === null))
-    return !(user === null);
-  }
-
-  logOut() {
-    sessionStorage.removeItem('username')
-  }
+  // logOut() {
+  //   sessionStorage.removeItem('username');
+  // }
 
 }

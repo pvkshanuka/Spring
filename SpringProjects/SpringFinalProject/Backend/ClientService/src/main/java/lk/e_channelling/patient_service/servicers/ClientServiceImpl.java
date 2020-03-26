@@ -1,12 +1,12 @@
 package lk.e_channelling.patient_service.servicers;
 
 import lk.e_channelling.patient_service.ClientServiceApplication;
-import lk.e_channelling.patient_service.dto.Login;
-import lk.e_channelling.patient_service.dto.ResponseDto;
+import lk.e_channelling.patient_service.dto.*;
 import lk.e_channelling.patient_service.exception.ClientException;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.repository.ClientRepository;
 import lk.e_channelling.patient_service.support.Validation;
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +14,13 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -201,6 +205,55 @@ public class ClientServiceImpl implements ClientService {
         Example<Client> example = Example.of(client, exampleMatcher);
         return clientRepository.findAll(example);
 
+    }
+
+    @Override
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+
+        try {
+
+            String credentials = ClientServiceApplication.OAUTH_CLIENT_ID + ":" + ClientServiceApplication.OAUTH_CLIENT_SECRET;
+
+            String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            httpHeaders.add("Authorization", "Basic " + encodedCredentials);
+
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("grant_type", "password");
+            params.add("username", loginRequestDto.getUsername());
+            params.add("password", loginRequestDto.getPassword());
+
+            HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, httpHeaders);
+
+            ResponseEntity<OAuthResponseDto> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/oauth/token?grant_type=" + ClientServiceApplication.OAUTH_GRANT_TYPE, HttpMethod.POST, httpEntity, OAuthResponseDto.class);
+
+            HttpStatus statusCode = responseEntity.getStatusCode();
+
+            if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
+
+                OAuthResponseDto oAuthResponseDto = responseEntity.getBody();
+
+                Client client = clientRepository.findByEmail(loginRequestDto.getUsername());
+
+                if (null == client) {
+                    return new LoginResponseDto("", "", "", "", "Invalid Login Details.!", false);
+                } else {
+                    return new LoginResponseDto(client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), "", true);
+                }
+
+            } else {
+                return new LoginResponseDto("", "", "", "", "Invalid Login Details.!", false);
+            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                return new LoginResponseDto("", "", "", "", "Invalid Login Details.!", false);
+            } else {
+                throw new ClientException("Client login exception occurred in ClientServiceImpl.login", e);
+            }
+        }
     }
 
     @Override

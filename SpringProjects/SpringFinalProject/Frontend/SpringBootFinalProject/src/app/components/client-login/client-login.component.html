@@ -1,41 +1,30 @@
 <h2 mat-dialog-title>Login from here</h2>
 
-<mat-dialog-content>
-
-
-  <div class="mycontainer">
-
-    <form class="example-form">
+<form class="example-form" [formGroup]="loginForm" (ngSubmit)="login()">
+  <mat-dialog-content>
+    <div class="mycontainer">
       <!-- <h2 class="example-full-width, form_header">Register From Here</h2> -->
 
       <mat-form-field class="example-full-width">
         <mat-label>Email</mat-label>
-        <input matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-          placeholder="Ex. pat@example.com" required>
-        <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
-        <mat-error align="end" *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-          Please enter a valid email address
-        </mat-error>
-        <mat-error *ngIf="emailFormControl.hasError('required')">
-          Email is <strong>required</strong>
-        </mat-error>
+        <input formControlName="username" matInput type="text" value="pvkshanuka@gmail.com" required />
+        <mat-error align="end" *ngIf="username.errors?.required">Email is required</mat-error>
+        <mat-error align="end" *ngIf="username.errors?.email">Invalid email</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
         <mat-label>Password</mat-label>
-        <input matInput type="password" required>
-        <!-- <mat-hint align="end">Minimum 4 characters</mat-hint> -->
+        <input formControlName="password" matInput type="password" value="1222222" required />
+        <mat-error align="end" *ngIf="password.errors?.required">Password is required</mat-error>
       </mat-form-field>
+    </div>
+  </mat-dialog-content>
 
-    </form>
-
-</div>
-
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-
+  <mat-dialog-actions align="end">
     <button mat-raised-button mat-dialog-close>Close</button>
-    <button mat-raised-button mat-dialog-close color="primary">Login</button>
-
-</mat-dialog-actions>
+    <button type="submit" mat-raised-button color="primary" [disabled]="loginForm.invalid || inProcess"
+      [class.spinner]="inProcess">
+      Login
+    </button>
+  </mat-dialog-actions>
+</form>
