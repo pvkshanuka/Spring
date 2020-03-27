@@ -1,3 +1,4 @@
+import { DataService, UserDetails } from './../../services/data/data.service';
 import { ClientLoginComponent } from './../client-login/client-login.component';
 import { ClientRegComponent } from './../client-reg/client-reg.component';
 import { Component, OnInit } from '@angular/core';
@@ -10,9 +11,13 @@ import {MatDialog} from '@angular/material/dialog';
 })
 export class NavBarComponent implements OnInit {
 
-  constructor(public dialog: MatDialog) {}
+  userDetails: UserDetails;
+
+  constructor(public dialog: MatDialog, private data: DataService) {
+  }
 
   ngOnInit(): void {
+    this.data.userDetails.subscribe(user => this.userDetails = user);
   }
 
   openSignUpDialog() {

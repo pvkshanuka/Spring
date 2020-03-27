@@ -2,6 +2,8 @@
   <mat-toolbar-row>
     <span class="myspacer"></span>
     <span>E-Channeling</span>
+    <span *ngIf="null != userDetails">{{userDetails.name}}</span>
+
     <span class="example-spacer"></span>
     <div class="nav_item" routerLink="/channelling" routerLinkActive="active"><span>Channelling</span></div>
     <div class="nav_item" routerLink="/doctor" routerLinkActive="active"><span>Doctor</span></div>

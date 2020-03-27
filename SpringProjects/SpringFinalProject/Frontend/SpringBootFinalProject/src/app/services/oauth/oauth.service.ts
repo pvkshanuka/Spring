@@ -1,7 +1,6 @@
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { url } from 'inspector';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +20,8 @@ export class OauthService {
   //   return !(user === null);
   // }
 
-  // logOut() {
-  //   sessionStorage.removeItem('username');
-  // }
+  logOut() {
+    sessionStorage.removeItem('username');
+  }
 
 }
