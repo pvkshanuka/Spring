@@ -232,6 +232,8 @@ public class ClientServiceImpl implements ClientService {
 
             HttpStatus statusCode = responseEntity.getStatusCode();
 
+            System.out.println(responseEntity.getBody());
+
             if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
 
                 OAuthResponseDto oAuthResponseDto = responseEntity.getBody();
@@ -239,17 +241,17 @@ public class ClientServiceImpl implements ClientService {
                 Client client = clientRepository.findByEmail(loginRequestDto.getUsername());
 
                 if (null == client) {
-                    return new LoginResponseDto("", "", "", "", "Invalid Login Details.!", false);
+                    return new LoginResponseDto("", "", "", "",null, "Invalid Login Details.!", false);
                 } else {
-                    return new LoginResponseDto(client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), "", true);
+                    return new LoginResponseDto(client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(),client.getType(), "", true);
                 }
 
             } else {
-                return new LoginResponseDto("", "", "", "", "Invalid Login Details.!", false);
+                return new LoginResponseDto("", "", "", "",null, "Invalid Login Details.!", false);
             }
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                return new LoginResponseDto("", "", "", "", "Invalid Login Details.!", false);
+                return new LoginResponseDto("", "", "", "",null, "Invalid Login Details.!", false);
             } else {
                 throw new ClientException("Client login exception occurred in ClientServiceImpl.login", e);
             }

@@ -18,6 +18,8 @@ public interface CategoryService {
 
     public List<Category> search();
 
+    public List<Category> searchByIds(@RequestBody List<Integer> ids);
+
     public boolean searchById(int id);
 
     public List<Category> searchAllFromIds(List<Integer> integers);

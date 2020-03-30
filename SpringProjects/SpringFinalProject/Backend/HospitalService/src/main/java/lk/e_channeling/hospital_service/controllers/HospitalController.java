@@ -78,4 +78,13 @@ public class HospitalController {
         return hospitalService.findByIdAndStatus(id,"1");
     }
 
+    @RequestMapping(method = RequestMethod.GET,value = "/findById/{id}")
+    public Hospital findById(@PathVariable Integer id){
+
+        System.out.println(id);
+        Hospital byId = hospitalService.findById(id);
+        System.out.println(byId);
+        return byId;
+    }
+
 }

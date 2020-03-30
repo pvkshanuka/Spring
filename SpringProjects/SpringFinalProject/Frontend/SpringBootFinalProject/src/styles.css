@@ -2,23 +2,29 @@
 
 @import "~ng-pick-datetime/assets/style/picker.min.css";
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
-.snackbar-success{
+.snackbar-success {
   background-color: limegreen;
   color: #ffffff;
   font-weight: 500;
 }
 
-.snackbar-error{
+.snackbar-error {
   background-color: tomato;
   color: #ffffff;
   font-weight: 500;
 }
 
 .spinner:before {
-  content: '';
+  content: "";
   box-sizing: border-box;
   position: absolute;
   top: 50%;
@@ -30,17 +36,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border-radius: 50%;
   border: 2px solid #ffffff;
   border-top-color: #000000;
-  animation: spinner .8s linear infinite;
+  animation: spinner 0.8s linear infinite;
 }
 
-.color_accent{
+.color_accent {
   color: #ffd740 !important;
 }
 
-.color_primary{
-  color:#673ab7 !important;
+.color_primary {
+  color: #673ab7 !important;
 }
 
-.cursor_pointer{
+.cursor_pointer {
   cursor: pointer;
+}
+
+.header-img {
+  width: 100%;
+  margin-top: 10px;
 }

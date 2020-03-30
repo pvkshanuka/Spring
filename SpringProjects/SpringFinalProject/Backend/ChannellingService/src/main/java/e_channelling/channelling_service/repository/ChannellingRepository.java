@@ -14,6 +14,7 @@ public interface ChannellingRepository extends JpaRepository<Channelling,Integer
 
     public List<Channelling> findByHospitalAndDoctorAndStartTimeBetween(Integer hospital, Integer doctor, Instant startTime, Instant endTime);
 
+    public List<Channelling> findByStatus(String status);
 
     public Optional<Channelling> findByIdAndStatus(Integer id,String status);
 

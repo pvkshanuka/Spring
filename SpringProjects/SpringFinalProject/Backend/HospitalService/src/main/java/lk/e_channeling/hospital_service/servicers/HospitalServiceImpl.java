@@ -1,6 +1,7 @@
 package lk.e_channeling.hospital_service.servicers;
 
 import lk.e_channeling.hospital_service.dto.ResponseDto;
+import lk.e_channeling.hospital_service.exceptions.HospitalException;
 import lk.e_channeling.hospital_service.models.Hospital;
 import lk.e_channeling.hospital_service.repository.HospitalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +109,14 @@ public class HospitalServiceImpl implements HospitalService {
         Optional<Hospital> optional = hospitalRepository.findByIdAndStatus(id, status);
 
         return optional.isPresent();
+
+    }
+
+    @Override
+    public Hospital findById(Integer id) {
+        System.out.println("Hospital Checked");
+
+        return hospitalRepository.findById(id).orElse(null);
 
     }
 }

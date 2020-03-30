@@ -2,6 +2,10 @@ package e_channelling.channelling_service.servicers;
 
 import com.sun.java.browser.dom.DOMAccessException;
 import e_channelling.channelling_service.ChannellingServiceApplication;
+import e_channelling.channelling_service.commonModels.Category;
+import e_channelling.channelling_service.commonModels.Doctor;
+import e_channelling.channelling_service.commonModels.Hospital;
+import e_channelling.channelling_service.dto.ChannellingDto;
 import e_channelling.channelling_service.dto.ResponseDto;
 import e_channelling.channelling_service.exception.ChannellingException;
 import e_channelling.channelling_service.models.Channelling;
@@ -221,24 +225,117 @@ public class ChannellingServiceImpl implements ChannellingService {
     }
 
     @Override
-    public List<Channelling> search(Channelling channelling) {
+    public List<ChannellingDto> search() {
+//        public List<Channelling> search(Channelling channelling) {
 
-        channelling.setStatus("1");
+//        channelling.setStatus("1");
+//
+//        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+//                .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.startsWith())
+//                .withMatcher("hospital", ExampleMatcher.GenericPropertyMatchers.startsWith())
+//                .withMatcher("room", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
+//                .withMatcher("price", ExampleMatcher.GenericPropertyMatchers.startsWith())
+//                .withMatcher("startTime", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
+//                .withMatcher("endTime", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
+//                .withMatcher("day", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
+//                .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.startsWith())
+//                .withIgnoreNullValues();
+//
+//        Example<Channelling> example = Example.of(channelling, exampleMatcher);
+//        return channellingRepository.findAll(example);
 
-        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                .withMatcher("hospital", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                .withMatcher("room", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
-                .withMatcher("price", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                .withMatcher("startTime", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
-                .withMatcher("endTime", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
-                .withMatcher("day", ExampleMatcher.GenericPropertyMatchers.startsWith().ignoreCase())
-                .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                .withIgnoreNullValues();
+        List<Channelling> channellings = channellingRepository.findByStatus("1");
 
-        Example<Channelling> example = Example.of(channelling, exampleMatcher);
-        return channellingRepository.findAll(example);
+        List<ChannellingDto> channellingDtos = new ArrayList<>();
 
+        ChannellingDto channellingDto;
+
+        HttpHeaders httpHeaders;
+
+        HttpEntity<String> httpEntityString;
+        HttpEntity<List<Integer>> httpEntityIntegers;
+
+        ResponseEntity<Doctor> responseEntityDoctor;
+        ResponseEntity<Category[]> responseEntityCats;
+        ResponseEntity<Hospital> responseEntityHos;
+
+
+        List<Integer> integersCat = new ArrayList<>();
+
+        for (Channelling channelling : channellings) {
+            System.out.println(channelling.getId()+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+            channellingDto = new ChannellingDto();
+
+            System.out.println(integersCat.size()+" integet size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+
+            integersCat.removeAll(integersCat);
+            System.out.println(integersCat.size()+" integet size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+            httpHeaders = new HttpHeaders();
+            httpEntityString = new HttpEntity<>("", httpHeaders);
+
+            responseEntityDoctor = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_DOCTOR_SERVICE + "/doctor/find/" + channelling.getDoctor(), HttpMethod.GET, httpEntityString, Doctor.class);
+
+            if (null != responseEntityDoctor.getBody()) {
+
+
+                channellingDto.setDoctor(responseEntityDoctor.getBody());
+
+                channellingDto.getDoctor().getDoctorCategories().forEach(doctorCategory -> integersCat.add(doctorCategory.getCategoryid()));
+
+                System.out.println("Doctor Id = "+channellingDto.getDoctor().getId());
+
+                System.out.println(integersCat);
+
+                httpHeaders = new HttpHeaders();
+                httpEntityIntegers = new HttpEntity<>(integersCat, httpHeaders);
+
+                responseEntityCats = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CATGORY_SERVICE + "/category/searchByIds", HttpMethod.POST, httpEntityIntegers, Category[].class);
+
+                if (null != responseEntityCats.getBody()) {
+
+                    System.out.println(responseEntityCats.getBody());
+
+                    channellingDto.setCategories(responseEntityCats.getBody());
+
+                    httpHeaders = new HttpHeaders();
+                    httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                    System.out.println("Hospital ID - "+channelling.getHospital());
+
+                    responseEntityHos = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findById/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Hospital.class);
+
+                    if (null != responseEntityCats.getBody()) {
+
+                        System.out.println(responseEntityHos.getBody());
+                        channellingDto.setHospital(responseEntityHos.getBody());
+
+                        channellingDto.setId(channelling.getId());
+                        channellingDto.setEndTime(channelling.getEndTime());
+                        channellingDto.setPrice(channelling.getPrice());
+                        channellingDto.setRoom(channelling.getRoom());
+                        channellingDto.setStartTime(channelling.getStartTime());
+                        channellingDto.setStatus(channelling.getStatus());
+
+                        channellingDtos.add(channellingDto);
+
+                    } else {
+                        throw new ChannellingException("Channelling find(Hospital) exception occurred in ChannellingServiceImpl.find", null);
+                    }
+
+                } else {
+                    throw new ChannellingException("Channelling find(Category) exception occurred in ChannellingServiceImpl.find", null);
+                }
+            } else {
+                throw new ChannellingException("Channelling find(Doctor) exception occurred in ChannellingServiceImpl.find", null);
+            }
+
+        }
+
+        return channellingDtos;
+        
     }
 
 

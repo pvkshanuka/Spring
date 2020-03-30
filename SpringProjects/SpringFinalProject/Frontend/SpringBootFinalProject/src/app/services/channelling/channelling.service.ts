@@ -14,6 +14,10 @@ export class ChannellingService {
     return this._http.post<any>(this._url, doctorData);
   }
 
+  loadAll() {
+    return this._http.get<any>(this._url);
+  }
+
   test() {
     return this._http.get<any>(this._url + '/test');
   }

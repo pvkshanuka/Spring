@@ -6,6 +6,7 @@ import lk.e_channelling.doctor_service.models.Doctor;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DoctorService {
 
@@ -23,7 +24,7 @@ public interface DoctorService {
     //    List<Doctor> searchByCategory(@RequestBody Doctor doctor);
     List<Doctor> searchByCategory(@RequestBody Integer id);
 
-    public boolean findById(Integer id);
+    public Optional<Doctor> findById(Integer id);
 
     Category[] getCats(Integer id);
 }

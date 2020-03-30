@@ -1,5 +1,6 @@
 package e_channelling.channelling_service.controllers;
 
+import e_channelling.channelling_service.dto.ChannellingDto;
 import e_channelling.channelling_service.dto.ResponseDto;
 import e_channelling.channelling_service.models.Channelling;
 import e_channelling.channelling_service.servicers.ChannellingService;
@@ -38,7 +39,7 @@ public class ChannellingController {
 
         try {
 
-                return channellingService.update(channelling);
+            return channellingService.update(channelling);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,10 +65,13 @@ public class ChannellingController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Channelling> search(@RequestBody Channelling channelling) {
+//    public List<Channelling> search(@RequestBody Channelling channelling) {
+    public List<ChannellingDto> search() {
+
         try {
 
-            return channellingService.search(channelling);
+//            return channellingService.search(channelling);
+            return channellingService.search();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,13 +83,13 @@ public class ChannellingController {
     @RequestMapping(method = RequestMethod.GET, value = "/test")
     public Channelling test() {
 
-        return new Channelling(1,1,1,"34",1200.00, Instant.now(),Instant.now().plusSeconds(60*60*2),"1");
+        return new Channelling(1, 1, 1, "34", 1200.00, Instant.now(), Instant.now().plusSeconds(60 * 60 * 2), "1");
 
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByIdAndStatus/{id}")
-    public Boolean findByIdAndStatus(@PathVariable Integer id){
-        return channellingService.findByIdAndStatus(id,"1");
+    public Boolean findByIdAndStatus(@PathVariable Integer id) {
+        return channellingService.findByIdAndStatus(id, "1");
     }
 
 }

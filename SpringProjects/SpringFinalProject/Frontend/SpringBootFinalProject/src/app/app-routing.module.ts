@@ -1,3 +1,4 @@
+import { HomeComponent } from './components/home/home.component';
 import { DoctorFormComponent } from './components/doctor-form/doctor-form.component';
 import { HospitalFormComponent } from './components/hospital-form/hospital-form.component';
 import { NgModule } from '@angular/core';
@@ -8,8 +9,8 @@ import { ChannellingFormComponent } from './components/channelling-form/channell
 const routes: Routes = [
   {path: 'hospital', component: HospitalFormComponent},
   {path: 'doctor', component: DoctorFormComponent},
-  {path: 'channelling', component: ChannellingFormComponent}
-
+  {path: 'channelling', component: ChannellingFormComponent},
+  {path: '', component: HomeComponent}
 
 ];
 

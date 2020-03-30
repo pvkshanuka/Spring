@@ -336,10 +336,10 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public boolean findById(Integer id) {
+    public Optional<Doctor> findById(Integer id) {
         try {
             System.out.println("Doctor Check");
-            return doctorRepository.findById(id).isPresent();
+            return doctorRepository.findById(id);
 
         } catch (Exception e) {
             throw new DoctorException("Doctor searchByCategory exception occurred in DoctorServiceImpl.searchByCategory", e);

@@ -73,6 +73,21 @@ public class CatrgoryController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/searchByIds")
+    public List<Category> searchByIds(@RequestBody List<Integer> ids) {
+        try {
+            System.out.println(ids);
+            List<Category> categories = categoryService.searchAllFromIds(ids);
+            System.out.println(categories);
+            return categories;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_operator')")
     public List<Category> searchAll() {

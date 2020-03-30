@@ -17,6 +17,10 @@ public class ChannellingServiceApplication {
 
     public static final String DOMAIN_DOCTOR_SERVICE = "localhost:8020";
 
+    public static final String DOMAIN_CATGORY_SERVICE = "localhost:8030";
+
+
+
 
     public static void main(String[] args) {
         SpringApplication.run(ChannellingServiceApplication.class, args);

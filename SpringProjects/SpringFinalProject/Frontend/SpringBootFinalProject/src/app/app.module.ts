@@ -13,6 +13,7 @@ import { ChannellingSearchComponent } from './components/channelling-search/chan
 import { DoctorFormComponent } from './components/doctor-form/doctor-form.component';
 import { ChannellingFormComponent } from './components/channelling-form/channelling-form.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
     ChannellingSearchComponent,
     DoctorFormComponent,
     ChannellingFormComponent,
-    RoutingComponents
+    RoutingComponents,
+    HomeComponent
   ],
   entryComponents: [ClientRegComponent, ClientLoginComponent],
   imports: [

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/doctor")
@@ -115,12 +116,28 @@ public class DoctorController {
 //    public List<Doctor> searchByCat(@RequestBody Doctor doctor) {
         try {
 
-            return doctorService.findById(id);
+            return doctorService.findById(id).isPresent();
 
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
             return false;
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/find/{id}")
+    public Doctor find(@PathVariable Integer id) {
+//    public List<Doctor> searchByCat(@RequestBody Doctor doctor) {
+        try {
+
+            Optional<Doctor> optional = doctorService.findById(id);
+
+            return optional.orElse(null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
         }
     }
 

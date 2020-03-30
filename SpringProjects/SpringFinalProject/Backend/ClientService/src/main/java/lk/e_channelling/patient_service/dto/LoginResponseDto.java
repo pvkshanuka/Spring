@@ -13,6 +13,7 @@ public class LoginResponseDto {
     private String username;
     private String token;
     private String refreshToken;
+    private Integer type;
     private String message;
     private Boolean isSuccess;
 }

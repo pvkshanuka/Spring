@@ -60,8 +60,11 @@ export class ClientLoginComponent implements OnInit {
             console.log(response.token);
 
             sessionStorage.setItem('token', response.token);
+            sessionStorage.setItem('username', response.username);
+            sessionStorage.setItem('name', response.name);
+            sessionStorage.setItem('type', response.type);
 
-            this.userDetails = new UserDetails(response.name, response.name, response.name);
+            this.userDetails = new UserDetails(response.name, response.username, response.token, response.type);
 
             this.data.changeUserDetails(this.userDetails);
 
@@ -69,6 +72,9 @@ export class ClientLoginComponent implements OnInit {
               duration: 3000,
               panelClass: ['snackbar-success']
             });
+
+            console.log(this.userDetails);
+
           } else {
             console.log('Not success');
 
