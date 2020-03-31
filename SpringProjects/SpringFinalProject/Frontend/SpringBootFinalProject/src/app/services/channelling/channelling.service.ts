@@ -14,8 +14,8 @@ export class ChannellingService {
     return this._http.post<any>(this._url, doctorData);
   }
 
-  loadAll() {
-    return this._http.get<any>(this._url);
+  loadAll(channellingSearchDTO) {
+    return this._http.post<any>(this._url + '/search', channellingSearchDTO);
   }
 
   test() {

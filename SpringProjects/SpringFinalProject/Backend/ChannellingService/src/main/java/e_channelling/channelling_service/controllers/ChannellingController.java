@@ -1,6 +1,7 @@
 package e_channelling.channelling_service.controllers;
 
 import e_channelling.channelling_service.dto.ChannellingDto;
+import e_channelling.channelling_service.dto.ChannellingSearchDTO;
 import e_channelling.channelling_service.dto.ResponseDto;
 import e_channelling.channelling_service.models.Channelling;
 import e_channelling.channelling_service.servicers.ChannellingService;
@@ -64,14 +65,14 @@ public class ChannellingController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-//    public List<Channelling> search(@RequestBody Channelling channelling) {
-    public List<ChannellingDto> search() {
+    @RequestMapping(method = RequestMethod.POST, value = "/search")
+    public List<ChannellingDto> search(@RequestBody ChannellingSearchDTO channellingSearchDTO) {
+//    public List<ChannellingDto> search() {
 
         try {
 
 //            return channellingService.search(channelling);
-            return channellingService.search();
+            return channellingService.search(channellingSearchDTO);
 
         } catch (Exception e) {
             e.printStackTrace();

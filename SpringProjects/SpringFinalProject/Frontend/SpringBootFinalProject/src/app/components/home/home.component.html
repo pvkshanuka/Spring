@@ -16,7 +16,7 @@
 
           <mat-form-field class="example-half-width-full-height">
             <mat-label>Category</mat-label>
-            <mat-select>
+            <mat-select id="search_cat">
               <!-- <mat-option><span class="default-option">None</span></mat-option> -->
               <div *ngFor="let cat of CATEGORYS">
                 <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
@@ -37,7 +37,7 @@
           <mat-form-field class="example-half-width-full-height">
             <mat-label>Doctor</mat-label>
             <span matPrefix>Dr.&nbsp;</span>
-            <mat-select>
+            <mat-select id="search_doc">
               <!-- <mat-option><span class="default-option">None</span></mat-option> -->
               <div *ngFor="let doc of DOCTORS">
                 <mat-option value="{{doc.name}}">{{doc.name}}</mat-option>
@@ -52,7 +52,7 @@
 
           <mat-form-field class="example-half-width-full-height">
             <mat-label>Hospital</mat-label>
-            <mat-select>
+            <mat-select id="search_hos">
               <!-- <mat-option><span class="default-option">None</span></mat-option> -->
               <div *ngFor="let hos of HOSPITALS">
                 <mat-option value="{{hos.id}}">{{hos.name}}
@@ -70,7 +70,7 @@
         <td>
 
           <mat-form-field class="example-half-width-full-height">
-            <input class="cursor_pointer" readonly="readonly" matInput [min]="dateNow" [owlDateTime]="dt1"
+            <input id="search_date" (dateTimeInput)="loadData()" class="cursor_pointer" readonly="readonly" matInput [min]="dateNow" [owlDateTime]="dt1"
               [owlDateTimeTrigger]="dt1" placeholder="Date" />
             <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
           </mat-form-field>
