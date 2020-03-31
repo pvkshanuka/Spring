@@ -18,6 +18,9 @@ public interface HospitalService {
 
     public List<Hospital> searchAll(@RequestBody Hospital hospital);
 
+    public List<Hospital> search();
+
+
     public Boolean findByIdAndStatus(Integer id,String status);
 
     public Hospital findById(Integer id);

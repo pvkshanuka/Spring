@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -28,9 +29,9 @@ public class ChannellingDto {
 
     private Double price;
 
-    private Instant startTime;
+    private Date startTime;
 
-    private Instant endTime;
+    private Date endTime;
 
     private String status;
 

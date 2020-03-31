@@ -1,4 +1,4 @@
-package lk.e_channelling.patient_service.controllers;
+package lk.e_channelling.patient_service.config;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

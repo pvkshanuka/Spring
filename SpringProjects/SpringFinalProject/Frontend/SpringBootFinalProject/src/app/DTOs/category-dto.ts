@@ -1,6 +1,7 @@
 export class CategoryDTO{
 
   categoryid: string;
+  name: string;
   status: string;
 
   constructor(private catid){

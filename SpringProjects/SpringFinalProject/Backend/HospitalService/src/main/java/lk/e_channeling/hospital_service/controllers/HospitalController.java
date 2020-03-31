@@ -62,10 +62,9 @@ public class HospitalController {
 //        return null;
 //    }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/")
-    public List<Hospital> searchAll(@RequestBody Hospital hospital) {
-        hospital.setStatus("1");
-        return hospitalService.searchAll(hospital);
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Hospital> search() {
+        return hospitalService.search();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/test")

@@ -1,41 +1,209 @@
 <div style="width: 100%;">
   <img class="header-img" src="../../../assets/img/slide-one.jpg" alt="" />
 
+
+
   <div class="mycontainer">
-    <table mat-table
-       [dataSource]="dataSource" multiTemplateDataRows
-       class="mat-elevation-z8">
-  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
-    <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-    <td mat-cell *matCellDef="let element"> {{element[column]}}<p style="font-size: small; color: gray; margin-bottom: 0px;">{{element[column]}}</p> </td>
-  </ng-container>
 
-  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-  <ng-container matColumnDef="expandedDetail">
-    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
-      <div class="example-element-detail"
-           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-        <div class="example-element-diagram">
-          <div class="example-element-position"> {{element.position+"Kus"}} </div>
-          <div class="example-element-symbol"> {{element.symbol}} </div>
-          <div class="example-element-name"> {{element.name}} </div>
-          <div class="example-element-weight"> {{element.weight}} </div>
-        </div>
-        <div class="example-element-description">
-          {{element.description}}
-          <span class="example-element-description-attribution"> -- Wikipedia </span>
-        </div>
-      </div>
-    </td>
-  </ng-container>
+    <table class="example-full-width" cellspacing="0">
+      <tr>
+        <td>
 
-  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-  <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
-      class="example-element-row"
-      [class.example-expanded-row]="expandedElement === element"
-      (click)="expandedElement = expandedElement === element ? null : element">
-  </tr>
-  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-</table>
+          <!-- <mat-form-field class="example-full-width">
+        <mat-label>Category</mat-label>
+        <input matInput>
+      </mat-form-field> -->
+
+          <mat-form-field class="example-half-width-full-height">
+            <mat-label>Category</mat-label>
+            <mat-select>
+              <!-- <mat-option><span class="default-option">None</span></mat-option> -->
+              <div *ngFor="let cat of CATEGORYS">
+                <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
+
+              </div>
+            </mat-select>
+          </mat-form-field>
+
+        </td>
+
+        <td>
+
+          <!-- <mat-form-field class="example-full-width">
+        <mat-label>Category</mat-label>
+        <input matInput>
+      </mat-form-field> -->
+
+          <mat-form-field class="example-half-width-full-height">
+            <mat-label>Doctor</mat-label>
+            <span matPrefix>Dr.&nbsp;</span>
+            <mat-select>
+              <!-- <mat-option><span class="default-option">None</span></mat-option> -->
+              <div *ngFor="let doc of DOCTORS">
+                <mat-option value="{{doc.name}}">{{doc.name}}</mat-option>
+
+              </div>
+            </mat-select>
+          </mat-form-field>
+
+        </td>
+
+        <td>
+
+          <mat-form-field class="example-half-width-full-height">
+            <mat-label>Hospital</mat-label>
+            <mat-select>
+              <!-- <mat-option><span class="default-option">None</span></mat-option> -->
+              <div *ngFor="let hos of HOSPITALS">
+                <mat-option value="{{hos.id}}">{{hos.name}}
+                  <span style="font-size: smaller; color: gray;margin: 0px;">
+                    {{hos.city}}
+                  </span>
+                </mat-option>
+
+              </div>
+            </mat-select>
+          </mat-form-field>
+
+        </td>
+
+        <td>
+
+          <mat-form-field class="example-half-width-full-height">
+            <input class="cursor_pointer" readonly="readonly" matInput [min]="dateNow" [owlDateTime]="dt1"
+              [owlDateTimeTrigger]="dt1" placeholder="Date" />
+            <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+          </mat-form-field>
+
+        </td>
+
+        <td>
+
+
+        </td>
+
+        <!-- <td><mat-form-field class="example-full-width">
+        <mat-label>Doctor</mat-label>
+        <input matInput>
+      </mat-form-field></td>
+      <td><mat-form-field class="example-full-width">
+        <mat-label>Hospital</mat-label>
+        <input matInput>
+      </mat-form-field></td>
+      <td><mat-form-field class="example-full-width">
+        <mat-label>Date</mat-label>
+        <input matInput>
+      </mat-form-field></td> -->
+      </tr>
+    </table>
+
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+        <!-- <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+        <th mat-header-cell *matHeaderCellDef> {{column+" K"}} </th>
+        <td mat-cell *matCellDef="let element"> {{element[column]+" U"}}<p
+            style="font-size: small; color: gray; margin-bottom: 0px;">{{element[column]+" S"}}</p>
+        </td>
+      </ng-container> -->
+
+        <ng-container matColumnDef="doctor">
+          <th mat-header-cell *matHeaderCellDef>Doctor</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.doctor.name}}
+            <p class="color_primary" style="font-size: small; margin-bottom: 0px;">
+              <span *ngFor="let cat of element.categories">
+                {{"|"+cat.category}}
+              </span>
+            </p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="hospital">
+          <th mat-header-cell *matHeaderCellDef>Hospital</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.hospital.name}}
+            <p style="font-size: small; color: gray; margin-bottom: 0px;">
+              <span>
+                {{element.hospital.city}}
+              </span>
+            </p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{"Rs "+element.price+".00"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="startTime">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.startTime | date }}
+          </td>
+        </ng-container>
+
+        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+        <!-- <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length" style="background-color: lightgray;">
+          <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+            <table class="">
+              <td class="example-element-position">  </td>
+              <td class="example-element-symbol"> {{element.symbol}} </td>
+              <td class="example-element-name"> {{element.name}} </td>
+              <td class="example-element-weight"> {{element.weight}} </td>
+            </table>
+            <div class="example-element-description">
+              {{element.description}}
+              <span class="example-element-description-attribution"> -- Wikipedia </span>
+            </div>
+          </div>
+        </td>
+      </ng-container> -->
+
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length"
+            style="background-color: rgb(234, 251, 255);">
+            <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <table class="">
+                <!-- <th style="text-align: start; font-size: small;">Hospital Details</th>
+              <th style="text-align: start; font-size: small;">Hospital Details</th>
+              <th style="text-align: start; font-size: small;">Hospital Details</th>
+              <th style="text-align: start; font-size: small;">Hospital Details</th> -->
+                <tr>
+                  <td class="example-element-name">
+                    <span style="font-weight: 500; font-size: small;">
+                      Channelling No : </span>{{"0"+element.id}} </td>
+                  <td class="example-element-name">
+                    <span style="font-weight: 500; font-size: small;">
+                      Email : </span>{{element.hospital.email}} </td>
+                  <td class="example-element-name">
+                    <span style="font-weight: 500; font-size: small;">
+                      Start Time : </span>{{element.startTime | date:'shortTime' }} </td>
+                </tr>
+                <tr>
+                  <td class="example-element-name">
+                    <span style="font-weight: 500; font-size: small;">
+                      Room No : </span>{{element.room}} </td>
+                  <td class="example-element-name">
+                    <span style="font-weight: 500; font-size: small;">
+                      Contact No : </span>{{"+94"+element.hospital.contact}} </td>
+                  <td class="example-element-name">
+                    <span style="font-weight: 500; font-size: small;">
+                      End Time : </span>{{element.endTime | date:'shortTime' }} </td>
+                </tr>
+              </table>
+              <button mat-raised-button color="primary"
+                style="margin: 10px 0px 10px 0px;font-size: small;cursor: auto;">Channel</button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+          [class.example-expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+    </div>
   </div>
 </div>

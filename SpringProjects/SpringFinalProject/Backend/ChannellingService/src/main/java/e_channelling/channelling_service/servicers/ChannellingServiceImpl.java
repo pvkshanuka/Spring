@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -259,19 +260,24 @@ public class ChannellingServiceImpl implements ChannellingService {
         ResponseEntity<Category[]> responseEntityCats;
         ResponseEntity<Hospital> responseEntityHos;
 
+        Date dateToday = new Date();
 
         List<Integer> integersCat = new ArrayList<>();
 
         for (Channelling channelling : channellings) {
-            System.out.println(channelling.getId()+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+            if (Date.from(channelling.getStartTime()).after(dateToday)) {
+
+
+            System.out.println(channelling.getId() + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
             channellingDto = new ChannellingDto();
 
-            System.out.println(integersCat.size()+" integet size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println(integersCat.size() + " integet size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
 
             integersCat.removeAll(integersCat);
-            System.out.println(integersCat.size()+" integet size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            System.out.println(integersCat.size() + " integet size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
             httpHeaders = new HttpHeaders();
             httpEntityString = new HttpEntity<>("", httpHeaders);
@@ -282,10 +288,11 @@ public class ChannellingServiceImpl implements ChannellingService {
 
 
                 channellingDto.setDoctor(responseEntityDoctor.getBody());
+                channellingDto.getDoctor().setContact("");
 
                 channellingDto.getDoctor().getDoctorCategories().forEach(doctorCategory -> integersCat.add(doctorCategory.getCategoryid()));
 
-                System.out.println("Doctor Id = "+channellingDto.getDoctor().getId());
+                System.out.println("Doctor Id = " + channellingDto.getDoctor().getId());
 
                 System.out.println(integersCat);
 
@@ -303,7 +310,7 @@ public class ChannellingServiceImpl implements ChannellingService {
                     httpHeaders = new HttpHeaders();
                     httpEntityString = new HttpEntity<>("", httpHeaders);
 
-                    System.out.println("Hospital ID - "+channelling.getHospital());
+                    System.out.println("Hospital ID - " + channelling.getHospital());
 
                     responseEntityHos = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findById/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Hospital.class);
 
@@ -313,10 +320,10 @@ public class ChannellingServiceImpl implements ChannellingService {
                         channellingDto.setHospital(responseEntityHos.getBody());
 
                         channellingDto.setId(channelling.getId());
-                        channellingDto.setEndTime(channelling.getEndTime());
+                        channellingDto.setEndTime(Date.from(channelling.getEndTime()));
                         channellingDto.setPrice(channelling.getPrice());
                         channellingDto.setRoom(channelling.getRoom());
-                        channellingDto.setStartTime(channelling.getStartTime());
+                        channellingDto.setStartTime(Date.from(channelling.getStartTime()));
                         channellingDto.setStatus(channelling.getStatus());
 
                         channellingDtos.add(channellingDto);
@@ -331,6 +338,8 @@ public class ChannellingServiceImpl implements ChannellingService {
             } else {
                 throw new ChannellingException("Channelling find(Doctor) exception occurred in ChannellingServiceImpl.find", null);
             }
+
+        }
 
         }
 

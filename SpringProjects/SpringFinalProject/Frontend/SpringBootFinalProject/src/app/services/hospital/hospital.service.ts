@@ -14,4 +14,8 @@ export class HospitalService {
     return this._http.post<any>(this._url, hospitalData);
   }
 
+  getAll() {
+    return this._http.get<any>(this._url);
+  }
+
 }

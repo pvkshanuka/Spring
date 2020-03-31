@@ -1,9 +1,13 @@
-import { FormBuilder } from '@angular/forms';
 
-export class Hospital {
-
+export class HospitalDTO {
 
 
+id: number;
+name: string;
+city: string;
+email: string;
+contact: string;
+status: string;
 
 
 }

@@ -86,6 +86,8 @@ public class HospitalServiceImpl implements HospitalService {
 //        return null;
 //    }
 
+
+
     @Override
     public List<Hospital> searchAll(Hospital hospital) {
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
@@ -99,6 +101,11 @@ public class HospitalServiceImpl implements HospitalService {
         Example<Hospital> example = Example.of(hospital, exampleMatcher);
         return hospitalRepository.findAll(example);
 
+    }
+
+    @Override
+    public List<Hospital> search() {
+        return hospitalRepository.findByStatus("1");
     }
 
     @Override
