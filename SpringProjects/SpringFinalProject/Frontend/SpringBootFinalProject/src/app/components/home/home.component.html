@@ -16,7 +16,7 @@
 
           <mat-form-field class="example-half-width-full-height">
             <mat-label>Category</mat-label>
-            <mat-select id="search_cat">
+            <mat-select (selectionChange)="loadData()" [(ngModel)] = "selected_cat">
               <!-- <mat-option><span class="default-option">None</span></mat-option> -->
               <div *ngFor="let cat of CATEGORYS">
                 <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
@@ -37,10 +37,10 @@
           <mat-form-field class="example-half-width-full-height">
             <mat-label>Doctor</mat-label>
             <span matPrefix>Dr.&nbsp;</span>
-            <mat-select id="search_doc">
+            <mat-select (selectionChange)="loadData()" [(ngModel)] = "selected_doc">
               <!-- <mat-option><span class="default-option">None</span></mat-option> -->
               <div *ngFor="let doc of DOCTORS">
-                <mat-option value="{{doc.name}}">{{doc.name}}</mat-option>
+                <mat-option value="{{doc.id}}">{{doc.name}}</mat-option>
 
               </div>
             </mat-select>
@@ -52,7 +52,7 @@
 
           <mat-form-field class="example-half-width-full-height">
             <mat-label>Hospital</mat-label>
-            <mat-select id="search_hos">
+            <mat-select (selectionChange)="loadData()" [(ngModel)] = "selected_hos">
               <!-- <mat-option><span class="default-option">None</span></mat-option> -->
               <div *ngFor="let hos of HOSPITALS">
                 <mat-option value="{{hos.id}}">{{hos.name}}
@@ -70,7 +70,7 @@
         <td>
 
           <mat-form-field class="example-half-width-full-height">
-            <input id="search_date" (dateTimeInput)="loadData()" class="cursor_pointer" readonly="readonly" matInput [min]="dateNow" [owlDateTime]="dt1"
+            <input (dateTimeInput)="loadData()" [(ngModel)] = "selected_date" class="cursor_pointer" readonly="readonly" matInput [min]="dateNow" [owlDateTime]="dt1"
               [owlDateTimeTrigger]="dt1" placeholder="Date" />
             <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
           </mat-form-field>
@@ -79,6 +79,7 @@
 
         <td>
 
+          <button mat-raised-button (click)="resetSearch()" style="margin:auto; display:block;">Reset</button>
 
         </td>
 
@@ -103,6 +104,12 @@
         <th mat-header-cell *matHeaderCellDef> {{column+" K"}} </th>
         <td mat-cell *matCellDef="let element"> {{element[column]+" U"}}<p
             style="font-size: small; color: gray; margin-bottom: 0px;">{{element[column]+" S"}}</p>
+        </td>
+      </ng-container> -->
+
+      <!-- <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Channelling No</th>
+        <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> <b>{{"0"+element.id}}</b>
         </td>
       </ng-container> -->
 

@@ -43,6 +43,12 @@ export class HomeComponent implements OnInit {
   DOCTORS;
   HOSPITALS;
 
+  selected_cat;
+  selected_doc;
+  selected_hos;
+  selected_date;
+
+
   dateNow = new Date();
 
   // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
@@ -79,12 +85,14 @@ export class HomeComponent implements OnInit {
   // }
 
   loadData() {
+    
+    console.log(this.selected_doc);
 
     this.channellingSearchDTO = new ChannellingSearchDTO(
-      parseInt(( document.getElementById('search_cat') as HTMLInputElement).value),
-      parseInt(( document.getElementById('search_hos') as HTMLInputElement).value),
-      parseInt(( document.getElementById('search_doc') as HTMLInputElement).value),
-      new Date(( document.getElementById('search_date') as HTMLInputElement).value),
+      parseInt(this.selected_cat),
+      parseInt(this.selected_hos),
+      parseInt(this.selected_doc),
+      new Date(this.selected_date),
     );
 
     console.log(this.channellingSearchDTO);
@@ -138,6 +146,16 @@ export class HomeComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  resetSearch(){
+    this.selected_cat = "";
+    this.selected_doc = "";
+    this.selected_hos = "";
+    this.selected_date = "";
+
+    this.loadData();
+
   }
 
 }
