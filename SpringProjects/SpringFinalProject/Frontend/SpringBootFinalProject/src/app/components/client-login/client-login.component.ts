@@ -1,3 +1,5 @@
+import { MatDialog } from '@angular/material/dialog';
+import { ClientRegComponent } from './../client-reg/client-reg.component';
 import { UserDetails, DataService } from './../../services/data/data.service';
 import { AppComponent } from './../../app.component';
 import { ClientService } from './../../services/client/client.service';
@@ -31,6 +33,7 @@ export class ClientLoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    public dialog: MatDialog,
     private _snackBar: MatSnackBar,
     private _clientLogin: ClientService,
     private data: DataService
@@ -59,12 +62,13 @@ export class ClientLoginComponent implements OnInit {
             console.log(response.username);
             console.log(response.token);
 
+            sessionStorage.setItem('id', response.id);
             sessionStorage.setItem('token', response.token);
             sessionStorage.setItem('username', response.username);
             sessionStorage.setItem('name', response.name);
             sessionStorage.setItem('type', response.type);
 
-            this.userDetails = new UserDetails(response.name, response.username, response.token, response.type);
+            this.userDetails = new UserDetails(response.id, response.name, response.username, response.token, response.type);
 
             this.data.changeUserDetails(this.userDetails);
 
@@ -98,4 +102,12 @@ export class ClientLoginComponent implements OnInit {
       );
     }
   }
+
+  openSignUpDialog() {
+    this.dialog.open(ClientRegComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
+  }
+
 }

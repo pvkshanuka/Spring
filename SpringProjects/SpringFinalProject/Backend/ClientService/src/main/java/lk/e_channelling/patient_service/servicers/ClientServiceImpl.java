@@ -240,18 +240,19 @@ public class ClientServiceImpl implements ClientService {
 
                 Client client = clientRepository.findByEmail(loginRequestDto.getUsername());
 
+
                 if (null == client) {
-                    return new LoginResponseDto("", "", "", "",null, "Invalid Login Details.!", false);
+                    return new LoginResponseDto(null,"", "", "", "",null, "Invalid Login Details.!", false);
                 } else {
-                    return new LoginResponseDto(client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(),client.getType(), "", true);
+                    return new LoginResponseDto(client.getId(),client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(),client.getType(), "", true);
                 }
 
             } else {
-                return new LoginResponseDto("", "", "", "",null, "Invalid Login Details.!", false);
+                return new LoginResponseDto(null,"", "", "", "",null, "Invalid Login Details.!", false);
             }
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                return new LoginResponseDto("", "", "", "",null, "Invalid Login Details.!", false);
+                return new LoginResponseDto(null,"", "", "", "",null, "Invalid Login Details.!", false);
             } else {
                 throw new ClientException("Client login exception occurred in ClientServiceImpl.login", e);
             }
@@ -260,7 +261,10 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Boolean findById(Integer id) {
-        return clientRepository.findById(id).isPresent();
+        boolean present = clientRepository.findById(id).isPresent();
+        System.out.println(id+ " "+ present);
+
+        return present;
     }
 
 }

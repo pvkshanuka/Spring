@@ -1,3 +1,10 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppointmnentDTO } from './../../DTOs/appointment-dto';
+import { MatDialog } from '@angular/material/dialog';
+import { ClientRegComponent } from './../client-reg/client-reg.component';
+import { ClientLoginComponent } from './../client-login/client-login.component';
+import { DataService, UserDetails } from './../../services/data/data.service';
+import { AppointmentService } from './../../services/appointment/appointment.service';
 import { ChannellingSearchDTO } from './../../DTOs/channellingSearch-dto';
 import { Channelling } from './../channelling-search/channelling-search.component';
 import { MatPaginator } from '@angular/material/paginator';
@@ -58,15 +65,24 @@ export class HomeComponent implements OnInit {
 
   channellingSearchDTO: ChannellingSearchDTO;
 
+  userDetails: UserDetails;
+
+  inProcessSave = false;
+
   constructor(
+    private data: DataService,
+    public dialog: MatDialog,
+    private _snackBar: MatSnackBar,
     private _channellingService: ChannellingService,
     private _categoryService: CategoryService,
     private _doctorService: DoctorService,
-    private _hospitalService: HospitalService
+    private _hospitalService: HospitalService,
+    private _appointmentService: AppointmentService
   ) {}
 
   ngOnInit() {
 
+    this.data.userDetails.subscribe(user => this.userDetails = user);
 
     this.dateNow.setDate(this.dateNow.getDate() - 1);
 
@@ -85,7 +101,7 @@ export class HomeComponent implements OnInit {
   // }
 
   loadData() {
-    
+
     console.log(this.selected_doc);
 
     this.channellingSearchDTO = new ChannellingSearchDTO(
@@ -148,14 +164,63 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  resetSearch(){
-    this.selected_cat = "";
-    this.selected_doc = "";
-    this.selected_hos = "";
-    this.selected_date = "";
+  resetSearch() {
+    this.selected_cat = '';
+    this.selected_doc = '';
+    this.selected_hos = '';
+    this.selected_date = '';
 
     this.loadData();
 
+  }
+
+  addAppoinment(id: number) {
+
+    if (this.userDetails && this.userDetails.id) {
+
+
+
+    // this.inProcessSave = true;
+      this._appointmentService.save(new AppointmnentDTO(this.userDetails.id, id, new Date())).subscribe(
+        response => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+          this.inProcessSave = false;
+        },
+        error => {
+          console.log(error);
+          this.inProcessSave = false;
+        }
+      );
+
+  } else {
+this.openLoginDialog();
+  }
+
+  }
+
+  openSignUpDialog() {
+    this.dialog.open(ClientRegComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
+  }
+
+  openLoginDialog() {
+    this.dialog.open(ClientLoginComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
   }
 
 }

@@ -4,6 +4,7 @@ import lk.e_channelling.appointment_service.dto.ResponseDto;
 import lk.e_channelling.appointment_service.models.Appointment;
 import lk.e_channelling.appointment_service.servicers.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -18,10 +19,11 @@ public class AppointmentController {
     AppointmentService appointmentService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseDto save(@RequestBody Appointment appointment) {
+//    @PreAuthorize("hasRole('ROLE_client')")
+    public ResponseDto save(@RequestBody Appointment appointment, @RequestHeader("Authorization") String token) {
 
         try {
-            return appointmentService.save(appointment);
+            return appointmentService.save(appointment, token);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");

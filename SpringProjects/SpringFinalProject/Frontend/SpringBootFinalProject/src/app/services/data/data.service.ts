@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export class UserDetails {
-  name: string = null;
-  username: string;
-  token: string;
-  type: string;
 
-  constructor(name: string, username: string, token: string, type: string){
+  id: number = null;
+  name: string = null;
+  username: string = null;
+  token: string = null;
+  type: string = null;
+
+  constructor(id: number, name: string, username: string, token: string, type: string){
+    this.id = id;
     this.name = name;
     this.username = username;
     this.token = token;

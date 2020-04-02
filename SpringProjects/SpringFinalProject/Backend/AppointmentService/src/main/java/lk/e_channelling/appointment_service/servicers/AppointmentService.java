@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface AppointmentService {
 
-    public ResponseDto save(@RequestBody Appointment appointment);
+    public ResponseDto save(@RequestBody Appointment appointment, String token);
 
 //    public ResponseDto update(@RequestBody Appointment appointment);
 
@@ -20,7 +20,7 @@ public interface AppointmentService {
 
     List<Appointment> findByClientAndChannellingAndStatus(Appointment appointment);
 
-    public boolean checkClient(Integer id);
+    public boolean checkClient(Integer id, String token);
 
     public boolean checkChannelling(Integer id);
 

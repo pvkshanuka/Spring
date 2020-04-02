@@ -198,7 +198,8 @@
                 </tr>
               </table>
               <button mat-raised-button color="primary"
-                style="margin: 10px 0px 10px 0px;font-size: small;cursor: auto;">Channel</button>
+                style="margin: 10px 0px 10px 0px;font-size: small;cursor: auto;" [disabled]="inProcessSave"
+                [class.spinner]="inProcessSave" (click)="addAppoinment(element.id)">Channel</button>
             </div>
           </td>
         </ng-container>

@@ -91,7 +91,7 @@ public class ClientController {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
-            return new LoginResponseDto("","","","",null,"Client Login Failed.!", false);
+            return new LoginResponseDto(null,"","","","",null,"Client Login Failed.!", false);
         }
 
     }

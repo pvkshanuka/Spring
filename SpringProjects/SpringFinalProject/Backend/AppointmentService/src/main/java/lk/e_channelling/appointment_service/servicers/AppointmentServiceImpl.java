@@ -6,6 +6,7 @@ import lk.e_channelling.appointment_service.exceptions.AppointmentException;
 import lk.e_channelling.appointment_service.models.Appointment;
 import lk.e_channelling.appointment_service.repository.AppointmentRepository;
 import lk.e_channelling.appointment_service.support.Validation;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
@@ -37,22 +38,24 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
-    public ResponseDto save(Appointment appointment) {
+    public ResponseDto save(Appointment appointment, String token) {
 
         try {
 
             if (validation.saveValidator(appointment)) {
 
-                if (checkClient(appointment.getClient())) {
+                if (checkClient(appointment.getClient(), token)) {
 
                     appointment.setId(null);
 
                     if (checkChannelling(appointment.getChannelling())) {
 
+                        appointment.setStatus("1");
+                        appointment.setDate(Instant.now());
+
                         if (findByClientAndChannellingAndStatus(appointment).isEmpty()) {
 
-                            appointment.setStatus("1");
-                            appointment.setDate(Instant.now());
+
 
                             Appointment save = appointmentRepository.save(appointment);
                             if (save.equals(null)) {
@@ -64,7 +67,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                             }
                         } else {
                             System.out.println("Appointment Already Added.!");
-                            return new ResponseDto(true, "Appointment Already Added.!");
+                            return new ResponseDto(false, "Appointment Already Added.!");
                         }
 
                     } else {
@@ -151,11 +154,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public boolean checkClient(Integer id) {
+    public boolean checkClient(Integer id, String token) {
         try {
+
+//            String credentials = AppointmentServiceApplication.OAUTH_CLIENT_ID + ":" + AppointmentServiceApplication.OAUTH_CLIENT_SECRET;
+//
+//            String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.add("Authorization", token);
 
             HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
 
