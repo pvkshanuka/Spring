@@ -5,6 +5,7 @@ import e_channelling.channelling_service.commonModels.Category;
 import e_channelling.channelling_service.commonModels.Doctor;
 import e_channelling.channelling_service.commonModels.Hospital;
 import e_channelling.channelling_service.dto.ChannellingDto;
+import e_channelling.channelling_service.dto.ChannellingSearchByIdsDto;
 import e_channelling.channelling_service.dto.ChannellingSearchDTO;
 import e_channelling.channelling_service.dto.ResponseDto;
 import e_channelling.channelling_service.exception.ChannellingException;
@@ -449,6 +450,59 @@ public class ChannellingServiceImpl implements ChannellingService {
     @Override
     public Boolean findByIdAndStatus(Integer id, String status) {
         return channellingRepository.findByIdAndStatus(id, status).isPresent();
+    }
+
+    @Override
+    public List<ChannellingDto> findChannellingsByIds(ChannellingSearchByIdsDto channellingSearchByIdsDto) {
+
+        List<Channelling> channellings = null;
+        List<Channelling> channellingsFiltered = new ArrayList<>();
+
+        channellings = channellingRepository.findAllById(channellingSearchByIdsDto.getIds());
+
+        System.out.println(channellings);
+
+        if (null != channellingSearchByIdsDto.getDoctor()) {
+            channellings.forEach(channelling -> {
+                if (channelling.getDoctor() == channellingSearchByIdsDto.getDoctor()) {
+                    channellingsFiltered.add(channelling);
+                }
+            });
+            channellings.removeAll(channellings);
+            channellings.addAll(channellingsFiltered);
+            channellingsFiltered.removeAll(channellingsFiltered);
+        }
+
+
+//        if (!channellingsFiltered.isEmpty()) {
+//            channellings.removeAll(channellings);
+//            channellings.addAll(channellingsFiltered);
+//            channellingsFiltered.removeAll(channellingsFiltered);
+//        }
+
+        System.out.println(channellings);
+
+        if (null != channellingSearchByIdsDto.getDate()) {
+            channellings.forEach(channelling -> {
+                if (channelling.getStartTime().isAfter(channellingSearchByIdsDto.getDate()) && channelling.getStartTime().isBefore(channellingSearchByIdsDto.getDate().plusSeconds(60 * 60 * 24))) {
+                    channellingsFiltered.add(channelling);
+                }
+            });
+            channellings.removeAll(channellings);
+            channellings.addAll(channellingsFiltered);
+            channellingsFiltered.removeAll(channellingsFiltered);
+        }
+
+//        if (!channellingsFiltered.isEmpty()) {
+//            channellings.removeAll(channellings);
+//            channellings.addAll(channellingsFiltered);
+//            channellingsFiltered.removeAll(channellingsFiltered);
+//        }
+
+        System.out.println(channellings);
+
+        return null;
+
     }
 
 }

@@ -1,6 +1,7 @@
 package e_channelling.channelling_service.controllers;
 
 import e_channelling.channelling_service.dto.ChannellingDto;
+import e_channelling.channelling_service.dto.ChannellingSearchByIdsDto;
 import e_channelling.channelling_service.dto.ChannellingSearchDTO;
 import e_channelling.channelling_service.dto.ResponseDto;
 import e_channelling.channelling_service.models.Channelling;
@@ -74,6 +75,26 @@ public class ChannellingController {
 //            return channellingService.search(channelling);
             return channellingService.search(channellingSearchDTO);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/findChannellingsByIds")
+    public List<ChannellingDto> findChannellingsByIds(@RequestBody ChannellingSearchByIdsDto channellingSearchByIdsDto) {
+//    public List<ChannellingDto> search() {
+
+        try {
+
+            System.out.println(channellingSearchByIdsDto.getIds());
+            System.out.println(channellingSearchByIdsDto.getDoctor());
+            System.out.println(channellingSearchByIdsDto.getDate());
+
+//            return channellingService.search(channelling);
+//            return channellingService.search(channellingSearchDTO);
+            return channellingService.findChannellingsByIds(channellingSearchByIdsDto);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");

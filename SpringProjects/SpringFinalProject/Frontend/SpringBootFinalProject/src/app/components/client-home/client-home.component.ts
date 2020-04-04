@@ -102,7 +102,7 @@ export class ClientHomeComponent implements OnInit {
 
     this.appointmentSearchDTO = new AppointmentSearchDTO(
       this.userDetails.id,
-      parseInt(this.selected_doc),
+      1,
       new Date(this.selected_date),
       this.selected_sta
     );
@@ -135,7 +135,7 @@ export class ClientHomeComponent implements OnInit {
   // }
 
   resetSearch() {
-    this.selected_sta = '';
+    this.selected_sta =null;
     this.selected_doc = '';
     this.selected_date = '';
 

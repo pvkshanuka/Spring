@@ -24,5 +24,5 @@ public interface ClientService {
 
     public Boolean findById(Integer id);
 
-
+    public String findUsernameById(Integer id);
 }

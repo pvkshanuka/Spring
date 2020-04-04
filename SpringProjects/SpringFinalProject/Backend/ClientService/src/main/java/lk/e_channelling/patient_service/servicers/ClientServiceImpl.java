@@ -7,7 +7,6 @@ import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.repository.ClientRepository;
 import lk.e_channelling.patient_service.support.Validation;
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
@@ -20,7 +19,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,13 +152,13 @@ public class ClientServiceImpl implements ClientService {
 
                 } else {
 
-                    System.out.println("Invalid Clinet ID.!");
-                    return new ResponseDto(false, "Invalid Clinet ID.!");
+                    System.out.println("Invalid Client ID.!");
+                    return new ResponseDto(false, "Invalid Client ID.!");
 
                 }
 
             } else {
-                System.out.println("Invalid Clinet ID.!");
+                System.out.println("Invalid Client ID.!");
                 return new ResponseDto(false, "Invalid Client ID.!");
             }
 
@@ -238,13 +236,14 @@ public class ClientServiceImpl implements ClientService {
 
                 OAuthResponseDto oAuthResponseDto = responseEntity.getBody();
 
-                Client client = clientRepository.findByEmail(loginRequestDto.getUsername());
+                Optional<Client> optional = clientRepository.findByEmail(loginRequestDto.getUsername());
 
 
-                if (null == client) {
-                    return new LoginResponseDto(null,"", "", "", "",null, "Invalid Login Details.!", false);
-                } else {
+                if (optional.isPresent()) {
+                    final Client client = optional.get();
                     return new LoginResponseDto(client.getId(),client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(),client.getType(), "", true);
+                } else {
+                    return new LoginResponseDto(null,"", "", "", "",null, "Invalid Login Details.!", false);
                 }
 
             } else {
@@ -261,10 +260,23 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Boolean findById(Integer id) {
-        boolean present = clientRepository.findById(id).isPresent();
-        System.out.println(id+ " "+ present);
-
-        return present;
+        try {
+            return clientRepository.findById(id).isPresent();
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
+
+    @Override
+    public String findUsernameById(Integer id) {
+        Optional<Client> optional = clientRepository.findById(id);
+        if (optional.isPresent()){
+            return optional.get().getEmail();
+        }else{
+            return  null;
+        }
+    }
+
 
 }

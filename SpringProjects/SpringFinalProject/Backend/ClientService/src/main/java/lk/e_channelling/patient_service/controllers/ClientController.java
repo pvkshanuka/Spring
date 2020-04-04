@@ -7,6 +7,7 @@ import lk.e_channelling.patient_service.dto.ResponseDto;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.servicers.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,10 +107,13 @@ public class ClientController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/findBYId/{id}")
     public boolean findById(@PathVariable Integer id){
-
-        System.out.println("findBYId");
-
         return clientService.findById(id);
+    }
+
+//    Access By [User]
+    @RequestMapping(method = RequestMethod.GET, value = "/findUsernameById/{id}")
+    public String findUsernameById(@PathVariable Integer id){
+        return clientService.findUsernameById(id);
     }
 
 //    public boolean checkAppointments(Patient patient) {

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.util.List;
 
@@ -80,11 +81,11 @@ public class AppointmentController {
 
 //    Accessing [Client]
     @RequestMapping(method = RequestMethod.POST, value = "/getAppointments")
-    public List<AppointmentResponseDto> getAppointments(@RequestBody AppointmentSearchDto appointmentSearchDto, @RequestHeader("Authorization") String token) {
+    public List<AppointmentResponseDto> getAppointments(@RequestBody AppointmentSearchDto appointmentSearchDto, @RequestHeader("Authorization") String token, Principal principal) {
         try {
-            System.out.println("getAppointments");
+            System.out.println("getAppointments "+principal.getName());
             System.out.println(appointmentSearchDto);
-            return appointmentService.getAppointments(appointmentSearchDto, token);
+            return appointmentService.getAppointments(appointmentSearchDto, token,principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();

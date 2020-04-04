@@ -28,5 +28,5 @@ public interface AppointmentService {
 
     public boolean searchByChannellingId(Integer id);
 
-    public List<AppointmentResponseDto> getAppointments(AppointmentSearchDto appointmentSearchDto, String token);
+    public List<AppointmentResponseDto> getAppointments(AppointmentSearchDto appointmentSearchDto, String token, String username);
 }

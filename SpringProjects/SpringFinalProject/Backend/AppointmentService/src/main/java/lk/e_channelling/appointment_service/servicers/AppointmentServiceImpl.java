@@ -1,8 +1,10 @@
 package lk.e_channelling.appointment_service.servicers;
 
 import lk.e_channelling.appointment_service.AppointmentServiceApplication;
+import lk.e_channelling.appointment_service.commonModels.Channelling;
 import lk.e_channelling.appointment_service.dto.AppointmentResponseDto;
 import lk.e_channelling.appointment_service.dto.AppointmentSearchDto;
+import lk.e_channelling.appointment_service.dto.ChannellingSearchByIdsDto;
 import lk.e_channelling.appointment_service.dto.ResponseDto;
 import lk.e_channelling.appointment_service.exceptions.AppointmentException;
 import lk.e_channelling.appointment_service.models.Appointment;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -202,29 +205,67 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentResponseDto> getAppointments(AppointmentSearchDto appointmentSearchDto, String token) {
+    public List<AppointmentResponseDto> getAppointments(AppointmentSearchDto appointmentSearchDto, String token, String username) {
         try {
 
-//            check client
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.add("Authorization", token);
 
-            ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+            HttpEntity<List<Integer>> httpEntityIntegers;
+            HttpEntity<ChannellingSearchByIdsDto> httpEntityChannellingSearch;
+
+            ResponseEntity<Channelling[]> responseEntityCahans;
+
+            HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
+//            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "/client/findByUsername/" + "username", HttpMethod.GET, httpEntity, Boolean.class);
+
+            List<Integer> integersChan = new ArrayList<>();
+            List<Appointment> appointments;
+
+//            check client
+            if (username.equals(checkClientFromId(appointmentSearchDto.getClient(), httpEntity, token))) {
+
+                ExampleMatcher exampleMatcher = ExampleMatcher.matching()
 //                    .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.exact())
-                    .withMatcher("client", ExampleMatcher.GenericPropertyMatchers.exact())
+                        .withMatcher("client", ExampleMatcher.GenericPropertyMatchers.exact())
 //                    .withMatcher("channelling", ExampleMatcher.GenericPropertyMatchers.exact())
 //                    .withMatcher("date", ExampleMatcher.GenericPropertyMatchers.exact())
-//                    .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact())
-                    .withIgnoreNullValues();
+                    .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact())
+                        .withIgnoreNullValues();
 
-            Example<Appointment> example = Example.of(new Appointment(null, appointmentSearchDto.getClient(), null, null, appointmentSearchDto.getStatus()), exampleMatcher);
+                Example<Appointment> example = Example.of(new Appointment(null, appointmentSearchDto.getClient(), null, null, appointmentSearchDto.getStatus()), exampleMatcher);
 
+                appointments = appointmentRepository.findAll(example);
 
-            System.out.println(appointmentRepository.findAll(example));
+                appointments.forEach(appointment -> integersChan.add(appointment.getChannelling()));
 
-            return null;
+                httpEntityChannellingSearch = new HttpEntity<>(new ChannellingSearchByIdsDto(integersChan,appointmentSearchDto.getDoctor(),appointmentSearchDto.getDate()),httpHeaders);
+
+                responseEntityCahans = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CHANNELLING_SERVICE+ "/channelling/findChannellingsByIds", HttpMethod.POST, httpEntityChannellingSearch, Channelling[].class);
+
+                System.out.println(responseEntityCahans.getBody());
+
+                return null;
+
+            } else {
+                System.out.println("Invalid User");
+                return null;
+            }
 
         } catch (Exception e) {
             throw new AppointmentException("Appointment getAppointments exception occurred in AppointmentServiceImpl.getAppointments", e);
         }
+    }
+
+    private String checkClientFromId(Integer id, HttpEntity<String> httpEntity, String token) {
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "/client/findUsernameById/" + id, HttpMethod.GET, httpEntity, String.class);
+
+        String body = responseEntity.getBody();
+        System.out.println(body);
+        return body;
+
     }
 
 }

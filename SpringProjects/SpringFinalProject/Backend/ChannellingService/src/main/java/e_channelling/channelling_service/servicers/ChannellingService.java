@@ -1,6 +1,7 @@
 package e_channelling.channelling_service.servicers;
 
 import e_channelling.channelling_service.dto.ChannellingDto;
+import e_channelling.channelling_service.dto.ChannellingSearchByIdsDto;
 import e_channelling.channelling_service.dto.ChannellingSearchDTO;
 import e_channelling.channelling_service.dto.ResponseDto;
 import e_channelling.channelling_service.models.Channelling;
@@ -30,6 +31,8 @@ public interface ChannellingService {
     public boolean checkAppointments(Integer id);
 
     public Boolean findByIdAndStatus(Integer id, String status);
+
+    public List<ChannellingDto> findChannellingsByIds(ChannellingSearchByIdsDto channellingSearchByIdsDto);
 
 //    public List<Channelling> searchBeforeSave(@RequestBody Channelling channelling);
 //
