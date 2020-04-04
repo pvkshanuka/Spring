@@ -181,7 +181,7 @@ export class HomeComponent implements OnInit {
 
 
     // this.inProcessSave = true;
-      this._appointmentService.save(new AppointmnentDTO(this.userDetails.id, id, new Date())).subscribe(
+      this._appointmentService.save(new AppointmnentDTO(null, this.userDetails.id, id, new Date())).subscribe(
         response => {
           // console.log(response);
           if (response.success) {

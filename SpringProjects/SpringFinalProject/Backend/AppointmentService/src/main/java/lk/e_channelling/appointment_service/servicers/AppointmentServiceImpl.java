@@ -1,12 +1,13 @@
 package lk.e_channelling.appointment_service.servicers;
 
 import lk.e_channelling.appointment_service.AppointmentServiceApplication;
+import lk.e_channelling.appointment_service.dto.AppointmentResponseDto;
+import lk.e_channelling.appointment_service.dto.AppointmentSearchDto;
 import lk.e_channelling.appointment_service.dto.ResponseDto;
 import lk.e_channelling.appointment_service.exceptions.AppointmentException;
 import lk.e_channelling.appointment_service.models.Appointment;
 import lk.e_channelling.appointment_service.repository.AppointmentRepository;
 import lk.e_channelling.appointment_service.support.Validation;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
@@ -54,7 +55,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                         appointment.setDate(Instant.now());
 
                         if (findByClientAndChannellingAndStatus(appointment).isEmpty()) {
-
 
 
                             Appointment save = appointmentRepository.save(appointment);
@@ -199,6 +199,32 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<Appointment> byChannelling = appointmentRepository.findByChannelling(id);
         System.out.println(byChannelling);
         return byChannelling.isEmpty();
+    }
+
+    @Override
+    public List<AppointmentResponseDto> getAppointments(AppointmentSearchDto appointmentSearchDto, String token) {
+        try {
+
+//            check client
+
+            ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+//                    .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.exact())
+                    .withMatcher("client", ExampleMatcher.GenericPropertyMatchers.exact())
+//                    .withMatcher("channelling", ExampleMatcher.GenericPropertyMatchers.exact())
+//                    .withMatcher("date", ExampleMatcher.GenericPropertyMatchers.exact())
+//                    .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact())
+                    .withIgnoreNullValues();
+
+            Example<Appointment> example = Example.of(new Appointment(null, appointmentSearchDto.getClient(), null, null, appointmentSearchDto.getStatus()), exampleMatcher);
+
+
+            System.out.println(appointmentRepository.findAll(example));
+
+            return null;
+
+        } catch (Exception e) {
+            throw new AppointmentException("Appointment getAppointments exception occurred in AppointmentServiceImpl.getAppointments", e);
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package e_channelling.channelling_service.commonModels;
+package lk.e_channelling.appointment_service.commonModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

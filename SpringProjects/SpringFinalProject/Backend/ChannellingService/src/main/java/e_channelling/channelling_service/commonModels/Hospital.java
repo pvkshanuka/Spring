@@ -11,26 +11,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Hospital {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NonNull
     private String name;
 
-    @NotNull
     private String city;
 
-    @NotNull
     private String email;
 
-    @NotNull
     private String contact;
 
     private String status;

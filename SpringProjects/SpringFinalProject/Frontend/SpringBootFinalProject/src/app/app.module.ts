@@ -14,6 +14,7 @@ import { DoctorFormComponent } from './components/doctor-form/doctor-form.compon
 import { ChannellingFormComponent } from './components/channelling-form/channelling-form.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
+import { ClientHomeComponent } from './components/client-home/client-home.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { HomeComponent } from './components/home/home.component';
     DoctorFormComponent,
     ChannellingFormComponent,
     RoutingComponents,
-    HomeComponent
+    HomeComponent,
+    ClientHomeComponent
   ],
   entryComponents: [ClientRegComponent, ClientLoginComponent],
   imports: [

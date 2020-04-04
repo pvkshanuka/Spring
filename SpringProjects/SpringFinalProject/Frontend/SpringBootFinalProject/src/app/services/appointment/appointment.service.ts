@@ -15,4 +15,8 @@ export class AppointmentService {
     return this._http.post<any>(this._url, appoinmentData);
   }
 
+  loadAllByUser(appointmentSearchDTO) {
+    return this._http.post<any>(this._url + '/getAppointments', appointmentSearchDTO);
+  }
+
 }

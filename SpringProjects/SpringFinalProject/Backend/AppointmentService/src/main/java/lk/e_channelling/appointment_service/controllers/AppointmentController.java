@@ -1,5 +1,7 @@
 package lk.e_channelling.appointment_service.controllers;
 
+import lk.e_channelling.appointment_service.dto.AppointmentResponseDto;
+import lk.e_channelling.appointment_service.dto.AppointmentSearchDto;
 import lk.e_channelling.appointment_service.dto.ResponseDto;
 import lk.e_channelling.appointment_service.models.Appointment;
 import lk.e_channelling.appointment_service.servicers.AppointmentService;
@@ -73,6 +75,22 @@ public class AppointmentController {
     public Boolean searchByChannellingId(@PathVariable Integer id) {
         System.out.println("Channelling ID : "+id);
         return appointmentService.searchByChannellingId(id);
+
+    }
+
+//    Accessing [Client]
+    @RequestMapping(method = RequestMethod.POST, value = "/getAppointments")
+    public List<AppointmentResponseDto> getAppointments(@RequestBody AppointmentSearchDto appointmentSearchDto, @RequestHeader("Authorization") String token) {
+        try {
+            System.out.println("getAppointments");
+            System.out.println(appointmentSearchDto);
+            return appointmentService.getAppointments(appointmentSearchDto, token);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
 
     }
 

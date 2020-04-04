@@ -1,5 +1,7 @@
 package lk.e_channelling.appointment_service.servicers;
 
+import lk.e_channelling.appointment_service.dto.AppointmentResponseDto;
+import lk.e_channelling.appointment_service.dto.AppointmentSearchDto;
 import lk.e_channelling.appointment_service.dto.ResponseDto;
 import lk.e_channelling.appointment_service.models.Appointment;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,4 +28,5 @@ public interface AppointmentService {
 
     public boolean searchByChannellingId(Integer id);
 
+    public List<AppointmentResponseDto> getAppointments(AppointmentSearchDto appointmentSearchDto, String token);
 }

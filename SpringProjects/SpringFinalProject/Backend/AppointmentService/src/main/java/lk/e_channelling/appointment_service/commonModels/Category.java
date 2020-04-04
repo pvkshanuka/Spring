@@ -1,4 +1,4 @@
-package e_channelling.channelling_service.commonModels;
+package lk.e_channelling.appointment_service.commonModels;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +15,14 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class Category {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     private String category;
 
+    @NotNull
     private String status;
 
 }
