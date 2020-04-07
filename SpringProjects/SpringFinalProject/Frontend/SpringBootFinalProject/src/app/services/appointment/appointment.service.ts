@@ -19,4 +19,8 @@ export class AppointmentService {
     return this._http.post<any>(this._url + '/getAppointments', appointmentSearchDTO);
   }
 
+  delete(id) {
+    return this._http.delete<any>(this._url + '/' + id);
+  }
+
 }

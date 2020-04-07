@@ -1,0 +1,13 @@
+.footer {
+  margin-top: 50px;
+  margin-bottom: 20px;
+  background-color: #673ab7;
+  color: #ffff;
+  height: 70px;
+}
+
+.mycontainer {
+  margin: 10px 100px 10px 100px;
+  padding-top: 25px;
+  font-size: 16px;
+}

@@ -2,10 +2,7 @@ package lk.e_channelling.appointment_service.servicers;
 
 import lk.e_channelling.appointment_service.AppointmentServiceApplication;
 import lk.e_channelling.appointment_service.commonModels.Channelling;
-import lk.e_channelling.appointment_service.dto.AppointmentResponseDto;
-import lk.e_channelling.appointment_service.dto.AppointmentSearchDto;
-import lk.e_channelling.appointment_service.dto.ChannellingSearchByIdsDto;
-import lk.e_channelling.appointment_service.dto.ResponseDto;
+import lk.e_channelling.appointment_service.dto.*;
 import lk.e_channelling.appointment_service.exceptions.AppointmentException;
 import lk.e_channelling.appointment_service.models.Appointment;
 import lk.e_channelling.appointment_service.repository.AppointmentRepository;
@@ -20,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,17 +94,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public ResponseDto delete(int id) {
-
+        System.out.println("delete");
         try {
 
             Optional<Appointment> optional = appointmentRepository.findById(id);
 
             if (optional.isPresent()) {
                 Appointment appointment = optional.get();
-                appointment.setStatus("0");
-                appointmentRepository.save(appointment);
-                System.out.println("Appointment Deleted Successfully.!");
-                return new ResponseDto(true, "Appointment Deleted Successfully.!");
+                if (appointment.getStatus().equals("1")) {
+                    appointment.setStatus("0");
+                    appointmentRepository.save(appointment);
+                    System.out.println("Appointment Deleted Successfully.!");
+                    return new ResponseDto(true, "Appointment Deleted Successfully.!");
+                }else{
+                    System.out.println("Invalid Appointment to Delete.!");
+                    return new ResponseDto(false, "Invalid Appointment to Delete.!");
+                }
             } else {
                 System.out.println("Appointment Delete Failed.!");
                 return new ResponseDto(false, "Invalid Appointment ID.!");
@@ -215,13 +218,15 @@ public class AppointmentServiceImpl implements AppointmentService {
             HttpEntity<List<Integer>> httpEntityIntegers;
             HttpEntity<ChannellingSearchByIdsDto> httpEntityChannellingSearch;
 
-            ResponseEntity<Channelling[]> responseEntityCahans;
+            ResponseEntity<ChannellingDto[]> responseEntityCahans;
 
             HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
 //            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "/client/findByUsername/" + "username", HttpMethod.GET, httpEntity, Boolean.class);
 
             List<Integer> integersChan = new ArrayList<>();
             List<Appointment> appointments;
+            List<AppointmentResponseDto> appointmentResponseDtos = new ArrayList<>();
+            HashMap<Integer, ChannellingDto> channellingDtoHashMap = new HashMap<>();
 
 //            check client
             if (username.equals(checkClientFromId(appointmentSearchDto.getClient(), httpEntity, token))) {
@@ -242,11 +247,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
                 httpEntityChannellingSearch = new HttpEntity<>(new ChannellingSearchByIdsDto(integersChan,appointmentSearchDto.getDoctor(),appointmentSearchDto.getDate()),httpHeaders);
 
-                responseEntityCahans = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CHANNELLING_SERVICE+ "/channelling/findChannellingsByIds", HttpMethod.POST, httpEntityChannellingSearch, Channelling[].class);
+                responseEntityCahans = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CHANNELLING_SERVICE+ "/channelling/findChannellingsByIds", HttpMethod.POST, httpEntityChannellingSearch, ChannellingDto[].class);
 
-                System.out.println(responseEntityCahans.getBody());
 
-                return null;
+                for (ChannellingDto channellingDto : responseEntityCahans.getBody()) {
+                    channellingDtoHashMap.put(channellingDto.getId(),channellingDto);
+                }
+
+                appointments.forEach(appointment -> {
+                    System.out.println(appointment.getStatus()+" >>>>>>>>>");
+                    if (null != channellingDtoHashMap.get(appointment.getChannelling()) && !appointment.getStatus().equals("0")) {
+                        appointmentResponseDtos.add(new AppointmentResponseDto(appointment.getId(), channellingDtoHashMap.get(appointment.getChannelling()), appointment.getDate(), appointment.getStatus()));
+                    }
+                });
+
+                return appointmentResponseDtos;
 
             } else {
                 System.out.println("Invalid User");

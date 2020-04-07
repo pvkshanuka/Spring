@@ -457,10 +457,24 @@ public class ChannellingServiceImpl implements ChannellingService {
 
         List<Channelling> channellings = null;
         List<Channelling> channellingsFiltered = new ArrayList<>();
+        List<ChannellingDto> channellingDtos = new ArrayList<>();
+
+        ChannellingDto channellingDto;
 
         channellings = channellingRepository.findAllById(channellingSearchByIdsDto.getIds());
 
         System.out.println(channellings);
+
+        HttpHeaders httpHeaders;
+
+        HttpEntity<String> httpEntityString;
+        HttpEntity<List<Integer>> httpEntityIntegers;
+
+        ResponseEntity<Doctor> responseEntityDoctor;
+        ResponseEntity<Category[]> responseEntityCats;
+        ResponseEntity<Hospital> responseEntityHos;
+
+        List<Integer> integersCat = new ArrayList<>();
 
         if (null != channellingSearchByIdsDto.getDoctor()) {
             channellings.forEach(channelling -> {
@@ -501,8 +515,87 @@ public class ChannellingServiceImpl implements ChannellingService {
 
         System.out.println(channellings);
 
-        return null;
+        if (!channellings.isEmpty()) {
 
+
+            for (Channelling channelling : channellings) {
+
+
+                channellingDto = new ChannellingDto();
+
+                integersCat.removeAll(integersCat);
+//            System.out.println(integersCat.size() + " integet size >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+                httpHeaders = new HttpHeaders();
+                httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                responseEntityDoctor = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_DOCTOR_SERVICE + "/doctor/find/" + channelling.getDoctor(), HttpMethod.GET, httpEntityString, Doctor.class);
+
+                if (null != responseEntityDoctor.getBody()) {
+
+
+                    channellingDto.setDoctor(responseEntityDoctor.getBody());
+                    channellingDto.getDoctor().setContact("");
+
+                    channellingDto.getDoctor().getDoctorCategories().forEach(doctorCategory -> integersCat.add(doctorCategory.getCategoryid()));
+
+
+//                System.out.println("Doctor Id = " + channellingDto.getDoctor().getId());
+
+//                System.out.println(integersCat);
+
+                    httpHeaders = new HttpHeaders();
+                    httpEntityIntegers = new HttpEntity<>(integersCat, httpHeaders);
+
+                    responseEntityCats = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CATGORY_SERVICE + "/category/searchByIds", HttpMethod.POST, httpEntityIntegers, Category[].class);
+
+                    if (null != responseEntityCats.getBody()) {
+
+//                    System.out.println(responseEntityCats.getBody());
+
+                        channellingDto.setCategories(responseEntityCats.getBody());
+
+                        httpHeaders = new HttpHeaders();
+                        httpEntityString = new HttpEntity<>("", httpHeaders);
+
+//                    System.out.println("Hospital ID - " + channelling.getHospital());
+
+                        responseEntityHos = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findById/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Hospital.class);
+
+                        if (null != responseEntityCats.getBody()) {
+
+//                        System.out.println(responseEntityHos.getBody());
+                            channellingDto.setHospital(responseEntityHos.getBody());
+
+                            channellingDto.setId(channelling.getId());
+                            channellingDto.setEndTime(Date.from(channelling.getEndTime()));
+                            channellingDto.setPrice(channelling.getPrice());
+                            channellingDto.setRoom(channelling.getRoom());
+                            channellingDto.setStartTime(Date.from(channelling.getStartTime()));
+                            channellingDto.setStatus(channelling.getStatus());
+
+                            channellingDtos.add(channellingDto);
+
+                        } else {
+                            throw new ChannellingException("Channelling find(Hospital) exception occurred in ChannellingServiceImpl.find", null);
+                        }
+
+                    } else {
+                        throw new ChannellingException("Channelling find(Category) exception occurred in ChannellingServiceImpl.find", null);
+                    }
+
+                } else {
+                    throw new ChannellingException("Channelling find(Doctor) exception occurred in ChannellingServiceImpl.find", null);
+                }
+
+            }
+
+            System.out.println(channellingDtos);
+            return channellingDtos;
+
+        } else {
+            return null;
+        }
     }
 
 }

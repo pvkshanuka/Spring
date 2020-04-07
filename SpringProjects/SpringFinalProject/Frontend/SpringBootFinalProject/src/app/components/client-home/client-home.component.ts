@@ -15,7 +15,7 @@ import {
   state,
   style,
   transition,
-  trigger
+  trigger,
 } from '@angular/animations';
 import { AppointmentSearchDTO } from 'src/app/DTOs/appointmentSearch-dto';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -31,14 +31,11 @@ import { Router, ActivatedRoute } from '@angular/router';
       transition(
         'expanded <=> collapsed',
         animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      )
-    ])
-  ]
+      ),
+    ]),
+  ],
 })
-
 export class ClientHomeComponent implements OnInit {
-
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   DATA_ROWS: ChannellingDTO[];
@@ -50,12 +47,10 @@ export class ClientHomeComponent implements OnInit {
   selected_doc;
   selected_date;
 
-
   dateNow = new Date();
 
   // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
   columnsToDisplay = ['doctor', 'hospital', 'price', 'startTime'];
-
 
   expandedElement: ChannellingDTO | null;
 
@@ -79,30 +74,25 @@ export class ClientHomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.data.userDetails.subscribe((user) => (this.userDetails = user));
 
-    this.data.userDetails.subscribe(user => this.userDetails = user);
-
-    if(this.userDetails == null) {
+    if (this.userDetails == null) {
       this.router.navigate(['../'], { relativeTo: this.route });
     }
-
-
 
     this.dateNow.setDate(this.dateNow.getDate() - 1);
 
     this.loadData();
 
-    // this.loadDoctors();
-
+    this.loadDoctors();
   }
 
   loadData() {
-
     console.log(this.selected_doc);
 
     this.appointmentSearchDTO = new AppointmentSearchDTO(
       this.userDetails.id,
-      1,
+      parseInt(this.selected_doc),
       new Date(this.selected_date),
       this.selected_sta
     );
@@ -110,37 +100,81 @@ export class ClientHomeComponent implements OnInit {
     console.log(this.appointmentSearchDTO);
 
     this._appointmentService.loadAllByUser(this.appointmentSearchDTO).subscribe(
-      response => {
-        this.DATA_ROWS = response;
-        this.dataSource = new MatTableDataSource(this.DATA_ROWS);
-        this.dataSource.paginator = this.paginator;
+      (response) => {
+        console.log(response);
+        if (response) {
+          this.DATA_ROWS = response;
+          this.dataSource = new MatTableDataSource(this.DATA_ROWS);
+          this.dataSource.paginator = this.paginator;
+        } else {
+          this.dataSource = null;
+          this._snackBar.open('No data to show.', '', {
+            duration: 3000,
+            panelClass: ['snackbar-warning'],
+          });
+        }
       },
-      error => {
+      (error) => {
         console.log(error);
         // this.inProcess = false;
       }
     );
   }
 
-  // loadDoctors() {
-  //   this._doctorService.getAll().subscribe(
-  //     response => {
-  //       // console.log(response);
-  //       this.DOCTORS = response;
-  //     },
-  //     error => {
-  //       console.log(error);
-  //     }
-  //   );
-  // }
+  deleteAppoinment(id) {
+    console.log('awaaa');
+
+
+    const snackBarAlt = this._snackBar.open('Are you sure you want to delete Appointment?', 'Yes', {
+      duration: 3000,
+      panelClass: ['snackbar-confirm'],
+    });
+
+    snackBarAlt.onAction().subscribe(() => {
+      this.inProcessSave = true;
+      this._appointmentService.delete(id).subscribe(
+        (response) => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success'],
+            });
+            this.loadData();
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error'],
+            });
+          }
+          this.inProcessSave = false;
+        },
+        (error) => {
+          console.log(error);
+          this.inProcessSave = false;
+        }
+      );
+    });
+
+
+  }
+
+  loadDoctors() {
+    this._doctorService.getAll().subscribe(
+      (response) => {
+        this.DOCTORS = response;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
 
   resetSearch() {
-    this.selected_sta =null;
+    this.selected_sta = null;
     this.selected_doc = '';
     this.selected_date = '';
 
     this.loadData();
-
   }
-
 }

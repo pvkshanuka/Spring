@@ -110,6 +110,10 @@ export class ClientRegComponent implements OnInit {
           error => {
             console.log(error);
             this.inProcess = false;
+            this._snackBar.open('Sign Up Error!', '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
           }
         );
       }

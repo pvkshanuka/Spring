@@ -84,22 +84,15 @@ public class ChannellingController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/findChannellingsByIds")
     public List<ChannellingDto> findChannellingsByIds(@RequestBody ChannellingSearchByIdsDto channellingSearchByIdsDto) {
-//    public List<ChannellingDto> search() {
 
         try {
-
-            System.out.println(channellingSearchByIdsDto.getIds());
-            System.out.println(channellingSearchByIdsDto.getDoctor());
-            System.out.println(channellingSearchByIdsDto.getDate());
-
-//            return channellingService.search(channelling);
-//            return channellingService.search(channellingSearchDTO);
             return channellingService.findChannellingsByIds(channellingSearchByIdsDto);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
             return null;
         }
+
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/test")

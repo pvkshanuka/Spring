@@ -15,6 +15,7 @@ import { ChannellingFormComponent } from './components/channelling-form/channell
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
 import { ClientHomeComponent } from './components/client-home/client-home.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ClientHomeComponent } from './components/client-home/client-home.compon
     ChannellingFormComponent,
     RoutingComponents,
     HomeComponent,
-    ClientHomeComponent
+    ClientHomeComponent,
+    FooterComponent
   ],
   entryComponents: [ClientRegComponent, ClientLoginComponent],
   imports: [

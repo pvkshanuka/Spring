@@ -23,6 +23,18 @@ body {
   font-weight: 500;
 }
 
+.snackbar-warning {
+  background-color: #ffd740;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.snackbar-confirm {
+  /* background-color: #ffd740; */
+  color: #ffffff;
+  font-weight: 500;
+}
+
 .spinner:before {
   content: "";
   box-sizing: border-box;
@@ -45,6 +57,10 @@ body {
 
 .color_primary {
   color: #673ab7 !important;
+}
+
+.color_warn {
+  color: #f44336 !important;
 }
 
 .cursor_pointer {
