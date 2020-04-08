@@ -12,7 +12,7 @@ const routes: Routes = [
   {path: 'doctor', component: DoctorFormComponent},
   {path: 'channelling', component: ChannellingFormComponent},
   {path: 'user', component: ClientHomeComponent},
-  {path: '', component: HomeComponent},
+  // {path: '', component: HomeComponent},
   {path: 'home', component: HomeComponent}
 
 

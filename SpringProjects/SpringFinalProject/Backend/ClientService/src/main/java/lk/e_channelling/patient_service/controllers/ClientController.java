@@ -7,10 +7,10 @@ import lk.e_channelling.patient_service.dto.ResponseDto;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.servicers.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -41,10 +41,24 @@ public class ClientController {
 
     @Transactional
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseDto update(@RequestBody Client client) {
+    public ResponseDto update(@RequestBody Client client, Principal principal) {
 
         try {
-                return clientService.update(client);
+                return clientService.update(client, principal.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new ResponseDto(false, "Client Update Error.!");
+        }
+
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/password")
+    public ResponseDto updatePw(@RequestBody Client client, @RequestHeader("Authorization") String token, Principal principal) {
+
+        try {
+            return clientService.updatePw(client, principal.getName(),token);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,6 +122,11 @@ public class ClientController {
     @RequestMapping(method = RequestMethod.GET, value = "/findBYId/{id}")
     public boolean findById(@PathVariable Integer id){
         return clientService.findById(id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/findDetailsById/{id}")
+    public Client findDetailsById(@PathVariable Integer id, Principal principal){
+        return clientService.findDetailsById(id, principal.getName());
     }
 
 //    Access By [User]

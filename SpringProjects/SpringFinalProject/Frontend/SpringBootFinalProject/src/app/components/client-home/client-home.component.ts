@@ -1,3 +1,5 @@
+import { ClientService } from './../../services/client/client.service';
+import { ClientUpdateFormComponent } from './../client-update-form/client-update-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppointmentService } from './../../services/appointment/appointment.service';
 import { HospitalService } from './../../services/hospital/hospital.service';
@@ -47,6 +49,8 @@ export class ClientHomeComponent implements OnInit {
   selected_doc;
   selected_date;
 
+  userData;
+
   dateNow = new Date();
 
   // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
@@ -68,6 +72,7 @@ export class ClientHomeComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private _channellingService: ChannellingService,
     private _categoryService: CategoryService,
+    private _clientService: ClientService,
     private _doctorService: DoctorService,
     private _hospitalService: HospitalService,
     private _appointmentService: AppointmentService
@@ -85,6 +90,15 @@ export class ClientHomeComponent implements OnInit {
     this.loadData();
 
     this.loadDoctors();
+
+    this.loadUserData();
+  }
+
+  openUpdateDialog() {
+    this.dialog.open(ClientUpdateFormComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
   }
 
   loadData() {
@@ -176,5 +190,29 @@ export class ClientHomeComponent implements OnInit {
     this.selected_date = '';
 
     this.loadData();
+  }
+
+  loadUserData() {
+    this._clientService.loadUserData(this.userDetails.id).subscribe(
+          response => {
+            console.log(response);
+            if (response == null) {
+              this._snackBar.open('Invalid user to load data!', '', {
+                duration: 3000,
+                panelClass: ['snackbar-error']
+              });
+            } else {
+              this.userData = response;
+            }
+
+          },
+          error => {
+            console.log(error);
+            this._snackBar.open('User data load error!', '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        );
   }
 }

@@ -44,7 +44,7 @@ export class ClientRegComponent implements OnInit {
     age: ['', [Validators.required, Validators.min(16), Validators.max(100)]],
     contact: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{6,}')]],
+    password: ['', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{6,15}$')]],
     cpword: ['', [Validators.required]]
   }, {
     validator: MustMatch('password', 'cpword')

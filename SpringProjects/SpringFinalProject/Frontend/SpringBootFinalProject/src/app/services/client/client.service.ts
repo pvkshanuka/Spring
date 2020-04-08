@@ -10,13 +10,27 @@ export class ClientService {
 
   constructor(private _http: HttpClient) { }
 
-  save(doctorData) {
-    return this._http.post<any>(this._url, doctorData);
+  save(clientData: any) {
+    return this._http.post<any>(this._url, clientData);
   }
 
-  logIn(loginData) {
+  loadUserData(id) {
+    return this._http.get<any>(this._url + '/findDetailsById/' + id);
+  }
+
+  update(clientData: any) {
+    return this._http.put<any>(this._url, clientData);
+  }
+
+  updatePw(password) {
+    return this._http.put<any>(this._url + '/password', password);
+  }
+
+  logIn(loginData: any) {
     // console.log('OAuthService' + this._url);
     console.log(loginData);
+
+
 
   //   loginData.client_id = 'mobile';
   //   loginData.client_secret = 'pin';
@@ -37,7 +51,7 @@ export class ClientService {
   //   console.log(body);
 
     // return this._http.post<any>(this._url, body, httpOptions);
-    return this._http.post<any>(this._url+ '/login', loginData);
+    return this._http.post<any>(this._url + '/login', loginData);
 
     // return this.httpClient.post<any>('http://localhost:9191/oauth', loginData).pipe(
     //   map(

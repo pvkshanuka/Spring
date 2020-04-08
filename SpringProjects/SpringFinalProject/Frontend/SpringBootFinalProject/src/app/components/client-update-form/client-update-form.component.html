@@ -1,0 +1,75 @@
+<h2 mat-dialog-title style="margin-bottom: 0px;">Update Details From Here</h2>
+
+
+
+<mat-dialog-content>
+  <div class="mycontainer">
+    <h3 mat-dialog-title style="margin-bottom: 0px;">Personal Details</h3>
+    <!-- <br> -->
+    <!-- <mat-grid-list cols="6">
+          <mat-grid-tile></mat-grid-tile>
+          <mat-grid-tile colspan="4"> -->
+
+      <!-- <h2 class="example-full-width, form_header">Register From Here</h2> -->
+      <form class="example-form" [formGroup]="clientForm" (ngSubmit)="update()">
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input formControlName="name" [(ngModel)]="nametxt" matInput type="text" placeholder="Ex: Firstname Lastname" required />
+        <mat-error align="end" *ngIf="name.errors?.required">Name is required</mat-error>
+        <mat-error align="end" *ngIf="name.errors?.minlength">Name must be at least 4 characters</mat-error>
+      </mat-form-field>
+
+      <mat-grid-list cols="2" rowHeight="60px" gutterSize="5px">
+        <mat-grid-tile>
+          <mat-form-field class="example-full-width" required>
+            <mat-label>Age</mat-label>
+            <input type="number" formControlName="age" [(ngModel)]="agetxt"  matInput placeholder="Ex. 99" required />
+            <mat-error align="end" *ngIf="age.errors?.required">Name is required</mat-error>
+            <mat-error align="end" *ngIf="age.errors?.min || age.errors?.max">Invalid age</mat-error>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+
+          <mat-form-field class="example-full-width">
+            <mat-label>Contact Number</mat-label>
+            <input formControlName="contact" type="number" [(ngModel)]="contacttxt" matInput placeholder="Ex. 771234567" required />
+            <span matPrefix>+94&nbsp;</span>
+            <span matSuffix></span>
+            <mat-error align="end" *ngIf="contact.errors?.required">Contact is required</mat-error>
+            <mat-error align="end" *ngIf="contact.errors?.pattern">Invalid contact number</mat-error>
+          </mat-form-field>
+
+        </mat-grid-tile>
+      </mat-grid-list>
+      <button type="submit" mat-raised-button color="primary" [disabled]="clientForm.invalid || inProcess" [class.spinner]="inProcess" >Update</button>
+
+    </form>
+    <br>
+    <h3 mat-dialog-title style="margin-bottom: 0px;">Password</h3>
+<!-- <br> -->
+    <form class="example-form" [formGroup]="clientFormPW" (ngSubmit)="updatePW()">
+
+      <mat-form-field class="example-full-width">
+        <mat-label>New Password</mat-label>
+        <input formControlName="password" matInput type="password" required />
+        <mat-error align="end" *ngIf="password.errors?.required">Password is required</mat-error>
+        <mat-error align="end" *ngIf="password.errors?.pattern">Password atlease contain one special character, one uppercase & lowercase letter, & number with 6 character length</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Confirm Password</mat-label>
+        <input formControlName="cpword" matInput type="password" required />
+        <mat-error align="end" *ngIf="cpword.errors?.required">Confirm Password is required</mat-error>
+        <mat-error align="end" *ngIf="cpword.errors?.mustMatch">Confirm Password & Password not matching</mat-error>
+      </mat-form-field>
+      <button type="submit" mat-raised-button color="primary" [disabled]="clientFormPW.invalid || inProcess" [class.spinner]="inProcess" >Update</button>
+
+    </form>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+
+

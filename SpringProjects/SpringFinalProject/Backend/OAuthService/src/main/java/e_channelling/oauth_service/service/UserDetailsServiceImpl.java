@@ -53,4 +53,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             }
     }
 
+    public Boolean updatePassword(Login login) {
+        Optional<User> optional = userDetailRepository.findByUsername(login.getUsername());
+
+        if (optional.isPresent()){
+
+            User user = optional.get();
+            user.setPassword(login.getPassword());
+
+            userDetailRepository.save(user);
+
+            return true;
+
+        }else {
+            return false;
+        }
+
+    }
 }

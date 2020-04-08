@@ -93,40 +93,56 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ResponseDto update(Client client) {
+    public ResponseDto update(Client client, String name) {
+
 
         try {
 
-            Optional<Client> optional = clientRepository.findById(client.getId());
+            client.setEmail(null);
+            client.setPassword(null);
+            client.setStatus(null);
+            client.setType(null);
+
+            if (validation.updateValidator(client)) {
 
 
-            if (optional.isPresent()) {
+                Optional<Client> optional = clientRepository.findById(client.getId());
 
-                Client clientDB = optional.get();
 
-                if (clientDB.getStatus().equals("1")) {
+                if (optional.isPresent()) {
 
-//                client.setContact(clientDB.getContact());
-                    client.setEmail(clientDB.getEmail());
-                    client.setStatus("1");
+                    Client clientDB = optional.get();
 
-                    if (validation.saveValidator(client)) {
+                    if (name.equals(clientDB.getEmail())) {
 
-                        clientRepository.save(client);
+                        if (clientDB.getStatus().equals("1")) {
 
-                        System.out.println("Client Updated Successfully.!");
-                        return new ResponseDto(true, "Client Updated Successfully.!");
+                            clientDB.setName(client.getName());
+                            clientDB.setAge(client.getAge());
+                            clientDB.setContact(client.getContact());
+
+
+                                clientRepository.save(clientDB);
+
+                                System.out.println("Client Updated Successfully.!");
+                                return new ResponseDto(true, "Client Updated Successfully.!");
+                        } else {
+                            return new ResponseDto(true, "Deleted Client.!");
+                        }
+
                     } else {
-                        return new ResponseDto(false, "Invalid Client Details.!");
+                        return new ResponseDto(false, "Invalid Client.!");
                     }
-                } else {
-                    return new ResponseDto(true, "Deleted Client.!");
-                }
-            } else {
-                System.out.println("Invalid Client ID.!");
-                return new ResponseDto(false, "Invalid Client ID.!");
-            }
 
+                } else {
+                    System.out.println("Invalid Client ID.!");
+                    return new ResponseDto(false, "Invalid Client ID.!");
+                }
+
+
+            } else {
+                return new ResponseDto(false, "Invalid Client Details.!");
+            }
         } catch (Exception e) {
             throw new ClientException("Client update exception occurred in ClientServiceImpl.update", e);
         }
@@ -213,7 +229,8 @@ public class ClientServiceImpl implements ClientService {
             String credentials = ClientServiceApplication.OAUTH_CLIENT_ID + ":" + ClientServiceApplication.OAUTH_CLIENT_SECRET;
 
             String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
-
+            System.out.println(credentials);
+            System.out.println(encodedCredentials);
 
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -241,17 +258,17 @@ public class ClientServiceImpl implements ClientService {
 
                 if (optional.isPresent()) {
                     final Client client = optional.get();
-                    return new LoginResponseDto(client.getId(),client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(),client.getType(), "", true);
+                    return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
                 } else {
-                    return new LoginResponseDto(null,"", "", "", "",null, "Invalid Login Details.!", false);
+                    return new LoginResponseDto(null, "", "", "", "", null, "Invalid Login Details.!", false);
                 }
 
             } else {
-                return new LoginResponseDto(null,"", "", "", "",null, "Invalid Login Details.!", false);
+                return new LoginResponseDto(null, "", "", "", "", null, "Invalid Login Details.!", false);
             }
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                return new LoginResponseDto(null,"", "", "", "",null, "Invalid Login Details.!", false);
+                return new LoginResponseDto(null, "", "", "", "", null, "Invalid Login Details.!", false);
             } else {
                 throw new ClientException("Client login exception occurred in ClientServiceImpl.login", e);
             }
@@ -262,7 +279,7 @@ public class ClientServiceImpl implements ClientService {
     public Boolean findById(Integer id) {
         try {
             return clientRepository.findById(id).isPresent();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -271,11 +288,96 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public String findUsernameById(Integer id) {
         Optional<Client> optional = clientRepository.findById(id);
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
+            System.out.println(optional);
             return optional.get().getEmail();
-        }else{
-            return  null;
+        } else {
+            return null;
         }
+    }
+
+    @Override
+    public Client findDetailsById(Integer id, String name) {
+        Optional<Client> optional = clientRepository.findById(id);
+        if (optional.isPresent()){
+                Client client = optional.get();
+            if (name.equals(client.getEmail())) {
+                return client;
+            }else{
+                return null;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseDto updatePw(Client client, String name, String token) {
+
+        System.out.println(client+" >>>>>>>>>");
+        try {
+
+            if (validation.updatePwValidator(client)) {
+
+
+                Optional<Client> optional = clientRepository.findById(client.getId());
+
+
+                if (optional.isPresent()) {
+
+                    Client clientDB = optional.get();
+
+                    if (name.equals(clientDB.getEmail())) {
+
+                        if (clientDB.getStatus().equals("1")) {
+
+
+
+                            String credentials = ClientServiceApplication.OAUTH_CLIENT_ID + ":" + ClientServiceApplication.OAUTH_CLIENT_SECRET;
+
+                            String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+                            System.out.println(credentials);
+                            System.out.println(encodedCredentials);
+
+                            HttpHeaders httpHeaders = new HttpHeaders();
+                            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+//                            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Basic " + encodedCredentials);
+                            httpHeaders.add("Authorization", token);
+
+                            HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(clientDB.getEmail(), client.getPassword(), null), httpHeaders);
+
+                            ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate", HttpMethod.PUT, httpEntity, Boolean.class);
+
+                            if (responseEntity.getBody()) {
+
+                                System.out.println("Client Updated Successfully.!");
+                                return new ResponseDto(true, "Client Updated Successfully.!");
+
+                            } else {
+                                System.out.println("Client Update Failed.!");
+                                return new ResponseDto(false, "Client Update Failed.!");
+                            }
+
+                        } else {
+                            return new ResponseDto(true, "Deleted Client.!");
+                        }
+
+                    } else {
+                        return new ResponseDto(false, "Invalid Client.!");
+                    }
+
+                } else {
+                    System.out.println("Invalid Client ID.!");
+                    return new ResponseDto(false, "Invalid Client ID.!");
+                }
+
+
+            } else {
+                return new ResponseDto(false, "Invalid Client Details.!");
+            }
+        } catch (Exception e) {
+            throw new ClientException("Client update exception occurred in ClientServiceImpl.update", e);
+        }
+
     }
 
 

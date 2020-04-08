@@ -1,0 +1,23 @@
+.mycontainer{
+  margin-top: 20px;
+  /* background-color: lightgray; */
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.example-half-width {
+  width: 50%;
+}
+
+.form_header{
+  text-align: center;
+  font-weight: lighter;
+}

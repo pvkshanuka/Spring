@@ -9,5 +9,7 @@ public interface Validation {
     public boolean stringMaxLengthValidator(String string, int length);
     public boolean isInt(String string);
     public boolean saveValidator(Client client);
+    public boolean updateValidator(Client client);
 
+    boolean updatePwValidator(Client client);
 }

@@ -34,4 +34,20 @@ public class OAuthController {
 
     }
 
+    @RequestMapping(method = RequestMethod.PUT)
+    public Boolean updatePassword(@RequestBody Login login){
+        System.out.println(login);
+        try {
+
+            login.setPassword(passwordEncoder.encode(login.getPassword()));
+            return userDetailsService.updatePassword(login);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return false;
+        }
+
+    }
+
 }

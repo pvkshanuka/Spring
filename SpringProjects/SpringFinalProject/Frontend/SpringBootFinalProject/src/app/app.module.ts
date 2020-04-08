@@ -16,6 +16,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
 import { ClientHomeComponent } from './components/client-home/client-home.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { ClientUpdateFormComponent } from './components/client-update-form/client-update-form.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { FooterComponent } from './components/footer/footer.component';
     RoutingComponents,
     HomeComponent,
     ClientHomeComponent,
-    FooterComponent
+    FooterComponent,
+    ClientUpdateFormComponent
   ],
   entryComponents: [ClientRegComponent, ClientLoginComponent],
   imports: [

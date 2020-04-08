@@ -12,7 +12,7 @@ public interface ClientService {
 
     public ResponseDto save(@RequestBody Client client);
 
-    public ResponseDto update(@RequestBody Client client);
+    public ResponseDto update(@RequestBody Client client, String name);
 
     public ResponseDto delete(@RequestBody int id);
 
@@ -25,4 +25,8 @@ public interface ClientService {
     public Boolean findById(Integer id);
 
     public String findUsernameById(Integer id);
+
+    Client findDetailsById(Integer id, String name);
+
+    ResponseDto updatePw(Client client, String name, String token);
 }
