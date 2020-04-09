@@ -1,0 +1,52 @@
+<div style="width: 100%;">
+  <img class="header-img" src="../../../assets/img/slide-one.jpg" alt="" />
+
+  <div class="floatdiv">
+    <h1 class="h1">medicare</h1>
+    <p class="p">e-channelling providing highquality service</p>
+
+    <h1 class="h2">Faster</h1>
+    <p class="p">highquality service for men &amp; women</p>
+  </div>
+
+  <div class="mycontainer">
+
+<p class="titleheader"> Welcome <span>{{userDetails.name}}</span></p>
+<br>
+<br>
+<p class="title">&nbsp;&nbsp;&nbsp; Personal Details</p>
+<br>
+<table width="75%">
+  <tr>
+    <td><h2>Name :</h2></td>
+    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.name}}</h3></td>
+
+    <td><h2>Age :</h2></td>
+    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.age}}</h3></td>
+
+  </tr>
+
+  <tr>
+    <td><h2>Contact No :</h2></td>
+    <td style="text-align: left"><h3 *ngIf="userData">{{userData.contact}}</h3></td>
+
+    <td><h2>Email :</h2></td>
+    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.email}}</h3></td>
+
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+
+    <td></td>
+    <td>
+      <button mat-raised-button color="primary" (click)="openUpdateDialog()" style="margin:auto; display:block;">Update</button>
+
+    </td>
+
+  </tr>
+</table>
+
+
+  </div>
+</div>

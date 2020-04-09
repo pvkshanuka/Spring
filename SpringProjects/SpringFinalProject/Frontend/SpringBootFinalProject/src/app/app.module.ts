@@ -17,6 +17,7 @@ import { HomeComponent } from './components/home/home.component';
 import { ClientHomeComponent } from './components/client-home/client-home.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ClientUpdateFormComponent } from './components/client-update-form/client-update-form.component';
+import { ManagerHomeComponent } from './components/manager-home/manager-home.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ClientUpdateFormComponent } from './components/client-update-form/clien
     HomeComponent,
     ClientHomeComponent,
     FooterComponent,
-    ClientUpdateFormComponent
+    ClientUpdateFormComponent,
+    ManagerHomeComponent
   ],
   entryComponents: [ClientRegComponent, ClientLoginComponent],
   imports: [

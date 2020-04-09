@@ -70,11 +70,8 @@ export class ClientHomeComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private _snackBar: MatSnackBar,
-    private _channellingService: ChannellingService,
-    private _categoryService: CategoryService,
     private _clientService: ClientService,
     private _doctorService: DoctorService,
-    private _hospitalService: HospitalService,
     private _appointmentService: AppointmentService
   ) {}
 

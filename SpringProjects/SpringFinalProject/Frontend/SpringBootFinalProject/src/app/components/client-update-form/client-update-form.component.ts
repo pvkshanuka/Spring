@@ -17,9 +17,9 @@ export class ClientUpdateFormComponent implements OnInit {
 
   userData;
 
-  nametxxt: strng;
+  nametxt: string;
   agetxt: number;
-  contacttxt: strng;
+  contacttxt: string;
 
   clientForm = this.fb.group({
     id: [],
@@ -87,8 +87,8 @@ loadUserData() {
           } else {
             this.userData = response;
             this.nametxt = this.userData.name;
-            this.agetxt = this.userData.age; 
-            this.contacttxt = this.userData.contact; 
+            this.agetxt = this.userData.age;
+            this.contacttxt = this.userData.contact;
 
           }
 

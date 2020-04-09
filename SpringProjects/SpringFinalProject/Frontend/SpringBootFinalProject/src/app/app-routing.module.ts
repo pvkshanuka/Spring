@@ -1,3 +1,4 @@
+import { ManagerHomeComponent } from './components/manager-home/manager-home.component';
 import { ClientHomeComponent } from './components/client-home/client-home.component';
 import { HomeComponent } from './components/home/home.component';
 import { DoctorFormComponent } from './components/doctor-form/doctor-form.component';
@@ -12,6 +13,8 @@ const routes: Routes = [
   {path: 'doctor', component: DoctorFormComponent},
   {path: 'channelling', component: ChannellingFormComponent},
   {path: 'user', component: ClientHomeComponent},
+  {path: 'manager', component: ManagerHomeComponent},
+
   // {path: '', component: HomeComponent},
   {path: 'home', component: HomeComponent}
 
