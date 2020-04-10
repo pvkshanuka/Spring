@@ -7,9 +7,9 @@ export class UserDetails {
   name: string = null;
   username: string = null;
   token: string = null;
-  type: string = null;
+  type: number = null;
 
-  constructor(id: number, name: string, username: string, token: string, type: string){
+  constructor(id: number, name: string, username: string, token: string, type: number){
     this.id = id;
     this.name = name;
     this.username = username;

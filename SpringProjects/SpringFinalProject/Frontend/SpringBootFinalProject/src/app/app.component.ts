@@ -12,7 +12,7 @@ export class AppComponent {
     if(sessionStorage.getItem('token') != null) {
 
             data.changeUserDetails(new UserDetails(parseInt(sessionStorage.getItem('id')), sessionStorage.getItem('name'),
-             sessionStorage.getItem('username'), sessionStorage.getItem('token'), sessionStorage.getItem('type')));
+             sessionStorage.getItem('username'), sessionStorage.getItem('token'), parseInt(sessionStorage.getItem('type'))));
 
           }
   }
