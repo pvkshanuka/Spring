@@ -209,7 +209,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentDto> searchByChannellingIdAndStatusNot(Integer id, String token) {
-        List<Appointment> byChannelling = appointmentRepository.findByChannellingAndStatusNot(id,"1");
+        List<Appointment> byChannelling = appointmentRepository.findByChannellingAndStatusNot(id,"0");
 //        System.out.println("searchByChannellingIdAndStatusNot");
         System.out.println(byChannelling);
 //        System.out.println();

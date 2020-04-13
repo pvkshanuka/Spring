@@ -11,182 +11,245 @@
 
   <div class="mycontainer">
 
-<p class="titleheader"> Welcome <span>{{userDetails.name}}</span></p>
-<br>
-<br>
-<p class="title">&nbsp;&nbsp;&nbsp; Personal Details</p>
-<br>
-<table width="75%">
-  <tr>
-    <td><h2>Name :</h2></td>
-    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.name}}</h3></td>
+    <p class="titleheader"> Welcome <span>{{userDetails.name}}</span></p>
+    <br>
+    <br>
+    <p class="title">&nbsp;&nbsp;&nbsp; Personal Details</p>
+    <br>
+    <table width="75%">
+      <tr>
+        <td>
+          <h2>Name :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.name}}</h3>
+        </td>
 
-    <td><h2>Age :</h2></td>
-    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.age}}</h3></td>
+        <td>
+          <h2>Age :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.age}}</h3>
+        </td>
 
-  </tr>
+      </tr>
 
-  <tr>
-    <td><h2>Contact No :</h2></td>
-    <td style="text-align: left"><h3 *ngIf="userData">{{userData.contact}}</h3></td>
+      <tr>
+        <td>
+          <h2>Contact No :</h2>
+        </td>
+        <td style="text-align: left">
+          <h3 *ngIf="userData">{{userData.contact}}</h3>
+        </td>
 
-    <td><h2>Email :</h2></td>
-    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.email}}</h3></td>
+        <td>
+          <h2>Email :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.email}}</h3>
+        </td>
 
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
 
-    <td></td>
-    <td>
-      <button mat-raised-button color="primary" (click)="openUpdateDialog()" style="margin:auto; display:block;">Update</button>
+        <td></td>
+        <td>
+          <button mat-raised-button color="primary" (click)="openUpdateDialog()"
+            style="margin:auto; display:block;">Update</button>
 
-    </td>
+        </td>
 
-  </tr>
-</table>
-
-
-
-<table class="example-full-width" cellspacing="0">
-  <tr>
-    <td>
-
-
-      <mat-form-field class="example-half-width-full-height">
-        <mat-label>Category</mat-label>
-        <mat-select (selectionChange)="loadData()" [(ngModel)]="selected_cat">
-          <!-- <mat-option><span class="default-option">None</span></mat-option> -->
-          <div *ngFor="let cat of CATEGORYS">
-            <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
-
-          </div>
-        </mat-select>
-      </mat-form-field>
-
-    </td>
-
-    <td>
-
-      <mat-form-field class="example-half-width-full-height">
-        <mat-label>Doctor</mat-label>
-        <span matPrefix>Dr.&nbsp;</span>
-        <mat-select (selectionChange)="loadData()" [(ngModel)]="selected_doc">
-          <!-- <mat-option><span class="default-option">None</span></mat-option> -->
-          <div *ngFor="let doc of DOCTORS">
-            <mat-option value="{{doc.id}}">{{doc.name}}</mat-option>
-
-          </div>
-        </mat-select>
-      </mat-form-field>
-
-    </td>
-
-    <td>
-
-      <mat-form-field class="example-half-width-full-height">
-        <input (dateTimeInput)="loadData()" [(ngModel)]="selected_date" class="cursor_pointer" readonly="readonly"
-          matInput [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Date" />
-        <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
-      </mat-form-field>
-
-    </td>
-
-    <td>
-
-      <button mat-raised-button (click)="resetSearch()" style="margin:auto; display:block;">Reset</button>
-
-    </td>
-  </tr>
-</table>
+      </tr>
+    </table>
 
 
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
 
-    <ng-container matColumnDef="doctor">
-      <th mat-header-cell *matHeaderCellDef>Doctor</th>
-      <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.doctor.name}}
-        <p class="color_primary" style="font-size: small; margin-bottom: 0px;">
-          <span *ngFor="let cat of element.categories">
-            {{"|"+cat.category}}
-          </span>
-        </p>
-      </td>
-    </ng-container>
+    <table class="example-full-width" cellspacing="0">
+      <tr>
+        <td>
 
-    <ng-container matColumnDef="hospital">
-      <th mat-header-cell *matHeaderCellDef>Hospital</th>
-      <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.hospital.name}}
-        <p style="font-size: small; color: gray; margin-bottom: 0px;">
-          <span>
-            {{element.hospital.city}}
-          </span>
-        </p>
-      </td>
-    </ng-container>
 
-    <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef>Price</th>
-      <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{"Rs "+element.price+".00"}}
-      </td>
-    </ng-container>
+          <mat-form-field class="example-half-width-full-height">
+            <mat-label>Category</mat-label>
+            <mat-select (selectionChange)="loadData()" [(ngModel)]="selected_cat">
+              <!-- <mat-option><span class="default-option">None</span></mat-option> -->
+              <div *ngFor="let cat of CATEGORYS">
+                <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
 
-    <ng-container matColumnDef="startTime">
-      <th mat-header-cell *matHeaderCellDef>Date</th>
-      <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.startTime | date }}
-      </td>
-    </ng-container>
+              </div>
+            </mat-select>
+          </mat-form-field>
 
-    <ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length"
-        style="background-color: rgb(234, 251, 255);">
-        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-          <table class="">
-            <!-- <th style="text-align: start; font-size: small;">Hospital Details</th>
+        </td>
+
+        <td>
+
+          <mat-form-field class="example-half-width-full-height">
+            <mat-label>Doctor</mat-label>
+            <span matPrefix>Dr.&nbsp;</span>
+            <mat-select (selectionChange)="loadData()" [(ngModel)]="selected_doc">
+              <!-- <mat-option><span class="default-option">None</span></mat-option> -->
+              <div *ngFor="let doc of DOCTORS">
+                <mat-option value="{{doc.id}}">{{doc.name}}</mat-option>
+
+              </div>
+            </mat-select>
+          </mat-form-field>
+
+        </td>
+
+        <td>
+
+          <mat-form-field class="example-half-width-full-height">
+            <input (dateTimeInput)="loadData()" [(ngModel)]="selected_date" class="cursor_pointer" readonly="readonly"
+              matInput [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Date" />
+            <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+          </mat-form-field>
+
+        </td>
+
+        <td>
+
+          <button mat-raised-button (click)="resetSearch()" style="margin:auto; display:block;">Reset</button>
+
+        </td>
+      </tr>
+    </table>
+
+
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+
+        <ng-container matColumnDef="doctor">
+          <th mat-header-cell *matHeaderCellDef>Doctor</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.doctor.name}}
+            <p class="color_primary" style="font-size: small; margin-bottom: 0px;">
+              <span *ngFor="let cat of element.categories">
+                {{"|"+cat.category}}
+              </span>
+            </p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="hospital">
+          <th mat-header-cell *matHeaderCellDef>Hospital</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.hospital.name}}
+            <p style="font-size: small; color: gray; margin-bottom: 0px;">
+              <span>
+                {{element.hospital.city}}
+              </span>
+            </p>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{"Rs "+element.price+".00"}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="startTime">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.startTime | date }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length"
+            style="background-color: rgb(234, 251, 255);">
+            <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <table>
+                <tr>
+                  <td>
+                    <table class="">
+                      <!-- <th style="text-align: start; font-size: small;">Hospital Details</th>
           <th style="text-align: start; font-size: small;">Hospital Details</th>
           <th style="text-align: start; font-size: small;">Hospital Details</th>
           <th style="text-align: start; font-size: small;">Hospital Details</th> -->
-            <tr>
-              <td class="example-element-name">
-                <span style="font-weight: 500; font-size: small;">
-                  Channelling No : </span>{{"0"+element.id}} </td>
-              <td class="example-element-name">
-                <span style="font-weight: 500; font-size: small;">
-                  Email : </span>{{element.hospital.email}} </td>
-              <td class="example-element-name">
-                <span style="font-weight: 500; font-size: small;">
-                  Start Time : </span>{{element.startTime | date:'shortTime' }} </td>
-            </tr>
-            <tr>
-              <td class="example-element-name">
-                <span style="font-weight: 500; font-size: small;">
-                  Room No : </span>{{element.room}} </td>
-              <td class="example-element-name">
-                <span style="font-weight: 500; font-size: small;">
-                  Contact No : </span>{{"+94"+element.hospital.contact}} </td>
-              <td class="example-element-name">
-                <span style="font-weight: 500; font-size: small;">
-                  End Time : </span>{{element.endTime | date:'shortTime' }} </td>
-            </tr>
-          </table>
-          <button mat-raised-button color="primary" style="margin: 10px 0px 10px 0px;font-size: small;cursor: auto;"
-            [disabled]="inProcessSave" [class.spinner]="inProcessSave"
-            (click)="addAppoinment(element.id)">Channel</button>
-        </div>
-      </td>
-    </ng-container>
+                      <tr>
+                        <td class="example-element-name">
+                          <span style="font-weight: 500; font-size: small;">
+                            Channelling No : </span>{{"0"+element.id}} </td>
+                        <td class="example-element-name">
+                          <span style="font-weight: 500; font-size: small;">
+                            Email : </span>{{element.hospital.email}} </td>
+                        <td class="example-element-name">
+                          <span style="font-weight: 500; font-size: small;">
+                            Start Time : </span>{{element.startTime | date:'shortTime' }} </td>
+                        <td rowspan="2">
+                          <button mat-raised-button color="primary"
+                            style="margin: 10px 0px 10px 0px;font-size: small;cursor: auto;" [disabled]="inProcessSave"
+                            [class.spinner]="inProcessSave" (click)="addAppoinment(element.id)">Channel</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="example-element-name">
+                          <span style="font-weight: 500; font-size: small;">
+                            Room No : </span>{{element.room}} </td>
+                        <td class="example-element-name">
+                          <span style="font-weight: 500; font-size: small;">
+                            Contact No : </span>{{"+94"+element.hospital.contact}} </td>
+                        <td class="example-element-name">
+                          <span style="font-weight: 500; font-size: small;">
+                            End Time : </span>{{element.endTime | date:'shortTime' }} </td>
 
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
-      [class.example-expanded-row]="expandedElement === element"
-      (click)="expandedElement = expandedElement === element ? null : element">
-    </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-  </table>
-  <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
-</div>
+                      </tr>
+
+                    </table>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td *ngIf="element.appointments.length != 0">
+                    <b>Appointment Details</b>
+                    <table style="margin-bottom: 5px;">
+
+                      <tr *ngFor="let appo of element.appointments">
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            NO : </span>{{appo.id}}
+                        </td>
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            Name : </span>{{appo.client.name}}
+                        </td>
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            Email : </span>{{appo.client.email}}
+                        </td>
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            Contact : </span>{{appo.client.contact}}
+                        </td>
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            Status : </span>{{appo.status}}
+                        </td>
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            Action : </span>{{appo.client.id}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </td>
+
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+          [class.example-expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+    </div>
 
 
   </div>

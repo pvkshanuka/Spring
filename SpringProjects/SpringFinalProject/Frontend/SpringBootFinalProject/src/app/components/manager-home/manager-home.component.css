@@ -103,3 +103,7 @@ tr.example-element-row:not(.example-expanded-row):active {
   font-size: 30px;
   color: #0066ff;
 }
+
+.borderbottom{
+  border-bottom: 1px solid gray;
+}

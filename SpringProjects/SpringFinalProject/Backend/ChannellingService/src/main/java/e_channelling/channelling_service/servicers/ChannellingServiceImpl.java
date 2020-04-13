@@ -653,7 +653,7 @@ public class ChannellingServiceImpl implements ChannellingService {
 
             System.out.println(channellings.size());
 
-            channellings.forEach(channelling -> System.out.println(channelling));
+//            channellings.forEach(channelling -> System.out.println(channelling));
 
             List<ChannellingDto> channellingDtos = new ArrayList<>();
 
@@ -667,14 +667,9 @@ public class ChannellingServiceImpl implements ChannellingService {
             ResponseEntity<Hospital> responseEntityHos;
             ResponseEntity<Appointment[]> responseEntityAppo;
 
-            Date dateToday = new Date();
-
             List<Integer> integersCat = new ArrayList<>();
 
             for (Channelling channelling : channellings) {
-
-                if (Date.from(channelling.getStartTime()).after(dateToday)) {
-
 
                     channellingDto = new ChannellingDto();
 
@@ -754,8 +749,6 @@ public class ChannellingServiceImpl implements ChannellingService {
                     } else {
                         throw new ChannellingException("Channelling find(Doctor) exception occurred in ChannellingServiceImpl.find", null);
                     }
-
-                }
 
             }
 
