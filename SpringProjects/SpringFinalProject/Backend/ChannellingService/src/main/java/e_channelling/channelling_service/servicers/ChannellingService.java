@@ -34,6 +34,8 @@ public interface ChannellingService {
 
     public List<ChannellingDto> findChannellingsByIds(ChannellingSearchByIdsDto channellingSearchByIdsDto);
 
+    List<ChannellingDto> searchByHospital(ChannellingSearchDTO channellingSearchDTO, String name, String token);
+
 //    public List<Channelling> searchBeforeSave(@RequestBody Channelling channelling);
 //
 //    public Boolean findById(Integer id);

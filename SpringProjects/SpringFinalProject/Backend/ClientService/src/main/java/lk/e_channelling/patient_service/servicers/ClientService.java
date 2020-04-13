@@ -28,5 +28,9 @@ public interface ClientService {
 
     Client findDetailsById(Integer id, String name);
 
+    Client findDetailsById(Integer id);
+
     ResponseDto updatePw(Client client, String name, String token);
+
+    boolean findByEmailAndHospital(String email, Integer hospital);
 }

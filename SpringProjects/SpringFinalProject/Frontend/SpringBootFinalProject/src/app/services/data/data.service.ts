@@ -5,13 +5,15 @@ export class UserDetails {
 
   id: number = null;
   name: string = null;
+  hospital: number = null;
   username: string = null;
   token: string = null;
   type: number = null;
 
-  constructor(id: number, name: string, username: string, token: string, type: number){
+  constructor(id: number, name: string, hospital: number, username: string, token: string, type: number){
     this.id = id;
     this.name = name;
+    this.hospital = hospital;
     this.username = username;
     this.token = token;
     this.type = type;

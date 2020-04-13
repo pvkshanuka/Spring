@@ -99,7 +99,7 @@ export class ManagerHomeComponent implements OnInit {
 
   loadData() {
 
-    console.log(this.selected_doc);
+    // console.log(this.selected_doc);
 
     this.channellingSearchDTO = new ChannellingSearchDTO(
       parseInt(this.selected_cat),
@@ -110,8 +110,9 @@ export class ManagerHomeComponent implements OnInit {
 
     console.log(this.channellingSearchDTO);
 
-    this._channellingService.loadAll(this.channellingSearchDTO).subscribe(
+    this._channellingService.loadAllByHospital(this.channellingSearchDTO).subscribe(
       response => {
+        console.log(response);
         this.DATA_ROWS = response;
         this.dataSource = new MatTableDataSource(this.DATA_ROWS);
         this.dataSource.paginator = this.paginator;

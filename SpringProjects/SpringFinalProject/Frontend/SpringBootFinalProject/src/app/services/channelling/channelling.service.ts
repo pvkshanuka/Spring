@@ -18,6 +18,11 @@ export class ChannellingService {
     return this._http.post<any>(this._url + '/search', channellingSearchDTO);
   }
 
+  loadAllByHospital(channellingSearchDTO) {
+    return this._http.post<any>(this._url + '/searchByHospital', channellingSearchDTO);
+  }
+
+
   test() {
     return this._http.get<any>(this._url + '/test');
   }

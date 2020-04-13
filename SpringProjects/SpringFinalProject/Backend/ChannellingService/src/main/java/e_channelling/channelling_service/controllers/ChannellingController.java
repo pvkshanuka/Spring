@@ -9,6 +9,7 @@ import e_channelling.channelling_service.servicers.ChannellingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +75,23 @@ public class ChannellingController {
 
 //            return channellingService.search(channelling);
             return channellingService.search(channellingSearchDTO);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST, value = "/searchByHospital")
+    public List<ChannellingDto> searchByHospital(@RequestBody ChannellingSearchDTO channellingSearchDTO, Principal principal, @RequestHeader("Authorization") String token) {
+//    public List<ChannellingDto> search() {
+
+        try {
+
+//            return channellingService.search(channelling);
+            return channellingService.searchByHospital(channellingSearchDTO, principal.getName(),token);
 
         } catch (Exception e) {
             e.printStackTrace();

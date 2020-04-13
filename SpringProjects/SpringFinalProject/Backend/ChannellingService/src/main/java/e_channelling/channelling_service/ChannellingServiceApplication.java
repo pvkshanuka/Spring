@@ -2,8 +2,12 @@ package e_channelling.channelling_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 @SpringBootApplication
+@EnableResourceServer
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ChannellingServiceApplication {
 
     //	In Mins
@@ -18,6 +22,8 @@ public class ChannellingServiceApplication {
     public static final String DOMAIN_DOCTOR_SERVICE = "localhost:8020";
 
     public static final String DOMAIN_CATGORY_SERVICE = "localhost:8030";
+
+    public static final String DOMAIN_CLIENT_SERVICE = "localhost:8040";
 
 
 

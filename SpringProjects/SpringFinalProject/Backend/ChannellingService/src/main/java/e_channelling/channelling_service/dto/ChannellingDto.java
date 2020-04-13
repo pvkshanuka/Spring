@@ -1,5 +1,6 @@
 package e_channelling.channelling_service.dto;
 
+import e_channelling.channelling_service.commonModels.Appointment;
 import e_channelling.channelling_service.commonModels.Category;
 import e_channelling.channelling_service.commonModels.Doctor;
 import e_channelling.channelling_service.commonModels.Hospital;
@@ -24,6 +25,8 @@ public class ChannellingDto {
     private Doctor doctor;
 
     private Category[] categories;
+
+    private Appointment[] appointments;
 
     private String room;
 

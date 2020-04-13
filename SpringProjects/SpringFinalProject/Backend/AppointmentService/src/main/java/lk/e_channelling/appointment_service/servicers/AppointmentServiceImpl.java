@@ -1,7 +1,7 @@
 package lk.e_channelling.appointment_service.servicers;
 
 import lk.e_channelling.appointment_service.AppointmentServiceApplication;
-import lk.e_channelling.appointment_service.commonModels.Channelling;
+import lk.e_channelling.appointment_service.commonModels.Client;
 import lk.e_channelling.appointment_service.dto.*;
 import lk.e_channelling.appointment_service.exceptions.AppointmentException;
 import lk.e_channelling.appointment_service.models.Appointment;
@@ -205,6 +205,40 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<Appointment> byChannelling = appointmentRepository.findByChannelling(id);
         System.out.println(byChannelling);
         return byChannelling.isEmpty();
+    }
+
+    @Override
+    public List<AppointmentDto> searchByChannellingIdAndStatusNot(Integer id, String token) {
+        List<Appointment> byChannelling = appointmentRepository.findByChannellingAndStatusNot(id,"1");
+//        System.out.println("searchByChannellingIdAndStatusNot");
+        System.out.println(byChannelling);
+//        System.out.println();
+//        System.out.println();
+//        System.out.println("-----------------------");
+        List<AppointmentDto> appointmentDtos = new ArrayList<>();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.add("Authorization", token);
+
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
+
+        ResponseEntity<Client> responseEntity;
+
+        for (Appointment appointment:byChannelling) {
+
+            responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "/client/findDetailsByIdClear/" + appointment.getClient(), HttpMethod.GET, httpEntity, Client.class);
+
+            AppointmentDto appointmentDto = new AppointmentDto(appointment.getId(),null,appointment.getChannelling(),appointment.getDate(),appointment.getStatus());
+            if (null != responseEntity.getBody()){
+                appointmentDto.setClient(responseEntity.getBody());
+            }
+
+            appointmentDtos.add(appointmentDto);
+
+        }
+
+        return appointmentDtos;
     }
 
     @Override

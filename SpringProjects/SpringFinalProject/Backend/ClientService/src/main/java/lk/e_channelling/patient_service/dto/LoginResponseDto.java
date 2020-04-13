@@ -12,6 +12,7 @@ public class LoginResponseDto {
     private Integer id;
     private String name;
     private String username;
+    private Integer hospital;
     private String token;
     private String refreshToken;
     private Integer type;

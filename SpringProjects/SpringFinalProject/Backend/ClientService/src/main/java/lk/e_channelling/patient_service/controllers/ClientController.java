@@ -106,7 +106,7 @@ public class ClientController {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
-            return new LoginResponseDto(null,"","","","",null,"Client Login Failed.!", false);
+            return new LoginResponseDto(null,"","",null,"","",null,"Client Login Failed.!", false);
         }
 
     }
@@ -115,7 +115,7 @@ public class ClientController {
     public Client test() {
 
 
-        return new Client(1, 1, "Kusal Shanuka", 24, "pvkshanuka@gmail.com","", "0772101676", "1",1);
+        return new Client(1, 1,null, "Kusal Shanuka", 24, "pvkshanuka@gmail.com","", "0772101676", "1",1);
 
     }
 
@@ -127,6 +127,16 @@ public class ClientController {
     @RequestMapping(method = RequestMethod.GET, value = "/findDetailsById/{id}")
     public Client findDetailsById(@PathVariable Integer id, Principal principal){
         return clientService.findDetailsById(id, principal.getName());
+    }
+    
+    @RequestMapping(method = RequestMethod.GET, value = "/findDetailsByIdClear/{id}")
+    public Client findDetailsById(@PathVariable Integer id){
+        return clientService.findDetailsById(id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/findByEmailAndHospital/{email}/{hospital}")
+    public boolean findByEmailAndHospital(@PathVariable String email,@PathVariable Integer hospital){
+        return clientService.findByEmailAndHospital(email,hospital);
     }
 
 //    Access By [User]

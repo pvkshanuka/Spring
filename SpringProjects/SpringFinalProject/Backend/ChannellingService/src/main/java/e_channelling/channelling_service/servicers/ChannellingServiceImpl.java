@@ -1,6 +1,7 @@
 package e_channelling.channelling_service.servicers;
 
 import e_channelling.channelling_service.ChannellingServiceApplication;
+import e_channelling.channelling_service.commonModels.Appointment;
 import e_channelling.channelling_service.commonModels.Category;
 import e_channelling.channelling_service.commonModels.Doctor;
 import e_channelling.channelling_service.commonModels.Hospital;
@@ -32,6 +33,7 @@ public class ChannellingServiceImpl implements ChannellingService {
 
     @Autowired
     Validation validation;
+    private ChannellingDto channellingDto;
 
     @Bean
     RestTemplate getRestTemplate() {
@@ -593,6 +595,171 @@ public class ChannellingServiceImpl implements ChannellingService {
             System.out.println(channellingDtos);
             return channellingDtos;
 
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<ChannellingDto> searchByHospital(ChannellingSearchDTO channellingSearchDTO, String name, String token) {
+        System.out.println(channellingSearchDTO);
+
+        List<Channelling> channellings = null;
+
+        HttpHeaders httpHeaders;
+
+        HttpEntity<String> httpEntityString;
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.add("Authorization", token);
+
+        httpEntityString = new HttpEntity<>("", httpHeaders);
+
+        ResponseEntity<Boolean> responseEntityBoolean = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CLIENT_SERVICE + "client/findByEmailAndHospital/" + name + "/" + channellingSearchDTO.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
+
+        if (responseEntityBoolean.getBody()) {
+
+
+            if (null == channellingSearchDTO.getHospital() && null == channellingSearchDTO.getDoctor() && null == channellingSearchDTO.getDate()) {
+                channellings = channellingRepository.findByStatus("1");
+            } else if (null != channellingSearchDTO.getHospital() && null != channellingSearchDTO.getDoctor() && null == channellingSearchDTO.getDate()) {
+                channellings = channellingRepository.findByStatusAndHospitalAndDoctor("1", channellingSearchDTO.getHospital(), channellingSearchDTO.getDoctor());
+
+            } else if (null == channellingSearchDTO.getHospital() && null != channellingSearchDTO.getDoctor() && null != channellingSearchDTO.getDate()) {
+                channellings = channellingRepository.findByStatusAndDoctorAndStartTimeBetween("1", channellingSearchDTO.getDoctor(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
+
+
+            } else if (null != channellingSearchDTO.getHospital() && null == channellingSearchDTO.getDoctor() && null != channellingSearchDTO.getDate()) {
+                channellings = channellingRepository.findByStatusAndHospitalAndStartTimeBetween("1", channellingSearchDTO.getHospital(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
+
+
+            } else if (null != channellingSearchDTO.getHospital() && null == channellingSearchDTO.getDoctor() && null == channellingSearchDTO.getDate()) {
+                channellings = channellingRepository.findByStatusAndHospital("1", channellingSearchDTO.getHospital());
+
+
+            } else if (null == channellingSearchDTO.getHospital() && null != channellingSearchDTO.getDoctor() && null == channellingSearchDTO.getDate()) {
+                channellings = channellingRepository.findByStatusAndDoctor("1", channellingSearchDTO.getDoctor());
+
+
+            } else if (null == channellingSearchDTO.getHospital() && null == channellingSearchDTO.getDoctor() && null != channellingSearchDTO.getDate()) {
+                channellings = channellingRepository.findByStatusAndStartTimeBetween("1", channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
+
+
+            } else if (null != channellingSearchDTO.getHospital() && null != channellingSearchDTO.getDoctor() && null != channellingSearchDTO.getDate()) {
+                channellings = channellingRepository.findByStatusAndHospitalAndDoctorAndStartTimeBetween("1", channellingSearchDTO.getHospital(), channellingSearchDTO.getDoctor(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
+
+            }
+
+            System.out.println(channellings.size());
+
+            channellings.forEach(channelling -> System.out.println(channelling));
+
+            List<ChannellingDto> channellingDtos = new ArrayList<>();
+
+            ChannellingDto channellingDto;
+
+
+            HttpEntity<List<Integer>> httpEntityIntegers;
+
+            ResponseEntity<Doctor> responseEntityDoctor;
+            ResponseEntity<Category[]> responseEntityCats;
+            ResponseEntity<Hospital> responseEntityHos;
+            ResponseEntity<Appointment[]> responseEntityAppo;
+
+            Date dateToday = new Date();
+
+            List<Integer> integersCat = new ArrayList<>();
+
+            for (Channelling channelling : channellings) {
+
+                if (Date.from(channelling.getStartTime()).after(dateToday)) {
+
+
+                    channellingDto = new ChannellingDto();
+
+
+                    integersCat.removeAll(integersCat);
+
+                    httpHeaders = new HttpHeaders();
+                    httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                    responseEntityDoctor = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_DOCTOR_SERVICE + "/doctor/find/" + channelling.getDoctor(), HttpMethod.GET, httpEntityString, Doctor.class);
+
+                    if (null != responseEntityDoctor.getBody()) {
+
+
+                        channellingDto.setDoctor(responseEntityDoctor.getBody());
+                        channellingDto.getDoctor().setContact("");
+
+                        channellingDto.getDoctor().getDoctorCategories().forEach(doctorCategory -> integersCat.add(doctorCategory.getCategoryid()));
+
+                        if (null == channellingSearchDTO.getCategory() || integersCat.contains(channellingSearchDTO.getCategory())) {
+
+                            httpHeaders = new HttpHeaders();
+                            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                            httpHeaders.add("Authorization", token);
+
+                            httpEntityIntegers = new HttpEntity<>(integersCat, httpHeaders);
+
+                            responseEntityCats = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CATGORY_SERVICE + "/category/searchByIds", HttpMethod.POST, httpEntityIntegers, Category[].class);
+
+                            if (null != responseEntityCats.getBody()) {
+
+
+                                channellingDto.setCategories(responseEntityCats.getBody());
+
+                                httpHeaders = new HttpHeaders();
+                                httpEntityString = new HttpEntity<>("", httpHeaders);
+
+
+                                responseEntityHos = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findById/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Hospital.class);
+
+                                if (null != responseEntityCats.getBody()) {
+
+                                    httpHeaders = new HttpHeaders();
+                                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                                    httpHeaders.add("Authorization", token);
+
+                                    httpEntityString = new HttpEntity<>("", httpHeaders);
+
+
+                                    responseEntityAppo = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_APPOINTMENT_SERVICE + "/appointment/searchByChannellingIdAndStatus/" + channelling.getId(), HttpMethod.GET, httpEntityString, Appointment[].class);
+
+                                    if (null != responseEntityAppo.getBody()) {
+
+                                        channellingDto.setAppointments(responseEntityAppo.getBody());
+                                        channellingDto.setHospital(responseEntityHos.getBody());
+
+                                        channellingDto.setId(channelling.getId());
+                                        channellingDto.setEndTime(Date.from(channelling.getEndTime()));
+                                        channellingDto.setPrice(channelling.getPrice());
+                                        channellingDto.setRoom(channelling.getRoom());
+                                        channellingDto.setStartTime(Date.from(channelling.getStartTime()));
+                                        channellingDto.setStatus(channelling.getStatus());
+
+                                        channellingDtos.add(channellingDto);
+
+                                    } else {
+                                        throw new ChannellingException("Channelling find(Appointments) exception occurred in ChannellingServiceImpl.find", null);
+                                    }
+                                } else {
+                                    throw new ChannellingException("Channelling find(Hospital) exception occurred in ChannellingServiceImpl.find", null);
+                                }
+
+                            } else {
+                                throw new ChannellingException("Channelling find(Category) exception occurred in ChannellingServiceImpl.find", null);
+                            }
+                        }
+                    } else {
+                        throw new ChannellingException("Channelling find(Doctor) exception occurred in ChannellingServiceImpl.find", null);
+                    }
+
+                }
+
+            }
+
+            return channellingDtos;
         } else {
             return null;
         }

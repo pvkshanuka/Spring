@@ -1,12 +1,12 @@
 package lk.e_channelling.appointment_service.controllers;
 
+import lk.e_channelling.appointment_service.dto.AppointmentDto;
 import lk.e_channelling.appointment_service.dto.AppointmentResponseDto;
 import lk.e_channelling.appointment_service.dto.AppointmentSearchDto;
 import lk.e_channelling.appointment_service.dto.ResponseDto;
 import lk.e_channelling.appointment_service.models.Appointment;
 import lk.e_channelling.appointment_service.servicers.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -76,6 +76,14 @@ public class AppointmentController {
     public Boolean searchByChannellingId(@PathVariable Integer id) {
         System.out.println("Channelling ID : "+id);
         return appointmentService.searchByChannellingId(id);
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/searchByChannellingIdAndStatus/{id}")
+    public List<AppointmentDto> searchByChannellingIdAndStatusNot(@PathVariable Integer id, @RequestHeader("Authorization") String token) {
+        System.out.println("Channelling ID : "+id);
+
+        return appointmentService.searchByChannellingIdAndStatusNot(id,token);
 
     }
 

@@ -1,4 +1,4 @@
-package lk.e_channelling.category_service.config;
+package e_channelling.channelling_service.config;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

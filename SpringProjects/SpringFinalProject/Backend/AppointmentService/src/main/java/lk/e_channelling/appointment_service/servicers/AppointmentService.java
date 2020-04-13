@@ -1,5 +1,6 @@
 package lk.e_channelling.appointment_service.servicers;
 
+import lk.e_channelling.appointment_service.dto.AppointmentDto;
 import lk.e_channelling.appointment_service.dto.AppointmentResponseDto;
 import lk.e_channelling.appointment_service.dto.AppointmentSearchDto;
 import lk.e_channelling.appointment_service.dto.ResponseDto;
@@ -27,6 +28,8 @@ public interface AppointmentService {
     public boolean checkChannelling(Integer id);
 
     public boolean searchByChannellingId(Integer id);
+
+    public List<AppointmentDto> searchByChannellingIdAndStatusNot(Integer id, String token);
 
     public List<AppointmentResponseDto> getAppointments(AppointmentSearchDto appointmentSearchDto, String token, String username);
 }

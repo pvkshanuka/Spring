@@ -63,12 +63,13 @@ export class ClientLoginComponent implements OnInit {
             console.log(response.token);
 
             sessionStorage.setItem('id', response.id);
+            sessionStorage.setItem('hospital', response.hospital);
             sessionStorage.setItem('token', response.token);
             sessionStorage.setItem('username', response.username);
             sessionStorage.setItem('name', response.name);
             sessionStorage.setItem('type', response.type);
 
-            this.userDetails = new UserDetails(response.id, response.name, response.username, response.token, response.type);
+            this.userDetails = new UserDetails(response.id, response.name, response.hospital, response.username, response.token, response.type);
 
             this.data.changeUserDetails(this.userDetails);
 

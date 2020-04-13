@@ -122,10 +122,10 @@ public class ClientServiceImpl implements ClientService {
                             clientDB.setContact(client.getContact());
 
 
-                                clientRepository.save(clientDB);
+                            clientRepository.save(clientDB);
 
-                                System.out.println("Client Updated Successfully.!");
-                                return new ResponseDto(true, "Client Updated Successfully.!");
+                            System.out.println("Client Updated Successfully.!");
+                            return new ResponseDto(true, "Client Updated Successfully.!");
                         } else {
                             return new ResponseDto(true, "Deleted Client.!");
                         }
@@ -258,17 +258,17 @@ public class ClientServiceImpl implements ClientService {
 
                 if (optional.isPresent()) {
                     final Client client = optional.get();
-                    return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
+                    return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), client.getHospital(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
                 } else {
-                    return new LoginResponseDto(null, "", "", "", "", null, "Invalid Login Details.!", false);
+                    return new LoginResponseDto(null, "", "", null, "", "", null, "Invalid Login Details.!", false);
                 }
 
             } else {
-                return new LoginResponseDto(null, "", "", "", "", null, "Invalid Login Details.!", false);
+                return new LoginResponseDto(null, "", "", null, "", "", null, "Invalid Login Details.!", false);
             }
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                return new LoginResponseDto(null, "", "", "", "", null, "Invalid Login Details.!", false);
+                return new LoginResponseDto(null, "", "", null, "", "", null, "Invalid Login Details.!", false);
             } else {
                 throw new ClientException("Client login exception occurred in ClientServiceImpl.login", e);
             }
@@ -299,11 +299,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client findDetailsById(Integer id, String name) {
         Optional<Client> optional = clientRepository.findById(id);
-        if (optional.isPresent()){
-                Client client = optional.get();
+        if (optional.isPresent()) {
+            Client client = optional.get();
             if (name.equals(client.getEmail())) {
                 return client;
-            }else{
+            } else {
                 return null;
             }
         }
@@ -311,9 +311,19 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client findDetailsById(Integer id) {
+        Optional<Client> optional = clientRepository.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public ResponseDto updatePw(Client client, String name, String token) {
 
-        System.out.println(client+" >>>>>>>>>");
+        System.out.println(client + " >>>>>>>>>");
         try {
 
             if (validation.updatePwValidator(client)) {
@@ -329,7 +339,6 @@ public class ClientServiceImpl implements ClientService {
                     if (name.equals(clientDB.getEmail())) {
 
                         if (clientDB.getStatus().equals("1")) {
-
 
 
                             String credentials = ClientServiceApplication.OAUTH_CLIENT_ID + ":" + ClientServiceApplication.OAUTH_CLIENT_SECRET;
@@ -378,6 +387,16 @@ public class ClientServiceImpl implements ClientService {
             throw new ClientException("Client update exception occurred in ClientServiceImpl.update", e);
         }
 
+    }
+
+    @Override
+    public boolean findByEmailAndHospital(String email, Integer hospital) {
+        try {
+            return clientRepository.findByEmailAndHospital(email, hospital).isPresent();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
