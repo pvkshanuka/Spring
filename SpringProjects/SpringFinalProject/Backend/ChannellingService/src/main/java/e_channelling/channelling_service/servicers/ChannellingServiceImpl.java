@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ChannellingServiceImpl implements ChannellingService {
@@ -622,32 +619,32 @@ public class ChannellingServiceImpl implements ChannellingService {
 
 
             if (null == channellingSearchDTO.getHospital() && null == channellingSearchDTO.getDoctor() && null == channellingSearchDTO.getDate()) {
-                channellings = channellingRepository.findByStatus("1");
+                channellings = channellingRepository.findByStatusNot("0");
             } else if (null != channellingSearchDTO.getHospital() && null != channellingSearchDTO.getDoctor() && null == channellingSearchDTO.getDate()) {
-                channellings = channellingRepository.findByStatusAndHospitalAndDoctor("1", channellingSearchDTO.getHospital(), channellingSearchDTO.getDoctor());
+                channellings = channellingRepository.findByStatusNotAndHospitalAndDoctor("0", channellingSearchDTO.getHospital(), channellingSearchDTO.getDoctor());
 
             } else if (null == channellingSearchDTO.getHospital() && null != channellingSearchDTO.getDoctor() && null != channellingSearchDTO.getDate()) {
-                channellings = channellingRepository.findByStatusAndDoctorAndStartTimeBetween("1", channellingSearchDTO.getDoctor(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
+                channellings = channellingRepository.findByStatusNotAndDoctorAndStartTimeBetween("0", channellingSearchDTO.getDoctor(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
 
 
             } else if (null != channellingSearchDTO.getHospital() && null == channellingSearchDTO.getDoctor() && null != channellingSearchDTO.getDate()) {
-                channellings = channellingRepository.findByStatusAndHospitalAndStartTimeBetween("1", channellingSearchDTO.getHospital(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
+                channellings = channellingRepository.findByStatusNotAndHospitalAndStartTimeBetween("0", channellingSearchDTO.getHospital(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
 
 
             } else if (null != channellingSearchDTO.getHospital() && null == channellingSearchDTO.getDoctor() && null == channellingSearchDTO.getDate()) {
-                channellings = channellingRepository.findByStatusAndHospital("1", channellingSearchDTO.getHospital());
+                channellings = channellingRepository.findByStatusNotAndHospital("0", channellingSearchDTO.getHospital());
 
 
             } else if (null == channellingSearchDTO.getHospital() && null != channellingSearchDTO.getDoctor() && null == channellingSearchDTO.getDate()) {
-                channellings = channellingRepository.findByStatusAndDoctor("1", channellingSearchDTO.getDoctor());
+                channellings = channellingRepository.findByStatusNotAndDoctor("0", channellingSearchDTO.getDoctor());
 
 
             } else if (null == channellingSearchDTO.getHospital() && null == channellingSearchDTO.getDoctor() && null != channellingSearchDTO.getDate()) {
-                channellings = channellingRepository.findByStatusAndStartTimeBetween("1", channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
+                channellings = channellingRepository.findByStatusNotAndStartTimeBetween("0", channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
 
 
             } else if (null != channellingSearchDTO.getHospital() && null != channellingSearchDTO.getDoctor() && null != channellingSearchDTO.getDate()) {
-                channellings = channellingRepository.findByStatusAndHospitalAndDoctorAndStartTimeBetween("1", channellingSearchDTO.getHospital(), channellingSearchDTO.getDoctor(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
+                channellings = channellingRepository.findByStatusNotAndHospitalAndDoctorAndStartTimeBetween("0", channellingSearchDTO.getHospital(), channellingSearchDTO.getDoctor(), channellingSearchDTO.getDate(), channellingSearchDTO.getDate().plusSeconds(60 * 60 * 24));
 
             }
 
@@ -669,7 +666,25 @@ public class ChannellingServiceImpl implements ChannellingService {
 
             List<Integer> integersCat = new ArrayList<>();
 
+            Date dateNow = new Date();
+
             for (Channelling channelling : channellings) {
+
+                if (Date.from(channelling.getEndTime().plusSeconds(60*60)).before(dateNow)){
+                    if (channelling.getStatus().equals("1")){
+                        channelling.setStatus("4");
+                        channellingRepository.save(channelling);
+                    }
+                }
+                if (Date.from(channelling.getEndTime().plusSeconds(60*60*2)).before(dateNow)){
+                    if (channelling.getStatus().equals("1")){
+                        channelling.setStatus("4");
+                        channellingRepository.save(channelling);
+                    }else if (channelling.getStatus().equals("2")){
+                        channelling.setStatus("3");
+                        channellingRepository.save(channelling);
+                    }
+                }
 
                     channellingDto = new ChannellingDto();
 
@@ -752,7 +767,9 @@ public class ChannellingServiceImpl implements ChannellingService {
 
             }
 
+            Collections.reverse(channellingDtos);
             return channellingDtos;
+
         } else {
             return null;
         }

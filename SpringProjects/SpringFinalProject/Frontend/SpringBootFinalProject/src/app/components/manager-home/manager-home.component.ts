@@ -55,7 +55,7 @@ export class ManagerHomeComponent implements OnInit {
 
 
   // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
-  columnsToDisplay = ['doctor', 'hospital', 'price', 'startTime'];
+  columnsToDisplay = ['doctor', 'hospital', 'price', 'startTime','status'];
 
   expandedElement: ChannellingDTO | null;
 
@@ -224,6 +224,18 @@ export class ManagerHomeComponent implements OnInit {
             });
           }
         );
+  }
+
+  channellingDelete(id) {
+
+  }
+
+  channellingStart(id) {
+
+  }
+
+  channellingFinish(id) {
+
   }
 
 }
