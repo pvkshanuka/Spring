@@ -14,6 +14,18 @@ export class ChannellingService {
     return this._http.post<any>(this._url, doctorData);
   }
 
+  delete(id) {
+    return this._http.delete<any>(this._url + '/' + id);
+  }
+
+  start(id) {
+    return this._http.get<any>(this._url + '/startChannelling/' + id);
+  }
+
+  finish(id) {
+    return this._http.get<any>(this._url + '/finishChannelling/' + id);
+  }
+
   loadAll(channellingSearchDTO) {
     return this._http.post<any>(this._url + '/search', channellingSearchDTO);
   }

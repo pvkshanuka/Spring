@@ -15,7 +15,7 @@ public interface ChannellingService {
 
     public ResponseDto update(@RequestBody Channelling channelling);
 
-    public ResponseDto delete(@RequestBody int id);
+    public ResponseDto delete(@RequestBody int id, String token, String name);
 
 //    public List<Channelling> search(@RequestBody Channelling channelling);
     public List<ChannellingDto> search(ChannellingSearchDTO channellingSearchDTO);
@@ -35,6 +35,10 @@ public interface ChannellingService {
     public List<ChannellingDto> findChannellingsByIds(ChannellingSearchByIdsDto channellingSearchByIdsDto);
 
     List<ChannellingDto> searchByHospital(ChannellingSearchDTO channellingSearchDTO, String name, String token);
+
+    ResponseDto startChannelling(int id, String token, String name);
+
+    ResponseDto finishChannelling(int id, String token, String name);
 
 //    public List<Channelling> searchBeforeSave(@RequestBody Channelling channelling);
 //

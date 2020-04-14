@@ -52,12 +52,46 @@ public class ChannellingController {
 
     }
 
+//    Accessing [Manager]
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public ResponseDto delete(@PathVariable int id) {
+    public ResponseDto delete(@PathVariable int id, @RequestHeader("Authorization") String token, Principal principal) {
 
         try {
 
-            return channellingService.delete(id);
+            return channellingService.delete(id, token, principal.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new ResponseDto(false, "Channelling Delete Failed.!");
+        }
+
+    }
+
+
+    //    Accessing [Manager]
+    @RequestMapping(method = RequestMethod.GET, value = "/startChannelling/{id}")
+    public ResponseDto startChannelling(@PathVariable int id, @RequestHeader("Authorization") String token, Principal principal) {
+
+        try {
+
+            return channellingService.startChannelling(id, token, principal.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new ResponseDto(false, "Channelling Delete Failed.!");
+        }
+
+    }
+
+    //    Accessing [Manager]
+    @RequestMapping(method = RequestMethod.GET, value = "/finishChannelling/{id}")
+    public ResponseDto finishChannelling(@PathVariable int id, @RequestHeader("Authorization") String token, Principal principal) {
+
+        try {
+
+            return channellingService.finishChannelling(id, token, principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();

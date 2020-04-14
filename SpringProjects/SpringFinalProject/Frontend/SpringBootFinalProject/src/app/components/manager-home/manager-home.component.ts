@@ -55,7 +55,7 @@ export class ManagerHomeComponent implements OnInit {
 
 
   // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
-  columnsToDisplay = ['doctor', 'hospital', 'price', 'startTime','status'];
+  columnsToDisplay = ['doctor', 'hospital', 'price', 'startTime', 'status'];
 
   expandedElement: ChannellingDTO | null;
 
@@ -228,14 +228,122 @@ export class ManagerHomeComponent implements OnInit {
 
   channellingDelete(id) {
 
+    const snackBarAlt = this._snackBar.open('Are you sure you want to Delete Channelling?', 'Yes', {
+      duration: 3000,
+      panelClass: ['snackbar-confirm'],
+    });
+
+    snackBarAlt.onAction().subscribe(() => {
+
+    console.log('Deleting : ' + id);
+    this.inProcessSave = true;
+    this._channellingService.delete(id).subscribe(
+        response => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
+            this.loadData();
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+          this.inProcessSave = false;
+        },
+        error => {
+          console.log(error);
+          this.inProcessSave = false;
+          this._snackBar.open('Delete error!', '', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
+      );
+    });
   }
 
   channellingStart(id) {
 
+    const snackBarAlt = this._snackBar.open('Are you sure you want to Start Channelling?', 'Yes', {
+      duration: 3000,
+      panelClass: ['snackbar-confirm'],
+    });
+
+    snackBarAlt.onAction().subscribe(() => {
+
+    console.log('Deleting : ' + id);
+    this.inProcessSave = true;
+    this._channellingService.start(id).subscribe(
+        response => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
+            this.loadData();
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+          this.inProcessSave = false;
+        },
+        error => {
+          console.log(error);
+          this.inProcessSave = false;
+          this._snackBar.open('Start error!', '', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
+      );
+    });
   }
 
   channellingFinish(id) {
 
+    const snackBarAlt = this._snackBar.open('Are you sure you want to Finish Channelling?', 'Yes', {
+      duration: 3000,
+      panelClass: ['snackbar-confirm'],
+    });
+
+    snackBarAlt.onAction().subscribe(() => {
+
+    console.log('Deleting : ' + id);
+    this.inProcessSave = true;
+    this._channellingService.finish(id).subscribe(
+        response => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
+            this.loadData();
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+          this.inProcessSave = false;
+        },
+        error => {
+          console.log(error);
+          this.inProcessSave = false;
+          this._snackBar.open('Finish error!', '', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
+      );
+    });
   }
 
 }

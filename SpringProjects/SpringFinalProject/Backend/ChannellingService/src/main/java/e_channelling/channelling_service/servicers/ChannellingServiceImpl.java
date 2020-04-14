@@ -186,7 +186,7 @@ public class ChannellingServiceImpl implements ChannellingService {
     }
 
     @Override
-    public ResponseDto delete(int id) {
+    public ResponseDto delete(int id, String token, String name) {
 
         try {
 
@@ -198,12 +198,40 @@ public class ChannellingServiceImpl implements ChannellingService {
 
                 if ("1".equals(channelling.getStatus())) {
 
-                    channelling.setStatus("0");
+                    HttpHeaders httpHeaders;
 
-                    channellingRepository.save(channelling);
+                    HttpEntity<String> httpEntityString;
 
-                    System.out.println("Channelling Deleted Successfully.!");
-                    return new ResponseDto(true, "Channelling Deleted Successfully.!");
+                    httpHeaders = new HttpHeaders();
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    httpHeaders.add("Authorization", token);
+
+                    httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                    ResponseEntity<Boolean> responseEntityBoolean = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CLIENT_SERVICE + "client/findByEmailAndHospital/" + name + "/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
+
+                    if (responseEntityBoolean.getBody()) {
+
+                        ResponseEntity<Boolean> responseEntityAppo = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_APPOINTMENT_SERVICE + "/appointment/updateStatusByChannelling/" + channelling.getId() + "/" + 5, HttpMethod.PUT, httpEntityString, Boolean.class);
+
+                        if (responseEntityAppo.getBody()) {
+
+                            channelling.setStatus("0");
+
+                            channellingRepository.save(channelling);
+
+                            System.out.println("Channelling Deleted Successfully.!");
+                            return new ResponseDto(true, "Channelling Deleted Successfully.!");
+
+                        } else {
+                            System.out.println("Appointment Update Failed.!");
+                            return new ResponseDto(false, "Appointment Update Failed.!");
+                        }
+                    } else {
+                        System.out.println("Invalid Channelling to Delete.!");
+                        return new ResponseDto(false, "Invalid Channelling to Delete.!");
+                    }
+
 
                 } else {
                     System.out.println("Invalid Channelling.!");
@@ -670,100 +698,100 @@ public class ChannellingServiceImpl implements ChannellingService {
 
             for (Channelling channelling : channellings) {
 
-                if (Date.from(channelling.getEndTime().plusSeconds(60*60)).before(dateNow)){
-                    if (channelling.getStatus().equals("1")){
+                if (Date.from(channelling.getEndTime().plusSeconds(60 * 60)).before(dateNow)) {
+                    if (channelling.getStatus().equals("1")) {
                         channelling.setStatus("4");
                         channellingRepository.save(channelling);
                     }
                 }
-                if (Date.from(channelling.getEndTime().plusSeconds(60*60*2)).before(dateNow)){
-                    if (channelling.getStatus().equals("1")){
+                if (Date.from(channelling.getEndTime().plusSeconds(60 * 60 * 2)).before(dateNow)) {
+                    if (channelling.getStatus().equals("1")) {
                         channelling.setStatus("4");
                         channellingRepository.save(channelling);
-                    }else if (channelling.getStatus().equals("2")){
+                    } else if (channelling.getStatus().equals("2")) {
                         channelling.setStatus("3");
                         channellingRepository.save(channelling);
                     }
                 }
 
-                    channellingDto = new ChannellingDto();
+                channellingDto = new ChannellingDto();
 
 
-                    integersCat.removeAll(integersCat);
+                integersCat.removeAll(integersCat);
 
-                    httpHeaders = new HttpHeaders();
-                    httpEntityString = new HttpEntity<>("", httpHeaders);
+                httpHeaders = new HttpHeaders();
+                httpEntityString = new HttpEntity<>("", httpHeaders);
 
-                    responseEntityDoctor = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_DOCTOR_SERVICE + "/doctor/find/" + channelling.getDoctor(), HttpMethod.GET, httpEntityString, Doctor.class);
+                responseEntityDoctor = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_DOCTOR_SERVICE + "/doctor/find/" + channelling.getDoctor(), HttpMethod.GET, httpEntityString, Doctor.class);
 
-                    if (null != responseEntityDoctor.getBody()) {
+                if (null != responseEntityDoctor.getBody()) {
 
 
-                        channellingDto.setDoctor(responseEntityDoctor.getBody());
-                        channellingDto.getDoctor().setContact("");
+                    channellingDto.setDoctor(responseEntityDoctor.getBody());
+                    channellingDto.getDoctor().setContact("");
 
-                        channellingDto.getDoctor().getDoctorCategories().forEach(doctorCategory -> integersCat.add(doctorCategory.getCategoryid()));
+                    channellingDto.getDoctor().getDoctorCategories().forEach(doctorCategory -> integersCat.add(doctorCategory.getCategoryid()));
 
-                        if (null == channellingSearchDTO.getCategory() || integersCat.contains(channellingSearchDTO.getCategory())) {
+                    if (null == channellingSearchDTO.getCategory() || integersCat.contains(channellingSearchDTO.getCategory())) {
+
+                        httpHeaders = new HttpHeaders();
+                        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                        httpHeaders.add("Authorization", token);
+
+                        httpEntityIntegers = new HttpEntity<>(integersCat, httpHeaders);
+
+                        responseEntityCats = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CATGORY_SERVICE + "/category/searchByIds", HttpMethod.POST, httpEntityIntegers, Category[].class);
+
+                        if (null != responseEntityCats.getBody()) {
+
+
+                            channellingDto.setCategories(responseEntityCats.getBody());
 
                             httpHeaders = new HttpHeaders();
-                            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                            httpHeaders.add("Authorization", token);
+                            httpEntityString = new HttpEntity<>("", httpHeaders);
 
-                            httpEntityIntegers = new HttpEntity<>(integersCat, httpHeaders);
 
-                            responseEntityCats = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CATGORY_SERVICE + "/category/searchByIds", HttpMethod.POST, httpEntityIntegers, Category[].class);
+                            responseEntityHos = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findById/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Hospital.class);
 
                             if (null != responseEntityCats.getBody()) {
 
-
-                                channellingDto.setCategories(responseEntityCats.getBody());
-
                                 httpHeaders = new HttpHeaders();
+                                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                                httpHeaders.add("Authorization", token);
+
                                 httpEntityString = new HttpEntity<>("", httpHeaders);
 
 
-                                responseEntityHos = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findById/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Hospital.class);
+                                responseEntityAppo = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_APPOINTMENT_SERVICE + "/appointment/searchByChannellingIdAndStatus/" + channelling.getId(), HttpMethod.GET, httpEntityString, Appointment[].class);
 
-                                if (null != responseEntityCats.getBody()) {
+                                if (null != responseEntityAppo.getBody()) {
 
-                                    httpHeaders = new HttpHeaders();
-                                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                                    httpHeaders.add("Authorization", token);
+                                    channellingDto.setAppointments(responseEntityAppo.getBody());
+                                    channellingDto.setHospital(responseEntityHos.getBody());
 
-                                    httpEntityString = new HttpEntity<>("", httpHeaders);
+                                    channellingDto.setId(channelling.getId());
+                                    channellingDto.setEndTime(Date.from(channelling.getEndTime()));
+                                    channellingDto.setPrice(channelling.getPrice());
+                                    channellingDto.setRoom(channelling.getRoom());
+                                    channellingDto.setStartTime(Date.from(channelling.getStartTime()));
+                                    channellingDto.setStatus(channelling.getStatus());
 
+                                    channellingDtos.add(channellingDto);
 
-                                    responseEntityAppo = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_APPOINTMENT_SERVICE + "/appointment/searchByChannellingIdAndStatus/" + channelling.getId(), HttpMethod.GET, httpEntityString, Appointment[].class);
-
-                                    if (null != responseEntityAppo.getBody()) {
-
-                                        channellingDto.setAppointments(responseEntityAppo.getBody());
-                                        channellingDto.setHospital(responseEntityHos.getBody());
-
-                                        channellingDto.setId(channelling.getId());
-                                        channellingDto.setEndTime(Date.from(channelling.getEndTime()));
-                                        channellingDto.setPrice(channelling.getPrice());
-                                        channellingDto.setRoom(channelling.getRoom());
-                                        channellingDto.setStartTime(Date.from(channelling.getStartTime()));
-                                        channellingDto.setStatus(channelling.getStatus());
-
-                                        channellingDtos.add(channellingDto);
-
-                                    } else {
-                                        throw new ChannellingException("Channelling find(Appointments) exception occurred in ChannellingServiceImpl.find", null);
-                                    }
                                 } else {
-                                    throw new ChannellingException("Channelling find(Hospital) exception occurred in ChannellingServiceImpl.find", null);
+                                    throw new ChannellingException("Channelling find(Appointments) exception occurred in ChannellingServiceImpl.find", null);
                                 }
-
                             } else {
-                                throw new ChannellingException("Channelling find(Category) exception occurred in ChannellingServiceImpl.find", null);
+                                throw new ChannellingException("Channelling find(Hospital) exception occurred in ChannellingServiceImpl.find", null);
                             }
+
+                        } else {
+                            throw new ChannellingException("Channelling find(Category) exception occurred in ChannellingServiceImpl.find", null);
                         }
-                    } else {
-                        throw new ChannellingException("Channelling find(Doctor) exception occurred in ChannellingServiceImpl.find", null);
                     }
+                } else {
+                    throw new ChannellingException("Channelling find(Doctor) exception occurred in ChannellingServiceImpl.find", null);
+                }
 
             }
 
@@ -772,6 +800,120 @@ public class ChannellingServiceImpl implements ChannellingService {
 
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public ResponseDto startChannelling(int id, String token, String name) {
+
+        try {
+
+            Optional<Channelling> optional = channellingRepository.findById(id);
+
+            if (optional.isPresent()) {
+
+                Channelling channelling = optional.get();
+
+                if ("1".equals(channelling.getStatus())) {
+
+                    HttpHeaders httpHeaders;
+
+                    HttpEntity<String> httpEntityString;
+
+                    httpHeaders = new HttpHeaders();
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    httpHeaders.add("Authorization", token);
+
+                    httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                    ResponseEntity<Boolean> responseEntityBoolean = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CLIENT_SERVICE + "client/findByEmailAndHospital/" + name + "/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
+
+                    if (responseEntityBoolean.getBody()) {
+
+
+                            channelling.setStatus("2");
+
+                            channellingRepository.save(channelling);
+
+                            System.out.println("Channelling Started Successfully.!");
+                            return new ResponseDto(true, "Channelling Started Successfully.!");
+
+                    } else {
+                        System.out.println("Invalid Channelling to Start.!");
+                        return new ResponseDto(false, "Invalid Channelling to Start.!");
+                    }
+
+
+                } else {
+                    System.out.println("Invalid Channelling.!");
+                    return new ResponseDto(false, "Invalid Channelling.!");
+                }
+
+            } else {
+                System.out.println("Invalid Channelling.!");
+                return new ResponseDto(false, "Invalid Channelling.!");
+            }
+
+
+        } catch (Exception e) {
+            throw new ChannellingException("Channelling start exception occurred in ChannellingServiceImpl.start", e);
+        }
+    }
+
+    @Override
+    public ResponseDto finishChannelling(int id, String token, String name) {
+
+        try {
+
+            Optional<Channelling> optional = channellingRepository.findById(id);
+
+            if (optional.isPresent()) {
+
+                Channelling channelling = optional.get();
+
+                if ("2".equals(channelling.getStatus())) {
+
+                    HttpHeaders httpHeaders;
+
+                    HttpEntity<String> httpEntityString;
+
+                    httpHeaders = new HttpHeaders();
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    httpHeaders.add("Authorization", token);
+
+                    httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                    ResponseEntity<Boolean> responseEntityBoolean = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CLIENT_SERVICE + "client/findByEmailAndHospital/" + name + "/" + channelling.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
+
+                    if (responseEntityBoolean.getBody()) {
+
+
+                        channelling.setStatus("3");
+
+                        channellingRepository.save(channelling);
+
+                        System.out.println("Channelling Finished Successfully.!");
+                        return new ResponseDto(true, "Channelling Finished Successfully.!");
+
+                    } else {
+                        System.out.println("Invalid Channelling to Finish.!");
+                        return new ResponseDto(false, "Invalid Channelling to Finish.!");
+                    }
+
+
+                } else {
+                    System.out.println("Invalid Channelling.!");
+                    return new ResponseDto(false, "Invalid Channelling.!");
+                }
+
+            } else {
+                System.out.println("Invalid Channelling.!");
+                return new ResponseDto(false, "Invalid Channelling.!");
+            }
+
+
+        } catch (Exception e) {
+            throw new ChannellingException("Channelling finish exception occurred in ChannellingServiceImpl.finish", e);
         }
     }
 

@@ -106,7 +106,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointmentRepository.save(appointment);
                     System.out.println("Appointment Deleted Successfully.!");
                     return new ResponseDto(true, "Appointment Deleted Successfully.!");
-                }else{
+                } else {
                     System.out.println("Invalid Appointment to Delete.!");
                     return new ResponseDto(false, "Invalid Appointment to Delete.!");
                 }
@@ -201,6 +201,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public boolean updateStatusByChannelling(Integer id, String status) {
+        try {
+
+            List<Appointment> appointmentList = appointmentRepository.findByChannellingAndStatusNot(id, "0");
+
+            appointmentList.forEach(appointment -> {
+                appointment.setStatus(status);
+                appointmentRepository.save(appointment);
+            });
+
+            return true;
+
+        } catch (Exception e) {
+            throw new AppointmentException("Appointment deleting exception occurred in AppointmentServiceImpl.delete", e);
+        }
+    }
+
+    @Override
     public boolean searchByChannellingId(Integer id) {
         List<Appointment> byChannelling = appointmentRepository.findByChannelling(id);
         System.out.println(byChannelling);
@@ -209,7 +227,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentDto> searchByChannellingIdAndStatusNot(Integer id, String token) {
-        List<Appointment> byChannelling = appointmentRepository.findByChannellingAndStatusNot(id,"0");
+        List<Appointment> byChannelling = appointmentRepository.findByChannellingAndStatusNot(id, "0");
 //        System.out.println("searchByChannellingIdAndStatusNot");
         System.out.println(byChannelling);
 //        System.out.println();
@@ -225,12 +243,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         ResponseEntity<Client> responseEntity;
 
-        for (Appointment appointment:byChannelling) {
+        for (Appointment appointment : byChannelling) {
 
             responseEntity = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "/client/findDetailsByIdClear/" + appointment.getClient(), HttpMethod.GET, httpEntity, Client.class);
 
-            AppointmentDto appointmentDto = new AppointmentDto(appointment.getId(),null,appointment.getChannelling(),appointment.getDate(),appointment.getStatus());
-            if (null != responseEntity.getBody()){
+            AppointmentDto appointmentDto = new AppointmentDto(appointment.getId(), null, appointment.getChannelling(), appointment.getDate(), appointment.getStatus());
+            if (null != responseEntity.getBody()) {
                 appointmentDto.setClient(responseEntity.getBody());
             }
 
@@ -270,7 +288,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                         .withMatcher("client", ExampleMatcher.GenericPropertyMatchers.exact())
 //                    .withMatcher("channelling", ExampleMatcher.GenericPropertyMatchers.exact())
 //                    .withMatcher("date", ExampleMatcher.GenericPropertyMatchers.exact())
-                    .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact())
+                        .withMatcher("status", ExampleMatcher.GenericPropertyMatchers.exact())
                         .withIgnoreNullValues();
 
                 Example<Appointment> example = Example.of(new Appointment(null, appointmentSearchDto.getClient(), null, null, appointmentSearchDto.getStatus()), exampleMatcher);
@@ -279,17 +297,17 @@ public class AppointmentServiceImpl implements AppointmentService {
 
                 appointments.forEach(appointment -> integersChan.add(appointment.getChannelling()));
 
-                httpEntityChannellingSearch = new HttpEntity<>(new ChannellingSearchByIdsDto(integersChan,appointmentSearchDto.getDoctor(),appointmentSearchDto.getDate()),httpHeaders);
+                httpEntityChannellingSearch = new HttpEntity<>(new ChannellingSearchByIdsDto(integersChan, appointmentSearchDto.getDoctor(), appointmentSearchDto.getDate()), httpHeaders);
 
-                responseEntityCahans = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CHANNELLING_SERVICE+ "/channelling/findChannellingsByIds", HttpMethod.POST, httpEntityChannellingSearch, ChannellingDto[].class);
+                responseEntityCahans = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CHANNELLING_SERVICE + "/channelling/findChannellingsByIds", HttpMethod.POST, httpEntityChannellingSearch, ChannellingDto[].class);
 
 
                 for (ChannellingDto channellingDto : responseEntityCahans.getBody()) {
-                    channellingDtoHashMap.put(channellingDto.getId(),channellingDto);
+                    channellingDtoHashMap.put(channellingDto.getId(), channellingDto);
                 }
 
                 appointments.forEach(appointment -> {
-                    System.out.println(appointment.getStatus()+" >>>>>>>>>");
+                    System.out.println(appointment.getStatus() + " >>>>>>>>>");
                     if (null != channellingDtoHashMap.get(appointment.getChannelling()) && !appointment.getStatus().equals("0")) {
                         appointmentResponseDtos.add(new AppointmentResponseDto(appointment.getId(), channellingDtoHashMap.get(appointment.getChannelling()), appointment.getDate(), appointment.getStatus()));
                     }

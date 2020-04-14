@@ -27,6 +27,8 @@ public interface AppointmentService {
 
     public boolean checkChannelling(Integer id);
 
+    public boolean updateStatusByChannelling(Integer id, String status);
+
     public boolean searchByChannellingId(Integer id);
 
     public List<AppointmentDto> searchByChannellingIdAndStatusNot(Integer id, String token);
