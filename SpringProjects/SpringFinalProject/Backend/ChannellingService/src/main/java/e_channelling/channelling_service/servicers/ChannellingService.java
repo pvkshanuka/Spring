@@ -40,6 +40,8 @@ public interface ChannellingService {
 
     ResponseDto finishChannelling(int id, String token, String name);
 
+    Channelling findById(Integer id);
+
 //    public List<Channelling> searchBeforeSave(@RequestBody Channelling channelling);
 //
 //    public Boolean findById(Integer id);

@@ -34,4 +34,6 @@ public interface AppointmentService {
     public List<AppointmentDto> searchByChannellingIdAndStatusNot(Integer id, String token);
 
     public List<AppointmentResponseDto> getAppointments(AppointmentSearchDto appointmentSearchDto, String token, String username);
+
+    ResponseDto visit(int id, String token, String name);
 }

@@ -159,4 +159,9 @@ public class ChannellingController {
         return channellingService.findByIdAndStatus(id, "1");
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/findById/{id}")
+    public Channelling findById(@PathVariable Integer id) {
+        return channellingService.findById(id);
+    }
+
 }

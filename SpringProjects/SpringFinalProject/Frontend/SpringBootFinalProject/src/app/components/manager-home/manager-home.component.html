@@ -191,8 +191,8 @@
                           <div *ngIf="element.status == 1" style="float: right;">
                             <button mat-raised-button class="mybtn_red" [disabled]="inProcessSave"
                               [class.spinner]="inProcessSave" (click)="channellingDelete(element.id)">Delete</button>
-                              &nbsp;
-                              &nbsp;
+                            &nbsp;
+                            &nbsp;
                             <button mat-raised-button class="mybtn_green" [disabled]="inProcessSave"
                               [class.spinner]="inProcessSave" (click)="channellingStart(element.id)">Start</button>
                           </div>
@@ -242,12 +242,23 @@
                             Contact : </span>{{appo.client.contact}}
                         </td>
                         <td class="borderbottom">
-                          <span style="font-weight: 500; font-size: small;">
-                            Status : </span>{{appo.status}}
+
+
+                          <div class="lable_blue" *ngIf="appo.status == 1">Waiting</div>
+                          <div class="lable_green" *ngIf="appo.status == 2">Visited</div>
+                          <div class="lable_yellow" *ngIf="appo.status == 3">Not Visited</div>
+                          <div class="lable_gray" *ngIf="appo.status == 4">Channelling Expired</div>
+                          <div class="lable_red" *ngIf="appo.status == 5">Channelling Deleted</div>
+
                         </td>
-                        <td class="borderbottom">
-                          <span style="font-weight: 500; font-size: small;">
-                            Action : </span>{{appo.client.id}}
+                        <td class="borderbottom" *ngIf="element.status == 2">
+
+
+                          <div *ngIf="appo.status == 1" style="float: right;">
+                            <button mat-raised-button class="mybtn_green" [disabled]="inProcessSave"
+                              [class.spinner]="inProcessSave" (click)="clientVisit(appo.id)">Visited</button>
+                          </div>
+
                         </td>
                       </tr>
                     </table>

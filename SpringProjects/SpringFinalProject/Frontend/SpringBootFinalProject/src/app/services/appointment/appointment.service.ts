@@ -23,4 +23,8 @@ export class AppointmentService {
     return this._http.delete<any>(this._url + '/' + id);
   }
 
+  visited(id) {
+    return this._http.get<any>(this._url + '/visit/' + id);
+  }
+
 }

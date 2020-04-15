@@ -119,4 +119,19 @@ public class AppointmentController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/visit/{id}")
+    public ResponseDto visit(@PathVariable int id, @RequestHeader("Authorization") String token, Principal principal) {
+
+        try {
+
+            return appointmentService.visit(id,token,principal.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new ResponseDto(false, "Appointment Delete Failed.!");
+        }
+
+    }
+
 }

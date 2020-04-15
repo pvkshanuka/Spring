@@ -1,6 +1,7 @@
 package lk.e_channelling.appointment_service.servicers;
 
 import lk.e_channelling.appointment_service.AppointmentServiceApplication;
+import lk.e_channelling.appointment_service.commonModels.Channelling;
 import lk.e_channelling.appointment_service.commonModels.Client;
 import lk.e_channelling.appointment_service.dto.*;
 import lk.e_channelling.appointment_service.exceptions.AppointmentException;
@@ -94,7 +95,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public ResponseDto delete(int id) {
-        System.out.println("delete");
+//        System.out.println("delete");
         try {
 
             Optional<Appointment> optional = appointmentRepository.findById(id);
@@ -207,8 +208,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             List<Appointment> appointmentList = appointmentRepository.findByChannellingAndStatusNot(id, "0");
 
             appointmentList.forEach(appointment -> {
-                appointment.setStatus(status);
-                appointmentRepository.save(appointment);
+                if (!(status.equals("3") && appointment.getStatus().equals("2"))) {
+                    appointment.setStatus(status);
+                    appointmentRepository.save(appointment);
+                }
             });
 
             return true;
@@ -322,6 +325,58 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         } catch (Exception e) {
             throw new AppointmentException("Appointment getAppointments exception occurred in AppointmentServiceImpl.getAppointments", e);
+        }
+    }
+
+    @Override
+    public ResponseDto visit(int id, String token, String name) {
+        try {
+
+            Optional<Appointment> optional = appointmentRepository.findById(id);
+
+            if (optional.isPresent()) {
+                Appointment appointment = optional.get();
+                if (appointment.getStatus().equals("1")) {
+
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    httpHeaders.add("Authorization", token);
+
+                    HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
+
+                    ResponseEntity<Channelling> responseEntityCha = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CHANNELLING_SERVICE + "channelling/findById/" + appointment.getId(), HttpMethod.GET, httpEntity, Channelling.class);
+
+                    if (null != responseEntityCha.getBody()) {
+
+                        Channelling channelling = responseEntityCha.getBody();
+
+                        ResponseEntity<Boolean> responseEntityBoolean = restTemplate.exchange("http://" + AppointmentServiceApplication.DOMAIN_CLIENT_SERVICE + "client/findByEmailAndHospital/" + name + "/" + channelling.getHospital(), HttpMethod.GET, httpEntity, Boolean.class);
+
+                        if (responseEntityBoolean.getBody()) {
+
+                            appointment.setStatus("2");
+                            appointmentRepository.save(appointment);
+                            System.out.println("Appointment Updated Successfully.!");
+                            return new ResponseDto(true, "Appointment Updated Successfully.!");
+
+                        } else {
+                            System.out.println("Invalid User.!");
+                            return new ResponseDto(false, "Invalid User.!");
+                        }
+                    } else {
+                        System.out.println("Invalid Channelling.!");
+                        return new ResponseDto(false, "Invalid Channelling.!");
+                    }
+                } else {
+                    System.out.println("Invalid Appointment to Update.!");
+                    return new ResponseDto(false, "Invalid Appointment to Update.!");
+                }
+            } else {
+                System.out.println("Appointment Update Failed.!");
+                return new ResponseDto(false, "Invalid Appointment ID.!");
+            }
+        } catch (Exception e) {
+            throw new AppointmentException("Appointment Updating exception occurred in AppointmentServiceImpl.visit", e);
         }
     }
 

@@ -154,6 +154,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .mybtn_red{
+  cursor: pointer;
   color: white;
   font-weight: 500;
   margin: 10px 0px 10px 0px;
@@ -163,6 +164,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .mybtn_green{
+  cursor: pointer;
   color: white;
   font-weight: 500;
   margin: 10px 0px 10px 0px;
@@ -172,6 +174,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .mybtn_blue{
+  cursor: pointer;
   color: white;
   font-weight: 500;
   margin: 10px 0px 10px 0px;

@@ -77,7 +77,8 @@ export class ManagerHomeComponent implements OnInit {
     private _clientService: ClientService,
     private _doctorService: DoctorService,
     private _channellingService: ChannellingService,
-    private _categoryService: CategoryService
+    private _categoryService: CategoryService,
+    private _appointmentService: AppointmentService
   ) {}
 
   ngOnInit(): void {
@@ -344,6 +345,40 @@ export class ManagerHomeComponent implements OnInit {
         }
       );
     });
+  }
+
+  clientVisit(id) {
+
+
+    console.log('Updating : ' + id);
+    this.inProcessSave = true;
+    this._appointmentService.visited(id).subscribe(
+        response => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
+            this.loadData();
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+          this.inProcessSave = false;
+        },
+        error => {
+          console.log(error);
+          this.inProcessSave = false;
+          this._snackBar.open('Appointment Update Error!', '', {
+            duration: 3000,
+            panelClass: ['snackbar-error']
+          });
+        }
+      );
+
   }
 
 }

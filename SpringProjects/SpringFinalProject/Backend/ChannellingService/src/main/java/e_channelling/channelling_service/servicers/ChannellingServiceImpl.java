@@ -700,17 +700,44 @@ public class ChannellingServiceImpl implements ChannellingService {
 
                 if (Date.from(channelling.getEndTime().plusSeconds(60 * 60)).before(dateNow)) {
                     if (channelling.getStatus().equals("1")) {
-                        channelling.setStatus("4");
-                        channellingRepository.save(channelling);
+                        responseEntityBoolean = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_APPOINTMENT_SERVICE + "/appointment/updateStatusByChannelling/" + channelling.getId() + "/" + 4, HttpMethod.PUT, httpEntityString, Boolean.class);
+
+                        if (responseEntityBoolean.getBody()) {
+
+                            channelling.setStatus("4");
+                            channellingRepository.save(channelling);
+
+                        }else{
+                            throw new ChannellingException("Channelling searchByHospital(Appointment status update to 4) exception occurred in ChannellingServiceImpl.searchByHospital", null);
+                        }
+
                     }
                 }
                 if (Date.from(channelling.getEndTime().plusSeconds(60 * 60 * 2)).before(dateNow)) {
                     if (channelling.getStatus().equals("1")) {
-                        channelling.setStatus("4");
-                        channellingRepository.save(channelling);
+                        responseEntityBoolean = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_APPOINTMENT_SERVICE + "/appointment/updateStatusByChannelling/" + channelling.getId() + "/" + 4, HttpMethod.PUT, httpEntityString, Boolean.class);
+
+                        if (responseEntityBoolean.getBody()) {
+
+                            channelling.setStatus("4");
+                            channellingRepository.save(channelling);
+
+                        }else{
+                            throw new ChannellingException("Channelling searchByHospital(Appointment status update to 4) exception occurred in ChannellingServiceImpl.searchByHospital", null);
+                        }
                     } else if (channelling.getStatus().equals("2")) {
+
+                        responseEntityBoolean = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_APPOINTMENT_SERVICE + "/appointment/updateStatusByChannelling/" + channelling.getId() + "/" + 3, HttpMethod.PUT, httpEntityString, Boolean.class);
+
+                        if (responseEntityBoolean.getBody()) {
+
                         channelling.setStatus("3");
                         channellingRepository.save(channelling);
+
+                        }else{
+                            throw new ChannellingException("Channelling searchByHospital(Appointment status update to 3) exception occurred in ChannellingServiceImpl.searchByHospital", null);
+                        }
+
                     }
                 }
 
@@ -831,12 +858,12 @@ public class ChannellingServiceImpl implements ChannellingService {
                     if (responseEntityBoolean.getBody()) {
 
 
-                            channelling.setStatus("2");
+                        channelling.setStatus("2");
 
-                            channellingRepository.save(channelling);
+                        channellingRepository.save(channelling);
 
-                            System.out.println("Channelling Started Successfully.!");
-                            return new ResponseDto(true, "Channelling Started Successfully.!");
+                        System.out.println("Channelling Started Successfully.!");
+                        return new ResponseDto(true, "Channelling Started Successfully.!");
 
                     } else {
                         System.out.println("Invalid Channelling to Start.!");
@@ -914,6 +941,16 @@ public class ChannellingServiceImpl implements ChannellingService {
 
         } catch (Exception e) {
             throw new ChannellingException("Channelling finish exception occurred in ChannellingServiceImpl.finish", e);
+        }
+    }
+
+    @Override
+    public Channelling findById(Integer id) {
+        Optional<Channelling> optional = channellingRepository.findById(id);
+        if (optional.isPresent()){
+            return optional.get();
+        }else {
+            return null;
         }
     }
 
