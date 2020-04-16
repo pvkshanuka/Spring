@@ -1,3 +1,4 @@
+import { DataService, UserDetails } from './../../services/data/data.service';
 import { ClientService } from './../../services/client/client.service';
 import { Component, OnInit, NgModule } from '@angular/core';
 import {
@@ -5,7 +6,7 @@ import {
   FormGroupDirective,
   NgForm,
   Validators,
-  FormBuilder
+  FormBuilder,
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -28,7 +29,7 @@ import { MustMatch } from 'src/support/mustmatch';
 @Component({
   selector: 'app-client-reg',
   templateUrl: './client-reg.component.html',
-  styleUrls: ['./client-reg.component.css']
+  styleUrls: ['./client-reg.component.css'],
 })
 export class ClientRegComponent implements OnInit {
   // emailFormControl = new FormControl('', [
@@ -38,28 +39,42 @@ export class ClientRegComponent implements OnInit {
 
   // matcher = new MyErrorStateMatcher();
 
-
-  clientForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(4)]],
-    age: ['', [Validators.required, Validators.min(16), Validators.max(100)]],
-    contact: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{6,15}$')]],
-    cpword: ['', [Validators.required]]
-  }, {
-    validator: MustMatch('password', 'cpword')
-  }
+  clientForm = this.fb.group(
+    {
+      name: ['', [Validators.required, Validators.minLength(4)]],
+      age: ['', [Validators.required, Validators.min(16), Validators.max(100)]],
+      contact: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-zd$@$!%*?&].{6,15}$'
+          ),
+        ],
+      ],
+      cpword: ['', [Validators.required]],
+    },
+    {
+      validator: MustMatch('password', 'cpword'),
+    }
   );
+
+  userDetails: UserDetails;
 
   inProcess = false;
 
   constructor(
+    private data: DataService,
     private fb: FormBuilder,
     private _clientService: ClientService,
     private _snackBar: MatSnackBar
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.data.userDetails.subscribe((user) => (this.userDetails = user));
+  }
 
   get name() {
     return this.clientForm.get('name');
@@ -85,39 +100,70 @@ export class ClientRegComponent implements OnInit {
     return this.clientForm.get('cpword');
   }
 
-
   save() {
     console.log('awaaa');
     this.inProcess = true;
     if (this.clientForm.valid) {
-        console.log(this.clientForm.value);
+      console.log(this.clientForm.value);
+      if (this.userDetails != null && this.userDetails.type === 2) {
+        this.saveManager();
+        this.inProcess = false;
+      } else {
         this._clientService.save(this.clientForm.value).subscribe(
-          response => {
+          (response) => {
             // console.log(response);
             if (response.success) {
               this._snackBar.open(response.message, '', {
                 duration: 3000,
-                panelClass: ['snackbar-success']
+                panelClass: ['snackbar-success'],
               });
             } else {
               this._snackBar.open(response.message, '', {
                 duration: 3000,
-                panelClass: ['snackbar-error']
+                panelClass: ['snackbar-error'],
               });
             }
             this.inProcess = false;
           },
-          error => {
+          (error) => {
             console.log(error);
             this.inProcess = false;
             this._snackBar.open('Sign Up Error!', '', {
               duration: 3000,
-              panelClass: ['snackbar-error']
+              panelClass: ['snackbar-error'],
             });
           }
         );
       }
+    }
   }
 
+  saveManager(){
+    this._clientService.saveManager(this.clientForm.value).subscribe(
+      (response) => {
+        // console.log(response);
+        if (response.success) {
+          this._snackBar.open(response.message, '', {
+            duration: 3000,
+            panelClass: ['snackbar-success'],
+          });
+        } else {
+          this._snackBar.open(response.message, '', {
+            duration: 3000,
+            panelClass: ['snackbar-error'],
+          });
+        }
+        this.inProcess = false;
+      },
+      (error) => {
+        console.log(error);
+        this.inProcess = false;
+        this._snackBar.open('Sign Up Error!', '', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+        });
+      }
+    );
+  }
 
 }

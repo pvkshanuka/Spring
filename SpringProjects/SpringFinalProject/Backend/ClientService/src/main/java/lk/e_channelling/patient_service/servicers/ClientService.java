@@ -33,4 +33,6 @@ public interface ClientService {
     ResponseDto updatePw(Client client, String name, String token);
 
     boolean findByEmailAndHospital(String email, Integer hospital);
+
+    ResponseDto saveManager(Client client, String token, String name);
 }

@@ -93,6 +93,59 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public ResponseDto saveManager(Client client, String token, String name) {
+        try {
+//            System.out.println(client.getPassword());
+            if (validation.saveValidator(client)) {
+
+                client.setId(null);
+                client.setUser_id(1);
+                client.setStatus("1");
+
+                System.out.println("AWAAA");
+
+                if (searchBeforeSave(client).isEmpty()) {
+
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    httpHeaders.add("Authorization", token);
+
+                    HttpEntity<String> httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                    HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(client.getEmail(), client.getPassword(), 3), httpHeaders);
+
+                    ResponseEntity<Integer> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate", HttpMethod.POST, httpEntity, Integer.class);
+
+                    if (null != responseEntity.getBody()) {
+
+                        client.setUser_id(responseEntity.getBody());
+                        Client save = clientRepository.save(client);
+
+                        System.out.println("Client Saved Successfully.!");
+                        return new ResponseDto(true, "Client Saved Successfully.!");
+
+                    } else {
+                        System.out.println("Client Saving Failed.!");
+                        return new ResponseDto(false, "Client Saving Failed.!");
+                    }
+                } else {
+                    System.out.println("Client Already Added.!");
+                    return new ResponseDto(false, "Client Already Added.!");
+                }
+
+
+            } else {
+                System.out.println("Invalid Client Details.!");
+                return new ResponseDto(false, "Invalid Client Details.!");
+            }
+
+        } catch (Exception e) {
+            throw new ClientException("Client saving exception occurred in ClientServiceImpl.save", e);
+        }
+    }
+
+
+    @Override
     public ResponseDto update(Client client, String name) {
 
 

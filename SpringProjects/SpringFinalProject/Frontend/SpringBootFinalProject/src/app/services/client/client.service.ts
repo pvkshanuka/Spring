@@ -14,6 +14,10 @@ export class ClientService {
     return this._http.post<any>(this._url, clientData);
   }
 
+  saveManager(clientData: any) {
+    // return this._http.post<any>(this._url, clientData);
+  }
+
   loadUserData(id) {
     return this._http.get<any>(this._url + '/findDetailsById/' + id);
   }

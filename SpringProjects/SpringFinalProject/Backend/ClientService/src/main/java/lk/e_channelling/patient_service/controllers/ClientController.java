@@ -39,6 +39,22 @@ public class ClientController {
 
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/manager")
+    public ResponseDto saveManager(@RequestBody Client client, @RequestHeader("Authorization") String token, Principal principal) {
+        System.out.println("SAVEMANAGER AWA");
+        try {
+
+            client.setType(ClientServiceApplication.CLIENT_TYPE_CUSTOMER);
+            return clientService.saveManager(client,token,principal.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new ResponseDto(false, "Client Save Failed.!");
+        }
+
+    }
+
     @Transactional
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseDto update(@RequestBody Client client, Principal principal) {
