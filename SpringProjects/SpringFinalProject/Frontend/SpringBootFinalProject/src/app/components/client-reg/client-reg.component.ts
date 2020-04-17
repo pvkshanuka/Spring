@@ -105,11 +105,7 @@ export class ClientRegComponent implements OnInit {
     this.inProcess = true;
     if (this.clientForm.valid) {
       console.log(this.clientForm.value);
-      if (this.userDetails != null && this.userDetails.type === 2) {
-        this.saveManager();
-        this.inProcess = false;
-      } else {
-        this._clientService.save(this.clientForm.value).subscribe(
+      this._clientService.save(this.clientForm.value).subscribe(
           (response) => {
             // console.log(response);
             if (response.success) {
@@ -134,36 +130,7 @@ export class ClientRegComponent implements OnInit {
             });
           }
         );
-      }
     }
-  }
-
-  saveManager(){
-    this._clientService.saveManager(this.clientForm.value).subscribe(
-      (response) => {
-        // console.log(response);
-        if (response.success) {
-          this._snackBar.open(response.message, '', {
-            duration: 3000,
-            panelClass: ['snackbar-success'],
-          });
-        } else {
-          this._snackBar.open(response.message, '', {
-            duration: 3000,
-            panelClass: ['snackbar-error'],
-          });
-        }
-        this.inProcess = false;
-      },
-      (error) => {
-        console.log(error);
-        this.inProcess = false;
-        this._snackBar.open('Sign Up Error!', '', {
-          duration: 3000,
-          panelClass: ['snackbar-error'],
-        });
-      }
-    );
   }
 
 }

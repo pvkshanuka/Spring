@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Add New Manager</h2>
+
+<form class="example-form" [formGroup]="clientForm" (ngSubmit)="save()">
+
+  <mat-dialog-content>
+    <div class="mycontainer">
+      <!-- <mat-grid-list cols="6">
+          <mat-grid-tile></mat-grid-tile>
+          <mat-grid-tile colspan="4"> -->
+
+      <!-- <h2 class="example-full-width, form_header">Register From Here</h2> -->
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input formControlName="name" matInput type="text" placeholder="Ex: Firstname Lastname" required />
+        <mat-error align="end" *ngIf="name.errors?.required">Name is required</mat-error>
+        <mat-error align="end" *ngIf="name.errors?.minlength">Name must be at least 4 characters</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width" required>
+        <mat-label>Age</mat-label>
+        <input type="number" formControlName="age" matInput placeholder="Ex. 99" required />
+        <mat-error align="end" *ngIf="age.errors?.required">Name is required</mat-error>
+        <mat-error align="end" *ngIf="age.errors?.min || age.errors?.max">Invalid age</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Contact Number</mat-label>
+        <input formControlName="contact" type="number" matInput placeholder="Ex. 771234567" required />
+        <span matPrefix>+94&nbsp;</span>
+        <span matSuffix></span>
+        <mat-error align="end" *ngIf="contact.errors?.required">Contact is required</mat-error>
+        <mat-error align="end" *ngIf="contact.errors?.pattern">Invalid contact number</mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput type="text" required />
+        <mat-error align="end" *ngIf="email.errors?.required">Email is required</mat-error>
+        <mat-error align="end" *ngIf="email.errors?.email">Invalid email</mat-error>
+      </mat-form-field>
+
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close>Close</button>
+    <button type="submit" mat-raised-button mat-dialog-close color="accent" [disabled]="clientForm.invalid || inProcess"
+      [class.spinner]="inProcess">Add New Manager</button>
+  </mat-dialog-actions>
+
+</form>

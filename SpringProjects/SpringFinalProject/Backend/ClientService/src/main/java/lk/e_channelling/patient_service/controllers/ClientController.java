@@ -6,6 +6,7 @@ import lk.e_channelling.patient_service.dto.LoginResponseDto;
 import lk.e_channelling.patient_service.dto.ResponseDto;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.servicers.ClientService;
+import lk.e_channelling.patient_service.support.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +39,9 @@ public class ClientController {
         }
 
     }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/manager")
+    //    Access By [Manager]
+    @Transactional
+    @RequestMapping(method = RequestMethod.POST, value = "/saveManager")
     public ResponseDto saveManager(@RequestBody Client client, @RequestHeader("Authorization") String token, Principal principal) {
         System.out.println("SAVEMANAGER AWA");
         try {
@@ -160,6 +162,7 @@ public class ClientController {
     public String findUsernameById(@PathVariable Integer id){
         return clientService.findUsernameById(id);
     }
+
 
 //    public boolean checkAppointments(Patient patient) {
 //

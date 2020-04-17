@@ -1,3 +1,4 @@
+import { ManagerRegComponent } from './../manager-reg/manager-reg.component';
 import { Category } from './../../modles/category-model';
 import { CategoryService } from './../../services/category/category.service';
 import { ChannellingSearchDTO } from './../../DTOs/channellingSearch-dto';
@@ -198,6 +199,13 @@ export class ManagerHomeComponent implements OnInit {
 
   openUpdateDialog() {
     this.dialog.open(ClientUpdateFormComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
+  }
+
+  openManagerRegDialog() {
+    this.dialog.open(ManagerRegComponent, {
       height: 'fit',
       width: 'fit',
     });

@@ -5,6 +5,7 @@ import lk.e_channelling.patient_service.dto.*;
 import lk.e_channelling.patient_service.exception.ClientException;
 import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.repository.ClientRepository;
+import lk.e_channelling.patient_service.support.PasswordGenerator;
 import lk.e_channelling.patient_service.support.Validation;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -27,6 +30,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     ClientRepository clientRepository;
+
+    @Autowired
+    JavaMailSender javaMailSender;
+
+    @Autowired
+    private SimpleMailMessage preConfiguredMessage;
 
     @Autowired
     Validation validation;
@@ -60,7 +69,7 @@ public class ClientServiceImpl implements ClientService {
                     HttpHeaders httpHeaders = new HttpHeaders();
                     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-                    HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(client.getEmail(), client.getPassword(), 1), httpHeaders);
+                    HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(client.getEmail(), client.getPassword(), 3), httpHeaders);
 
                     ResponseEntity<Integer> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate", HttpMethod.POST, httpEntity, Integer.class);
 
@@ -95,52 +104,122 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ResponseDto saveManager(Client client, String token, String name) {
         try {
+
+            Optional<Client> optional = clientRepository.findByEmail(name);
+
+            if (optional.isPresent()) {
+                Client logedClient = optional.get();
+
+                if (null != logedClient.getHospital() && logedClient.getType() == 2) {
+
+
 //            System.out.println(client.getPassword());
-            if (validation.saveValidator(client)) {
+                    if (validation.saveValidator(client)) {
 
-                client.setId(null);
-                client.setUser_id(1);
-                client.setStatus("1");
+                        client.setId(null);
+                        client.setStatus("1");
 
-                System.out.println("AWAAA");
+                        if (searchBeforeSave(client).isEmpty()) {
 
-                if (searchBeforeSave(client).isEmpty()) {
+                            if (sendWelcomeEmail(client.getEmail())) {
 
-                    HttpHeaders httpHeaders = new HttpHeaders();
-                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                    httpHeaders.add("Authorization", token);
+                                PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                                        .useDigits(true)
+                                        .useLower(true)
+                                        .useUpper(true)
+                                        .build();
 
-                    HttpEntity<String> httpEntityString = new HttpEntity<>("", httpHeaders);
+                                client.setPassword(passwordGenerator.generate(8));
+                                client.setHospital(logedClient.getHospital());
 
-                    HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(client.getEmail(), client.getPassword(), 3), httpHeaders);
+                                System.out.println(client.getPassword()+" >>>>>>>>>>>>>");
 
-                    ResponseEntity<Integer> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate", HttpMethod.POST, httpEntity, Integer.class);
+                                HttpHeaders httpHeaders = new HttpHeaders();
+                                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                                httpHeaders.add("Authorization", token);
 
-                    if (null != responseEntity.getBody()) {
+                                HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(client.getEmail(), client.getPassword(), 2), httpHeaders);
 
-                        client.setUser_id(responseEntity.getBody());
-                        Client save = clientRepository.save(client);
+                                ResponseEntity<Integer> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate/saveManager", HttpMethod.POST, httpEntity, Integer.class);
 
-                        System.out.println("Client Saved Successfully.!");
-                        return new ResponseDto(true, "Client Saved Successfully.!");
+                                if (null != responseEntity.getBody()) {
+
+                                    client.setUser_id(responseEntity.getBody());
+                                    client.setType(2);
+                                    Client save = clientRepository.save(client);
+
+                                    System.out.println("Manager Saved Successfully.!");
+
+
+                                    return new ResponseDto(true, "Manager Saved Successfully.!");
+
+                                } else {
+                                    System.out.println("Client Saving Failed.!");
+                                    return new ResponseDto(false, "Client Saving Failed.!");
+                                }
+
+                            } else {
+                                System.out.println("Invalid Email Address.!");
+                                return new ResponseDto(false, "Invalid Email Address.!");
+                            }
+
+                        } else {
+                            System.out.println("Manager Already Added.!");
+                            return new ResponseDto(false, "Manager Already Added.!");
+                        }
+
 
                     } else {
-                        System.out.println("Client Saving Failed.!");
-                        return new ResponseDto(false, "Client Saving Failed.!");
+                        System.out.println("Invalid Manager Details.!");
+                        return new ResponseDto(false, "Invalid Manager Details.!");
                     }
                 } else {
-                    System.out.println("Client Already Added.!");
-                    return new ResponseDto(false, "Client Already Added.!");
+                    System.out.println("No Privilage.!");
+                    return new ResponseDto(false, "No Privilage.!");
                 }
-
-
             } else {
-                System.out.println("Invalid Client Details.!");
-                return new ResponseDto(false, "Invalid Client Details.!");
+                System.out.println("No Privilage.!");
+                return new ResponseDto(false, "No Privilage.!");
             }
 
         } catch (Exception e) {
-            throw new ClientException("Client saving exception occurred in ClientServiceImpl.save", e);
+            throw new ClientException("Client savingManager exception occurred in ClientServiceImpl.saveManager", e);
+        }
+    }
+
+    @Override
+    public boolean sendWelcomeEmail(String email) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("Welcome");
+            message.setText("Welcome to Medicare E-Channelling website.");
+            javaMailSender.send(message);
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean sendCredentialsEmail(String createdname, String name, String email, String password) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("Welcome " + name);
+            message.setText("<b>You are appointed as a hospital manager in Medicare E-Channelling Websile by " + name + "</b><br>" +
+                    "Your credentials below <br>" +
+                    "<b>Username :</b> " + email + "<br>" +
+                    "<b>Username :</b> " + password);
+            javaMailSender.send(message);
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

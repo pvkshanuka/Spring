@@ -44,13 +44,30 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
                 List<Role> roleList = new ArrayList<>();
                 Role role = new Role();
-                role.setId(login.getRole_id());
+                role.setId(3);
                 roleList.add(role);
 
                 User save = userDetailRepository.save(new User(null, login.getUsername(), login.getPassword(), login.getUsername(), true, true, true, true, roleList));
                 System.out.println("SAVED USER ID- " + save.getId());
                 return save.getId();
             }
+    }
+
+    public Integer saveManager(Login login) {
+
+        if (userDetailRepository.findByUsername(login.getUsername()).isPresent()) {
+            return null;
+        } else {
+
+            List<Role> roleList = new ArrayList<>();
+            Role role = new Role();
+            role.setId(2);
+            roleList.add(role);
+
+            User save = userDetailRepository.save(new User(null, login.getUsername(), login.getPassword(), login.getUsername(), true, true, true, true, roleList));
+            System.out.println("SAVED USER ID- " + save.getId());
+            return save.getId();
+        }
     }
 
     public Boolean updatePassword(Login login) {

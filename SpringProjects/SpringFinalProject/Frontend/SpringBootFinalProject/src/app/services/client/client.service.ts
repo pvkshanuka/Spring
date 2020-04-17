@@ -15,7 +15,11 @@ export class ClientService {
   }
 
   saveManager(clientData: any) {
-    // return this._http.post<any>(this._url, clientData);
+    return this._http.post<any>(this._url + '/saveManager', clientData);
+  }
+
+  sendSampleEmail(email) {
+    return this._http.post<any>(this._url + '/testMail', email);
   }
 
   loadUserData(id) {

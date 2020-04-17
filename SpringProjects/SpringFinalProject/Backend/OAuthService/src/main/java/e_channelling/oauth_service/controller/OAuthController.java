@@ -22,6 +22,22 @@ public class OAuthController {
     public Integer save(@RequestBody Login login){
 
         try {
+            System.out.println(login);
+            login.setPassword(passwordEncoder.encode(login.getPassword()));
+            return userDetailsService.save(login);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/saveManager")
+    public Integer saveManager(@RequestBody Login login){
+
+        try {
 
             login.setPassword(passwordEncoder.encode(login.getPassword()));
             return userDetailsService.save(login);
