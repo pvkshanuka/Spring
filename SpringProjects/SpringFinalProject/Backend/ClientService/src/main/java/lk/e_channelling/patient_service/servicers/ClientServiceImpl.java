@@ -146,7 +146,9 @@ public class ClientServiceImpl implements ClientService {
 
                                     client.setUser_id(responseEntity.getBody());
                                     client.setType(2);
-                                    Client save = clientRepository.save(client);
+                                    Client savedClient = clientRepository.save(client);
+
+                                    sendCredentialsEmail(logedClient.getName(), savedClient.getName(), savedClient.getEmail(), savedClient.getPassword());
 
                                     System.out.println("Manager Saved Successfully.!");
 
@@ -209,10 +211,10 @@ public class ClientServiceImpl implements ClientService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
             message.setSubject("Welcome " + name);
-            message.setText("<b>You are appointed as a hospital manager in Medicare E-Channelling Websile by " + name + "</b><br>" +
-                    "Your credentials below <br>" +
-                    "<b>Username :</b> " + email + "<br>" +
-                    "<b>Username :</b> " + password);
+            message.setText("You are appointed as a hospital manager in Medicare E-Channelling Websile by " + name + "\n" +
+                    "Your credentials below \n" +
+                    "Username : " + email + "\n" +
+                    "Password : " + password);
             javaMailSender.send(message);
 
             return true;
