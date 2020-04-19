@@ -15,7 +15,7 @@ const routes: Routes = [
   {path: 'user', component: ClientHomeComponent},
   {path: 'manager', component: ManagerHomeComponent},
 
-  // {path: '', component: HomeComponent},
+  {path: '', component: HomeComponent},
   {path: 'home', component: HomeComponent}
 
 

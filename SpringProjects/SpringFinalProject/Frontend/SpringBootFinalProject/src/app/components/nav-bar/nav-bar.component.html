@@ -11,9 +11,10 @@
     <!-- <div class="nav_item" routerLink="/hospital" routerLinkActive="active"><span>Hospital</span></div> -->
     <div class="nav_item" (click)="openLoginDialog()"  *ngIf="!userDetails"><span>Login</span></div>
     <div class="nav_item" (click)="openSignUpDialog()"  *ngIf="!userDetails"><span>Sign Up</span></div>
-    <div class="nav_item" (click)="openLoginDialog()"  *ngIf="userDetails"><span>Log Out</span></div>
-    <div class="nav_item" routerLink="/user" *ngIf="userDetails && userDetails.type == 3" routerLinkActive="active"><span>Profile</span></div>
 
+    <div class="nav_item" routerLink="/user" *ngIf="userDetails && userDetails.type == 3" routerLinkActive="active"><span>Profile</span></div>
+    <div class="nav_item" routerLink="/manager" *ngIf="userDetails && userDetails.type == 2" routerLinkActive="active"><span>Manager</span></div>
+    <div class="nav_item" (click)="openLoginDialog()"  *ngIf="userDetails"><span>Log Out</span></div>
     <!-- <button mat-button (click)="openLoginDialog()" >Login</button>
     <button mat-button (click)="openSignUpDialog()">Sign-Up</button> -->
     <span class="myspacer"></span>

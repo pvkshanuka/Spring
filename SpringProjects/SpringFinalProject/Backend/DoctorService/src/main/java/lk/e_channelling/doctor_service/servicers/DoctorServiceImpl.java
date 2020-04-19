@@ -39,7 +39,7 @@ public class DoctorServiceImpl implements DoctorService {
     Validation validation;
 
     @Override
-    public ResponseDto save(Doctor doctor) {
+    public ResponseDto save(Doctor doctor, String token, String name) {
 
         try {
             doctor.setStatus("1");
@@ -51,7 +51,7 @@ public class DoctorServiceImpl implements DoctorService {
                 doctor.setStatus("1");
 
 //Checking categories are available or not
-                if (checkCategories(doctor)) {
+                if (checkCategories(doctor, token)) {
 
 //Checking about doctors that have same mobile.
                     if (doctorRepository.findByContact(doctor.getContact()).isEmpty()) {
@@ -98,14 +98,14 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public ResponseDto update(Doctor doctor) {
+    public ResponseDto update(Doctor doctor, String token, String name) {
 
         try {
 
             if (validation.doctorSaveValidator(doctor)) {
 
 //Checking categories are available or not
-                if (checkCategories(doctor)) {
+                if (checkCategories(doctor, token)) {
 
                     doctor.setStatus("1");
 
@@ -377,7 +377,7 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
 
-    public boolean checkCategories(Doctor doctor) {
+    public boolean checkCategories(Doctor doctor, String token) {
 
         try {
 
@@ -391,6 +391,7 @@ public class DoctorServiceImpl implements DoctorService {
 
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                httpHeaders.add("Authorization", token);
 
                 HttpEntity<Object> httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
 

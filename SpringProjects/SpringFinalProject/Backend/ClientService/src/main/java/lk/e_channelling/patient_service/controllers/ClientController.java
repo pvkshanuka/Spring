@@ -8,6 +8,7 @@ import lk.e_channelling.patient_service.models.Client;
 import lk.e_channelling.patient_service.servicers.ClientService;
 import lk.e_channelling.patient_service.support.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -183,5 +184,23 @@ public class ClientController {
 //            return isFound;
 //
 //        }
+
+    @PreAuthorize("hasRole('ROLE_client')")
+    @RequestMapping(method = RequestMethod.GET, value = "/test1")
+    public void test1() {
+            System.out.println("TEST 1 >>>>>>>>>>>>>>>>");
+    }
+
+    @PreAuthorize("hasRole('ROLE_operator')")
+    @RequestMapping(method = RequestMethod.GET, value = "/test2")
+    public void test2() {
+        System.out.println("TEST 2 >>>>>>>>>>>>>>>>");
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @RequestMapping(method = RequestMethod.GET, value = "/test3")
+    public void test3() {
+        System.out.println("TEST 3 >>>>>>>>>>>>>>>>");
+    }
 
     }

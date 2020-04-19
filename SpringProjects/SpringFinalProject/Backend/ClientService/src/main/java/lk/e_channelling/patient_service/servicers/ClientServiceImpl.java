@@ -59,6 +59,7 @@ public class ClientServiceImpl implements ClientService {
             if (validation.saveValidator(client)) {
 
                 client.setId(null);
+                //just to pass validation
                 client.setUser_id(1);
                 client.setStatus("1");
 
@@ -132,7 +133,7 @@ public class ClientServiceImpl implements ClientService {
                                 client.setPassword(passwordGenerator.generate(8));
                                 client.setHospital(logedClient.getHospital());
 
-                                System.out.println(client.getPassword()+" >>>>>>>>>>>>>");
+                                System.out.println(client.getPassword() + " >>>>>>>>>>>>>");
 
                                 HttpHeaders httpHeaders = new HttpHeaders();
                                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -392,11 +393,14 @@ public class ClientServiceImpl implements ClientService {
 
                 if (optional.isPresent()) {
                     final Client client = optional.get();
-                    return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), client.getHospital(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
+                    if (client.getStatus().equals("1")) {
+                        return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), client.getHospital(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
+                    } else {
+                        return new LoginResponseDto(null, "", "", null, "", "", null, "Invalid Login Details.!", false);
+                    }
                 } else {
                     return new LoginResponseDto(null, "", "", null, "", "", null, "Invalid Login Details.!", false);
                 }
-
             } else {
                 return new LoginResponseDto(null, "", "", null, "", "", null, "Invalid Login Details.!", false);
             }

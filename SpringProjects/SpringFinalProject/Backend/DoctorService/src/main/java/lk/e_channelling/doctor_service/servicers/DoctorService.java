@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface DoctorService {
 
-    public ResponseDto save(@RequestBody Doctor doctor);
+    public ResponseDto save(@RequestBody Doctor doctor, String token, String name);
 
-    public ResponseDto update(@RequestBody Doctor doctor);
+    public ResponseDto update(@RequestBody Doctor doctor, String token, String name);
 
     public ResponseDto delete(@RequestBody int id);
 

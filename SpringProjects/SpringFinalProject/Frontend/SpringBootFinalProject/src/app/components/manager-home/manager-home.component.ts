@@ -389,4 +389,6 @@ export class ManagerHomeComponent implements OnInit {
 
   }
 
+  openAddDoctorDialog(){}
+
 }

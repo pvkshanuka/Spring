@@ -54,10 +54,7 @@
         <td></td>
         <td></td>
 
-        <td>
-          <button mat-raised-button color="accent" (click)="openManagerRegDialog()"
-            style="margin:auto; display:block;">Add New Manager</button>
-        </td>
+
         <td>
           <button mat-raised-button color="primary" (click)="openUpdateDialog()"
             style="margin:auto; display:block;">Update</button>
@@ -66,6 +63,27 @@
 
       </tr>
     </table>
+
+    <table>
+      <tr>
+        <td>
+          <button mat-raised-button color="accent" (click)="openManagerRegDialog()"
+            style="margin:auto; display:block;">Add New Manager</button>
+        </td>
+        <td>
+          <button mat-raised-button color="accent" (click)="openAddDoctorDialog()"
+            style="margin:auto; display:block;">Add New Doctor</button>
+        </td>
+        <td>
+          <button mat-raised-button color="accent" (click)="openManagerRegDialog()"
+            style="margin:auto; display:block;">Add New Manager</button>
+        </td>
+      </tr>
+      </table>
+
+    <br>
+
+    <p class="title">&nbsp;&nbsp;&nbsp; Manage Channelling</p>
 
     <table class="example-full-width" cellspacing="0">
       <tr>
@@ -283,6 +301,7 @@
       <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
     </div>
 
-
+    <br>
+    <br>
   </div>
 </div>

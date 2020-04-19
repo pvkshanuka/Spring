@@ -6,8 +6,10 @@ import lk.e_channelling.doctor_service.models.Doctor;
 import lk.e_channelling.doctor_service.models.DoctorCategory;
 import lk.e_channelling.doctor_service.servicers.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +21,13 @@ public class DoctorController {
     @Autowired
     DoctorService doctorService;
 
+    @PreAuthorize("hasRole('ROLE_operator')")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseDto save(@RequestBody Doctor doctor) {
+    public ResponseDto save(@RequestBody Doctor doctor, @RequestHeader("Authorization") String token, Principal principal) {
 
         try {
 
-                return doctorService.save(doctor);
+                return doctorService.save(doctor,token, principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -35,11 +38,11 @@ public class DoctorController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseDto update(@RequestBody Doctor doctor) {
+    public ResponseDto update(@RequestBody Doctor doctor, @RequestHeader("Authorization") String token, Principal principal) {
 
         try {
 
-            return doctorService.update(doctor);
+            return doctorService.update(doctor,token,principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();

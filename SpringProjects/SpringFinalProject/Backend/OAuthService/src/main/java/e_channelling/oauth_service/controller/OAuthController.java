@@ -40,7 +40,7 @@ public class OAuthController {
         try {
 
             login.setPassword(passwordEncoder.encode(login.getPassword()));
-            return userDetailsService.save(login);
+            return userDetailsService.saveManager(login);
 
         } catch (Exception e) {
             e.printStackTrace();
