@@ -212,7 +212,7 @@ public class ClientServiceImpl implements ClientService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
             message.setSubject("Welcome " + name);
-            message.setText("You are appointed as a hospital manager in Medicare E-Channelling Websile by " + name + "\n" +
+            message.setText("You are appointed as a hospital manager in Medicare E-Channelling Websile by " + createdname + "\n" +
                     "Your credentials below \n" +
                     "Username : " + email + "\n" +
                     "Password : " + password);

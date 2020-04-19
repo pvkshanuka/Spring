@@ -23,6 +23,7 @@ import {
   transition,
   trigger
 } from '@angular/animations';
+import { DoctorFormComponent } from '../doctor-form/doctor-form.component';
 
 @Component({
   selector: 'app-manager-home',
@@ -195,6 +196,13 @@ export class ManagerHomeComponent implements OnInit {
 
     this.loadData();
 
+  }
+
+  openAddDoctorDialog(){
+    this.dialog.open(DoctorFormComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
   }
 
   openUpdateDialog() {
@@ -389,6 +397,6 @@ export class ManagerHomeComponent implements OnInit {
 
   }
 
-  openAddDoctorDialog(){}
+
 
 }

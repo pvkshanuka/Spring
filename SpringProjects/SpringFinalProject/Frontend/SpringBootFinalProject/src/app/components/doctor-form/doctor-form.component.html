@@ -1,54 +1,56 @@
-<mat-grid-list cols="5" rowHeight="fit" class="mygridlist">
-  <mat-grid-tile></mat-grid-tile>
-  <mat-grid-tile colspan="3">
-    <form [formGroup]="doctorForm" class="mycontainer" (ngSubmit)="save()">
-      <div class="title">
-        <h2>Add Doctor</h2>
-      </div>
+<h2 mat-dialog-title style="margin-bottom: 0px;">Add Doctor</h2>
 
-      <mat-form-field class="example-full-width-height">
-        <mat-label>Name</mat-label>
-        <input formControlName="name" matInput type="text" required />
-        <span matPrefix>Dr.&nbsp;</span>
-        <mat-error align="end" *ngIf="name.errors?.required">Name is required</mat-error>
-        <mat-error align="end" *ngIf="name.errors?.minlength">Name must be at least 4 characters</mat-error>
-      </mat-form-field>
 
-      <mat-form-field class="example-half-width-full-height">
-        <mat-label>Contact Number</mat-label>
-        <input formControlName="contact" type="number" matInput placeholder="Ex. 771234567" required />
-        <span matPrefix>+94&nbsp;</span>
-        <span matSuffix></span>
-        <mat-error align="end" *ngIf="contact.errors?.required">Contact is required</mat-error>
-        <mat-error align="end" *ngIf="contact.errors?.pattern">Invalid contact number</mat-error>
-      </mat-form-field>
 
-      <mat-form-field class="example-half-width-full-height">
-        <mat-label>Category</mat-label>
-        <mat-select formControlName="doctorCategories" multiple>
-          <!-- <mat-option><span class="default-option">None</span></mat-option> -->
-          <div *ngFor="let cat of categorys" >
-            <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
+<mat-dialog-content>
 
-          </div>
-        </mat-select>
-      </mat-form-field>
+      <form [formGroup]="doctorForm" id="doctorForm" class="mycontainer" (ngSubmit)="save()">
 
-      <mat-form-field class="example-half-width-full-height">
-        <mat-label>New Category</mat-label>
-        <input #newcat matInput type="text" />
-        <button mat-button matSuffix mat-stroked-button aria-label="search" [disabled]="inProcess" [class.spinner]="inProcess" (click)="addNewCat(newcat.value)">
-          Add
-        </button>
-      </mat-form-field>
+        <mat-form-field class="example-full-width-height">
+          <mat-label>Name</mat-label>
+          <input formControlName="name" matInput type="text" required />
+          <span matPrefix>Dr.&nbsp;</span>
+          <mat-error align="end" *ngIf="name.errors?.required">Name is required</mat-error>
+          <mat-error align="end" *ngIf="name.errors?.minlength">Name must be at least 4 characters</mat-error>
+        </mat-form-field>
 
-      <div align="end">
-        <button mat-raised-button (click)="test()">Close</button>&nbsp;
-        <button type="submit" mat-raised-button color="primary" [disabled]="doctorForm.invalid || inProcessSave" [class.spinner]="inProcessSave" >
-          Add Doctor
-        </button>
-      </div>
-    </form>
-  </mat-grid-tile>
-  <mat-grid-tile></mat-grid-tile>
-</mat-grid-list>
+        <mat-form-field class="example-half-width-full-height">
+          <mat-label>Contact Number</mat-label>
+          <input formControlName="contact" type="number" matInput placeholder="Ex. 771234567" required />
+          <span matPrefix>+94&nbsp;</span>
+          <span matSuffix></span>
+          <mat-error align="end" *ngIf="contact.errors?.required">Contact is required</mat-error>
+          <mat-error align="end" *ngIf="contact.errors?.pattern">Invalid contact number</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="example-half-width-full-height">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="doctorCategories" multiple>
+            <!-- <mat-option><span class="default-option">None</span></mat-option> -->
+            <div *ngFor="let cat of categorys">
+              <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
+
+            </div>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="example-half-width-full-height">
+          <mat-label>New Category</mat-label>
+          <input #newcat matInput type="text" />
+          <button mat-button matSuffix mat-stroked-button aria-label="search" [disabled]="inProcess"
+            [class.spinner]="inProcess" (click)="addNewCat(newcat.value)">
+            Add
+          </button>
+        </mat-form-field>
+      </form>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button type="submit" mat-raised-button mat-dialog-close color="primary" [disabled]="doctorForm.invalid || inProcessSave"
+            [class.spinner]="inProcessSave" form="doctorForm">
+            Add Doctor
+          </button>
+  <button mat-raised-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
