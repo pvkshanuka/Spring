@@ -6,6 +6,7 @@ import lk.e_channeling.hospital_service.models.Hospital;
 import lk.e_channeling.hospital_service.servicers.HospitalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -18,6 +19,7 @@ public class HospitalController {
     @Autowired
     HospitalService hospitalService;
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseDto save(@RequestBody Hospital hospital) {
 
@@ -34,6 +36,7 @@ public class HospitalController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_admin')")
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseDto update(@RequestBody Hospital hospital) {
         try {
@@ -47,6 +50,8 @@ public class HospitalController {
         }
     }
 
+    @Transactional
+    @PreAuthorize("hasRole('ROLE_admin')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseDto delete(@PathVariable int id) {
         try {

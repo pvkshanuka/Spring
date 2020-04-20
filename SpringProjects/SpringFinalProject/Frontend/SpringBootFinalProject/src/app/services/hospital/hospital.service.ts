@@ -22,4 +22,8 @@ export class HospitalService {
     return this._http.get<any>(this._url + '/findByNameStartsWith/' + name);
   }
 
+  delete(id) {
+    return this._http.delete<any>(this._url + '/' + id);
+  }
+
 }

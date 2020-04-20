@@ -14,8 +14,16 @@ export class ClientService {
     return this._http.post<any>(this._url, clientData);
   }
 
+  delete(id) {
+    return this._http.delete<any>(this._url + '/' + id);
+  }
+
   saveManager(clientData: any) {
     return this._http.post<any>(this._url + '/saveManager', clientData);
+  }
+
+  saveManagerByAdmin(clientData: any) {
+    return this._http.post<any>(this._url + '/saveManagerByAdmin', clientData);
   }
 
   sendSampleEmail(email) {
@@ -32,6 +40,10 @@ export class ClientService {
 
   updatePw(password) {
     return this._http.put<any>(this._url + '/password', password);
+  }
+
+  resetPassword(id) {
+    return this._http.get<any>(this._url + '/resetPassword/' + id);
   }
 
   logIn(loginData: any) {

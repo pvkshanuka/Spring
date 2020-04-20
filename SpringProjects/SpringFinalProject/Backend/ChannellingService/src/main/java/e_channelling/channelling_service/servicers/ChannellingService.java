@@ -14,7 +14,7 @@ public interface ChannellingService {
 
     public ResponseDto save(@RequestBody Channelling channelling, String token, String name);
 
-    public ResponseDto update(@RequestBody Channelling channelling);
+    public ResponseDto update(@RequestBody Channelling channelling, String token, String name);
 
     public ResponseDto delete(@RequestBody int id, String token, String name);
 
@@ -25,7 +25,7 @@ public interface ChannellingService {
 
     public boolean checkDoctorAvailabilityInHospital(Channelling channelling);
 
-    public boolean checkHospital(Integer id);
+    public boolean checkHospital(Integer id,HttpHeaders httpHeaders);
 
     public boolean checkDoctor(Integer id, HttpHeaders httpHeaders);
 

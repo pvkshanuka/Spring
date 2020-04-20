@@ -40,6 +40,7 @@ public class ClientController {
         }
 
     }
+
     //    Access By [Manager]
     @Transactional
     @RequestMapping(method = RequestMethod.POST, value = "/saveManager")
@@ -49,6 +50,25 @@ public class ClientController {
 
             client.setType(ClientServiceApplication.CLIENT_TYPE_CUSTOMER);
             return clientService.saveManager(client,token,principal.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new ResponseDto(false, "Client Save Failed.!");
+        }
+
+    }
+
+    //    Access By [Admin]
+    @Transactional
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @RequestMapping(method = RequestMethod.POST, value = "/saveManagerByAdmin")
+    public ResponseDto saveManagerByAdmin(@RequestBody Client client, @RequestHeader("Authorization") String token, Principal principal) {
+        System.out.println("saveManagerByAdmin AWA");
+        try {
+
+            client.setType(ClientServiceApplication.CLIENT_TYPE_CUSTOMER);
+            return clientService.saveManagerByAdmin(client,token,principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,6 +107,21 @@ public class ClientController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/resetPassword/{id}")
+    public ResponseDto resetPassword(@PathVariable Integer id, @RequestHeader("Authorization") String token, Principal principal) {
+
+        try {
+            return clientService.resetPassword(id, principal.getName(),token);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new ResponseDto(false, "Client Update Error.!");
+        }
+
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseDto delete(@PathVariable int id) {
 
@@ -174,6 +209,7 @@ public class ClientController {
     public List<Client> findByHospitalAndStatusNot(@PathVariable Integer id){
         return clientService.findByHospitalAndStatusNot(id);
     }
+
 
 
 //    public boolean checkAppointments(Patient patient) {

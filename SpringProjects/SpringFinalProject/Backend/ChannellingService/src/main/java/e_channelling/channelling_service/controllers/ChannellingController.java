@@ -40,11 +40,11 @@ public class ChannellingController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseDto update(@RequestBody Channelling channelling) {
+    public ResponseDto update(@RequestBody Channelling channelling, @RequestHeader("Authorization") String token, Principal principal) {
 
         try {
 
-            return channellingService.update(channelling);
+            return channellingService.update(channelling,token,principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();

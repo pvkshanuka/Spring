@@ -65,7 +65,7 @@ public class ChannellingServiceImpl implements ChannellingService {
 
                         if (checkDoctorAvailabilityInHospital(channelling)) {
 
-                            if (checkHospital(channelling.getHospital())) {
+                            if (checkHospital(channelling.getHospital(), httpHeaders)) {
 
                                 if (checkDoctor(channelling.getDoctor(),httpHeaders)) {
 
@@ -127,7 +127,7 @@ public class ChannellingServiceImpl implements ChannellingService {
 
 
     @Override
-    public ResponseDto update(Channelling channelling) {
+    public ResponseDto update(Channelling channelling, String token, String name) {
 
         try {
 
@@ -139,11 +139,15 @@ public class ChannellingServiceImpl implements ChannellingService {
 
                     Channelling channellingDB = optionalChannelling.get();
 
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    httpHeaders.add("Authorization", token);
+
                     if (checkChannelling(channelling)) {
 
                         if (checkDoctorAvailabilityInHospital(channelling)) {
 
-                            if (checkHospital(channelling.getDoctor())) {
+                            if (checkHospital(channelling.getDoctor(),httpHeaders)) {
 
                                 if (checkAppointments(channelling.getId())) {
 
@@ -447,9 +451,9 @@ public class ChannellingServiceImpl implements ChannellingService {
     }
 
     @Override
-    public boolean checkHospital(Integer id) {
+    public boolean checkHospital(Integer id,HttpHeaders httpHeaders) {
 
-        HttpHeaders httpHeaders = new HttpHeaders();
+
         HttpEntity<String> httpEntity = new HttpEntity<>("", httpHeaders);
 
         ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findByIdAndStatus/" + id, HttpMethod.GET, httpEntity, Boolean.class);

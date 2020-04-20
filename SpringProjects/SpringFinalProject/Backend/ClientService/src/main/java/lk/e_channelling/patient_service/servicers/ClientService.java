@@ -41,4 +41,8 @@ public interface ClientService {
     public boolean sendWelcomeEmail(String email);
 
     List<Client> findByHospitalAndStatusNot(Integer id);
+
+    ResponseDto saveManagerByAdmin(Client client, String token, String name);
+
+    ResponseDto resetPassword(Integer id, String name, String token);
 }

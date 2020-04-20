@@ -1,5 +1,6 @@
 package lk.e_channelling.patient_service.servicers;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lk.e_channelling.patient_service.ClientServiceApplication;
 import lk.e_channelling.patient_service.dto.*;
 import lk.e_channelling.patient_service.exception.ClientException;
@@ -157,8 +158,108 @@ public class ClientServiceImpl implements ClientService {
                                     return new ResponseDto(true, "Manager Saved Successfully.!");
 
                                 } else {
-                                    System.out.println("Client Saving Failed.!");
-                                    return new ResponseDto(false, "Client Saving Failed.!");
+                                    System.out.println("Manager Saving Failed.!");
+                                    return new ResponseDto(false, "Manager Saving Failed.!");
+                                }
+
+                            } else {
+                                System.out.println("Invalid Email Address.!");
+                                return new ResponseDto(false, "Invalid Email Address.!");
+                            }
+
+                        } else {
+                            System.out.println("Manager Already Added.!");
+                            return new ResponseDto(false, "Manager Already Added.!");
+                        }
+
+
+                    } else {
+                        System.out.println("Invalid Manager Details.!");
+                        return new ResponseDto(false, "Invalid Manager Details.!");
+                    }
+                } else {
+                    System.out.println("No Privilage.!");
+                    return new ResponseDto(false, "No Privilage.!");
+                }
+            } else {
+                System.out.println("No Privilage.!");
+                return new ResponseDto(false, "No Privilage.!");
+            }
+
+        } catch (Exception e) {
+            throw new ClientException("Client savingManager exception occurred in ClientServiceImpl.saveManager", e);
+        }
+    }
+
+    @Override
+    public ResponseDto saveManagerByAdmin(Client client, String token, String name) {
+        try {
+            System.out.println("saveManagerByAdmin");
+            Optional<Client> optional = clientRepository.findByEmail(name);
+
+            if (optional.isPresent()) {
+                Client logedClient = optional.get();
+
+                if (null != logedClient.getHospital() && logedClient.getType() == 1) {
+
+
+//            System.out.println(client.getPassword());
+                    if (validation.saveValidator(client)) {
+
+                        client.setId(null);
+                        client.setStatus("1");
+
+                        if (searchBeforeSave(client).isEmpty()) {
+
+                            if (sendWelcomeEmail(client.getEmail())) {
+
+                                HttpHeaders httpHeaders = new HttpHeaders();
+                                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                                httpHeaders.add("Authorization", token);
+
+                                HttpEntity<String> httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                                ResponseEntity<Boolean> responseEntityBool = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findByIdAndStatus/" + client.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
+
+                                if (responseEntityBool.getBody()) {
+
+                                    PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                                            .useDigits(true)
+                                            .useLower(true)
+                                            .useUpper(true)
+                                            .build();
+
+                                    client.setPassword(passwordGenerator.generate(8));
+//                                client.setHospital(logedClient.getHospital());
+
+                                    System.out.println(client.getPassword() + " >>>>>>>>>>>>>");
+
+
+                                    HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(client.getEmail(), client.getPassword(), 2), httpHeaders);
+
+                                    ResponseEntity<Integer> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate/saveManager", HttpMethod.POST, httpEntity, Integer.class);
+
+                                    if (null != responseEntity.getBody()) {
+
+                                        client.setUser_id(responseEntity.getBody());
+                                        client.setType(2);
+                                        Client savedClient = clientRepository.save(client);
+
+                                        sendCredentialsEmail(logedClient.getName(), savedClient.getName(), savedClient.getEmail(), savedClient.getPassword());
+
+                                        System.out.println("Manager Saved Successfully.!");
+
+
+                                        return new ResponseDto(true, "Manager Saved Successfully.!");
+
+                                    } else {
+                                        System.out.println("Manager Saving Failed.!");
+                                        return new ResponseDto(false, "Manager Saving Failed.!");
+                                    }
+
+                                } else {
+                                    System.out.println("Invalid Hospital.!");
+                                    return new ResponseDto(false, "Invalid Hospital.!");
                                 }
 
                             } else {
@@ -216,6 +317,24 @@ public class ClientServiceImpl implements ClientService {
             message.setText("You are appointed as a hospital manager in Medicare E-Channelling Websile by " + createdname + "\n" +
                     "Your credentials below \n" +
                     "Username : " + email + "\n" +
+                    "Password : " + password);
+            javaMailSender.send(message);
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean sendCredentialsUpdateEmail(String name, String email, String password) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("Password Reseted by Admin ");
+            message.setText("Hi " + name + ",\nYou are password is reseted by Admin, Please use new password to login.\n" +
+                    "Your new password below \n" +
                     "Password : " + password);
             javaMailSender.send(message);
 
@@ -395,7 +514,18 @@ public class ClientServiceImpl implements ClientService {
                 if (optional.isPresent()) {
                     final Client client = optional.get();
                     if (client.getStatus().equals("1")) {
-                        return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), client.getHospital(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
+
+
+                        HttpEntity<String> httpEntityString = new HttpEntity<>("", httpHeaders);
+
+                        ResponseEntity<Boolean> responseEntityBool = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findByIdAndStatus/" + client.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
+
+                        if (responseEntityBool.getBody()) {
+
+                            return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), client.getHospital(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
+                        } else {
+                            return new LoginResponseDto(null, "", "", null, "", "", null, "Deleted Hospital.!", false);
+                        }
                     } else {
                         return new LoginResponseDto(null, "", "", null, "", "", null, "Invalid Login Details.!", false);
                     }
@@ -535,6 +665,74 @@ public class ClientServiceImpl implements ClientService {
             } else {
                 return new ResponseDto(false, "Invalid Client Details.!");
             }
+        } catch (Exception e) {
+            throw new ClientException("Client update exception occurred in ClientServiceImpl.update", e);
+        }
+
+    }
+
+    @Override
+    public ResponseDto resetPassword(Integer id, String name, String token) {
+
+        System.out.println(id + " >>>>>>>>>");
+        try {
+
+
+            Optional<Client> optional = clientRepository.findById(id);
+
+
+            if (optional.isPresent()) {
+
+                Client clientDB = optional.get();
+
+                if (clientDB.getType() == 2) {
+
+                    if (clientDB.getStatus().equals("1")) {
+
+                        PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                                .useDigits(true)
+                                .useLower(true)
+                                .useUpper(true)
+                                .build();
+
+                        clientDB.setPassword(passwordGenerator.generate(8));
+
+                        String credentials = ClientServiceApplication.OAUTH_CLIENT_ID + ":" + ClientServiceApplication.OAUTH_CLIENT_SECRET;
+
+                        String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+                        System.out.println(credentials);
+                        System.out.println(encodedCredentials);
+
+                        HttpHeaders httpHeaders = new HttpHeaders();
+                        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+//                            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Basic " + encodedCredentials);
+                        httpHeaders.add("Authorization", token);
+
+                        HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(clientDB.getEmail(), clientDB.getPassword(), null), httpHeaders);
+
+                        ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate", HttpMethod.PUT, httpEntity, Boolean.class);
+
+                        if (responseEntity.getBody()) {
+                            sendCredentialsUpdateEmail(clientDB.getName(), clientDB.getEmail(), clientDB.getPassword());
+                            System.out.println("Client Updated Successfully.!");
+                            return new ResponseDto(true, "Client Updated Successfully.!");
+
+                        } else {
+                            System.out.println("Client Update Failed.!");
+                            return new ResponseDto(false, "Client Update Failed.!");
+                        }
+
+                    } else {
+                        return new ResponseDto(true, "Deleted Client.!");
+                    }
+
+                } else {
+                    return new ResponseDto(false, "Invalid Client.!");
+                }
+            } else {
+                return new ResponseDto(false, "Invalid Client.!");
+            }
+
         } catch (Exception e) {
             throw new ClientException("Client update exception occurred in ClientServiceImpl.update", e);
         }

@@ -1,6 +1,6 @@
 import { DataService, UserDetails } from './../../services/data/data.service';
 import { ClientService } from './../../services/client/client.service';
-import { Component, OnInit, NgModule } from '@angular/core';
+import { Component, OnInit, NgModule, Inject } from '@angular/core';
 import {
   FormControl,
   FormGroupDirective,
@@ -11,6 +11,7 @@ import {
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MustMatch } from 'src/support/mustmatch';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-manager-reg',
@@ -25,6 +26,7 @@ clientForm = this.fb.group(
       contact: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
       email: ['', [Validators.required, Validators.email]],
       type: [1, ],
+      hospital: ['', ]
     }
   );
 
@@ -32,12 +34,19 @@ clientForm = this.fb.group(
 
   inProcess = false;
 
+  hospital;
+
   constructor(
+    @Inject(MAT_DIALOG_DATA) dialogData,
     private data: DataService,
     private fb: FormBuilder,
     private _clientService: ClientService,
     private _snackBar: MatSnackBar
-  ) {}
+  ) {
+
+    this.hospital = dialogData.hospital;
+
+  }
 
   ngOnInit(): void {
     this.data.userDetails.subscribe((user) => (this.userDetails = user));
@@ -68,12 +77,53 @@ clientForm = this.fb.group(
   }
 
   save() {
-    console.log('awaaa');
+    if(this.hospital){
+      console.log('awaaa ' + this.hospital);
+      this.saveManagerByAdmin(this.hospital);
+    }else{
+    console.log('awaaa else');
+
     this.inProcess = true;
     if (this.clientForm.valid) {
       console.log(this.clientForm.value);
 
       this._clientService.saveManager(this.clientForm.value).subscribe(
+      (response) => {
+        // console.log(response);
+        if (response.success) {
+          this._snackBar.open(response.message, '', {
+            duration: 3000,
+            panelClass: ['snackbar-success'],
+          });
+        } else {
+          this._snackBar.open(response.message, '', {
+            duration: 3000,
+            panelClass: ['snackbar-error'],
+          });
+        }
+        this.inProcess = false;
+      },
+      (error) => {
+        console.log(error);
+        this.inProcess = false;
+        this._snackBar.open('Sign Up Error!', '', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+        });
+      }
+    );
+
+    }
+  }
+  }
+
+  saveManagerByAdmin(hospital){
+    this.inProcess = true;
+    if (this.clientForm.valid) {
+      this.clientForm.value.hospital = hospital;
+
+      console.log(this.clientForm.value);
+      this._clientService.saveManagerByAdmin(this.clientForm.value).subscribe(
       (response) => {
         // console.log(response);
         if (response.success) {

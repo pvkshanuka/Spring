@@ -71,9 +71,9 @@ export class AdminHomeComponent implements OnInit {
 
     this.data.userDetails.subscribe((user) => (this.userDetails = user));
 
-    // if (this.userDetails == null || this.userDetails.type != 1) {
-    //   this.router.navigate(['../'], { relativeTo: this.route });
-    // }
+    if (this.userDetails == null || this.userDetails.type != 1) {
+      this.router.navigate(['../'], { relativeTo: this.route });
+    }
 
     this.loadData();
 
@@ -112,26 +112,146 @@ export class AdminHomeComponent implements OnInit {
 
   hospitalDelete(id){
     console.log('hospitalDelete : ' + id);
+
+    const snackBarAlt = this._snackBar.open('Are you sure you want to Delete Hospital?', 'Yes', {
+      duration: 3000,
+      panelClass: ['snackbar-confirm'],
+    });
+
+    snackBarAlt.onAction().subscribe(() => {
+
+      console.log('Deleting : ' + id);
+      this.inProcessSave = true;
+      this._hospitalService.delete(id).subscribe(
+          response => {
+            // console.log(response);
+            if (response.success) {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-success']
+              });
+              this.loadData();
+            } else {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-error']
+              });
+            }
+            this.inProcessSave = false;
+          },
+          error => {
+            console.log(error);
+            this.inProcessSave = false;
+            this._snackBar.open('Delete error!', '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        );
+      });
+
   }
 
   resetPassword(id){
     console.log('resetPassword : ' + id);
+
+    const snackBarAlt = this._snackBar.open('Are you sure you want to Rest Password of Manager?', 'Yes', {
+      duration: 3000,
+      panelClass: ['snackbar-confirm'],
+    });
+
+    snackBarAlt.onAction().subscribe(() => {
+      this.inProcessSave = true;
+      this._clientService.resetPassword(id).subscribe(
+          response => {
+            // console.log(response);
+            if (response.success) {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-success']
+              });
+              this.loadData();
+            } else {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-error']
+              });
+            }
+            this.inProcessSave = false;
+          },
+          error => {
+            console.log(error);
+            this.inProcessSave = false;
+            this._snackBar.open('Password Reset error!', '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        );
+      });
+
   }
 
-  hospitalDisable(id){
-    console.log('hospitalDisable : ' + id);
-  }
+  // hospitalDisable(id){
+  //   console.log('hospitalDisable : ' + id);
+  // }
 
-  hospitalEnable(id){
-    console.log('hospitalEnable : ' + id);
-  }
+  // hospitalEnable(id){
+  //   console.log('hospitalEnable : ' + id);
+  // }
 
   addUser(id){
     console.log('addUser : ' + id);
+    this.dialog.open(ManagerRegComponent, {
+      height: 'fit',
+      width: 'fit',
+      data: {
+        hospital: id
+      }
+    });
+    this.loadData();
   }
 
   deleteManager(id){
     console.log('deleteManager : ' + id);
+
+    const snackBarAlt = this._snackBar.open('Are you sure you want to Delete Manager?', 'Yes', {
+      duration: 3000,
+      panelClass: ['snackbar-confirm'],
+    });
+
+    snackBarAlt.onAction().subscribe(() => {
+
+      console.log('Deleting : ' + id);
+      this.inProcessSave = true;
+      this._clientService.delete(id).subscribe(
+          response => {
+            // console.log(response);
+            if (response.success) {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-success']
+              });
+              this.loadData();
+            } else {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-error']
+              });
+            }
+            this.inProcessSave = false;
+          },
+          error => {
+            console.log(error);
+            this.inProcessSave = false;
+            this._snackBar.open('Delete error!', '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        );
+      });
+
   }
 
   loadData() {
