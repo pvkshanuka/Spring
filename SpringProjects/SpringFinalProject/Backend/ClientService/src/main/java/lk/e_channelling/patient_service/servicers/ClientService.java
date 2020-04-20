@@ -39,4 +39,6 @@ public interface ClientService {
     ResponseDto saveManager(Client client, String token, String name);
 
     public boolean sendWelcomeEmail(String email);
+
+    List<Client> findByHospitalAndStatusNot(Integer id);
 }

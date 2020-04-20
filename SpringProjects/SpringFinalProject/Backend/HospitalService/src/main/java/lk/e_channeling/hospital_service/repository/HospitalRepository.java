@@ -10,7 +10,9 @@ public interface HospitalRepository extends JpaRepository<Hospital,Integer> {
 
     public List<Hospital> findByStatus(String status);
 
+    public List<Hospital> findByStatusNot(String status);
 
     public Optional<Hospital> findByIdAndStatus(Integer id, String status);
 
+    public List<Hospital> findByNameStartsWithAndStatusNot(String hospital_name, String s);
 }

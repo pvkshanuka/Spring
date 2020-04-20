@@ -18,4 +18,8 @@ export class HospitalService {
     return this._http.get<any>(this._url);
   }
 
+  findByNameStartsWith(name) {
+    return this._http.get<any>(this._url + '/findByNameStartsWith/' + name);
+  }
+
 }

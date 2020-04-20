@@ -1,5 +1,6 @@
 package lk.e_channeling.hospital_service.servicers;
 
+import lk.e_channeling.hospital_service.dto.HospitalResponseDto;
 import lk.e_channeling.hospital_service.dto.ResponseDto;
 import lk.e_channeling.hospital_service.models.Hospital;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,4 +26,5 @@ public interface HospitalService {
 
     public Hospital findById(Integer id);
 
+    List<HospitalResponseDto> findByNameStartsWith(String hospital_name, String token, String name);
 }

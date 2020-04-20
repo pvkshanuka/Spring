@@ -1,11 +1,14 @@
 package lk.e_channeling.hospital_service.controllers;
 
+import lk.e_channeling.hospital_service.dto.HospitalResponseDto;
 import lk.e_channeling.hospital_service.dto.ResponseDto;
 import lk.e_channeling.hospital_service.models.Hospital;
 import lk.e_channeling.hospital_service.servicers.HospitalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -65,6 +68,18 @@ public class HospitalController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Hospital> search() {
         return hospitalService.search();
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @RequestMapping(method = RequestMethod.GET, value = "/findByNameStartsWith/{hospital_name}")
+    public List<HospitalResponseDto> findByNameStartsWith(@PathVariable(required = false) String hospital_name, @RequestHeader("Authorization") String token, Principal principal) {
+        return hospitalService.findByNameStartsWith(hospital_name,token,principal.getName());
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @RequestMapping(method = RequestMethod.GET, value = "/findByNameStartsWith/")
+    public List<HospitalResponseDto> findByStatus(@RequestHeader("Authorization") String token, Principal principal) {
+        return hospitalService.findByNameStartsWith(null,token,principal.getName());
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/test")

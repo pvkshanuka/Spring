@@ -1,3 +1,4 @@
+import { AdminHomeComponent } from './components/admin-home/admin-home.component';
 import { ManagerHomeComponent } from './components/manager-home/manager-home.component';
 import { ClientHomeComponent } from './components/client-home/client-home.component';
 import { HomeComponent } from './components/home/home.component';
@@ -14,7 +15,7 @@ const routes: Routes = [
   {path: 'channelling', component: ChannellingFormComponent},
   {path: 'user', component: ClientHomeComponent},
   {path: 'manager', component: ManagerHomeComponent},
-
+  {path: 'admin', component: AdminHomeComponent},
   {path: '', component: HomeComponent},
   {path: 'home', component: HomeComponent}
 

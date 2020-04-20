@@ -207,6 +207,7 @@ public class ClientServiceImpl implements ClientService {
         }
     }
 
+
     public boolean sendCredentialsEmail(String createdname, String name, String email, String password) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -462,10 +463,10 @@ public class ClientServiceImpl implements ClientService {
     public Client findDetailsByUsername(String username) {
         Optional<Client> optional = clientRepository.findByEmail(username);
 
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             Client client = optional.get();
             return client;
-        }else {
+        } else {
             return null;
         }
 
@@ -547,6 +548,16 @@ public class ClientServiceImpl implements ClientService {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    public List<Client> findByHospitalAndStatusNot(Integer id) {
+        try {
+            return clientRepository.findByHospitalAndStatusNot(id, "0");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

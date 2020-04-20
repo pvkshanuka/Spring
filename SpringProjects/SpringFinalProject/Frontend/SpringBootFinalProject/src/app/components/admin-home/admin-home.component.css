@@ -154,7 +154,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .mybtn_red{
-  cursor: pointer;
+  cursor: pointer !important;
   color: white;
   font-weight: 500;
   margin: 10px 0px 10px 0px;
@@ -164,7 +164,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .mybtn_green{
-  cursor: pointer;
+  cursor: pointer !important;
   color: white;
   font-weight: 500;
   margin: 10px 0px 10px 0px;
@@ -174,7 +174,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .mybtn_blue{
-  cursor: pointer;
+  cursor: pointer !important;
   color: white;
   font-weight: 500;
   margin: 10px 0px 10px 0px;
@@ -184,7 +184,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 }
 
 .mybtn_gray{
-  cursor: pointer;
+  cursor: pointer !important;
   color: white;
   font-weight: 500;
   margin: 10px 0px 10px 0px;
@@ -192,3 +192,27 @@ tr.example-element-row:not(.example-expanded-row):active {
   cursor: auto;
   background-color: rgb(87, 87, 87);
 }
+
+.mybtn_s_red{
+ cursor: pointer !important;
+  color: white;
+  font-weight: 500;
+  margin: 10px 0px 10px 0px;
+  line-height: 15px;
+  padding: 4px 10px 4px 10px;
+  font-size: small;
+  cursor: auto;
+  background-color:rgb(221, 0, 0);
+}
+
+.mybtn_s_blue{
+  cursor: pointer !important;
+   color: white;
+   font-weight: 500;
+   margin: 10px 0px 10px 0px;
+   line-height: 15px;
+   padding: 4px 10px 4px 10px;
+   font-size: small;
+   cursor: auto;
+   background-color: rgb(34, 34, 255);
+ }

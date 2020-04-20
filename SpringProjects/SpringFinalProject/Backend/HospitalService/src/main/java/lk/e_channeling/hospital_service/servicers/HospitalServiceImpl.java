@@ -1,14 +1,21 @@
 package lk.e_channeling.hospital_service.servicers;
 
+import lk.e_channeling.hospital_service.HospitalServiceApplication;
+import lk.e_channeling.hospital_service.commonModels.Client;
+import lk.e_channeling.hospital_service.dto.HospitalResponseDto;
 import lk.e_channeling.hospital_service.dto.ResponseDto;
 import lk.e_channeling.hospital_service.exceptions.HospitalException;
 import lk.e_channeling.hospital_service.models.Hospital;
 import lk.e_channeling.hospital_service.repository.HospitalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +25,13 @@ public class HospitalServiceImpl implements HospitalService {
     @Autowired
     HospitalRepository hospitalRepository;
 
+    @Bean
+    RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @Override
     public ResponseDto save(Hospital hospital) {
@@ -36,7 +50,7 @@ public class HospitalServiceImpl implements HospitalService {
                 return new ResponseDto(true, "Hospital Saved Successfully.!");
             }
 
-        }else{
+        } else {
             System.out.println("Hospital Already Added.!");
             return new ResponseDto(false, "Hospital Already Added.!");
         }
@@ -87,7 +101,6 @@ public class HospitalServiceImpl implements HospitalService {
 //    }
 
 
-
     @Override
     public List<Hospital> searchAll(Hospital hospital) {
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
@@ -109,7 +122,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public Boolean findByIdAndStatus(Integer id,String status) {
+    public Boolean findByIdAndStatus(Integer id, String status) {
 
         System.out.println("Hospital Checked");
 
@@ -125,5 +138,48 @@ public class HospitalServiceImpl implements HospitalService {
 
         return hospitalRepository.findById(id).orElse(null);
 
+    }
+
+    @Override
+    public List<HospitalResponseDto> findByNameStartsWith(String hospital_name, String token, String name) {
+
+        System.out.println("findByNameStartsWith");
+
+        try {
+
+            List<Hospital> hospitals = null;
+            if (hospital_name == null){
+                hospitals = hospitalRepository.findByStatusNot("0");
+            }else{
+                hospitals = hospitalRepository.findByNameStartsWithAndStatusNot(hospital_name, "0");
+            }
+
+            List<HospitalResponseDto> hospitalResponseDtos = new ArrayList<>();
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.add("Authorization", token);
+
+            HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
+
+            ResponseEntity<Client[]> responseEntity;
+
+            for (Hospital hospital: hospitals) {
+
+                responseEntity = restTemplate.exchange("http://" + HospitalServiceApplication.DOMAIN_CLIENT_SERVICE + "client/findByHospital/" + hospital.getId(), HttpMethod.GET, httpEntity, Client[].class);
+
+                if (null != responseEntity.getBody()){
+
+                    hospitalResponseDtos.add(new HospitalResponseDto(hospital.getId(),hospital.getName(),hospital.getEmail(),hospital.getEmail(),hospital.getContact(),responseEntity.getBody(),hospital.getStatus()));
+
+                }
+
+            }
+
+            return hospitalResponseDtos;
+
+        } catch (Exception e) {
+            throw new HospitalException("Hospital Search exception occurred in HospitalServiceImpl.findByNameStartsWith", e);
+        }
     }
 }

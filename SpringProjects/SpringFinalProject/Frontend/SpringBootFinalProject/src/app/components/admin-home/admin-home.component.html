@@ -1,0 +1,247 @@
+<div style="width: 100%;">
+
+
+  <div class="mycontainer">
+
+    <p class="titleheader"> Welcome <span>{{userDetails.name}}</span></p>
+    <br>
+    <br>
+    <p class="title">&nbsp;&nbsp;&nbsp; Personal Details</p>
+    <br>
+    <table width="75%">
+      <tr>
+        <td>
+          <h2>Name :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.name}}</h3>
+        </td>
+
+        <td>
+          <h2>Age :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.age}}</h3>
+        </td>
+
+      </tr>
+
+      <tr>
+        <td>
+          <h2>Contact No :</h2>
+        </td>
+        <td style="text-align: left">
+          <h3 *ngIf="userData">{{userData.contact}}</h3>
+        </td>
+
+        <td>
+          <h2>Email :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.email}}</h3>
+        </td>
+
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+
+
+        <td>
+          <button mat-raised-button color="primary" (click)="openUpdateDialog()"
+            style="margin:auto; display:block;">Update</button>
+
+        </td>
+
+      </tr>
+    </table>
+
+    <br>
+    <br>
+
+    <table>
+      <tr>
+        <td>
+          <button mat-raised-button color="accent" (click)="openAdminRegDialog()"
+            style="margin:auto; display:block;">Add New Admin</button>
+        </td>
+        <td>
+          <button mat-raised-button color="accent" (click)="openAddDoctorDialog()"
+            style="margin:auto; display:block;">Add New Doctor</button>
+        </td>
+        <td>
+          <button mat-raised-button color="accent" (click)="openAddHospitalDialog()"
+            style="margin:auto; display:block;">Add New Hospital</button>
+        </td>
+      </tr>
+      </table>
+
+    <br>
+    <br>
+
+    <p class="title">&nbsp;&nbsp;&nbsp; Manage Hospitals</p>
+
+    <table class="example-full-width" cellspacing="0">
+      <tr>
+        <td>
+
+          <mat-form-field class="example-half-width-full-height">
+            <mat-label>Name</mat-label>
+            <input matInput (keyup)="loadData()" [(ngModel)]="hos_search_name" type="text" required />
+
+          </mat-form-field>
+        </td>
+
+        <td>
+
+          <button mat-raised-button (click)="resetSearch()" style="margin:auto; display:block;">Reset</button>
+
+        </td>
+      </tr>
+    </table>
+
+
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"><b> {{'0'+element.id}}</b>
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.name}}
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="city">
+          <th mat-header-cell *matHeaderCellDef>City</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;"> {{element.city}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;">
+            <div class="lable_red" *ngIf="element.status == 0">Deleted</div>
+            <div class="lable_green" *ngIf="element.status == 1">Active</div>
+            <div class="lable_gray" *ngIf="element.status == 2">Disabled</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length"
+            style="background-color: rgb(234, 251, 255);">
+            <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <table>
+                <tr>
+                  <td>
+                    <table class="">
+                      <!-- <th style="text-align: start; font-size: small;">Hospital Details</th>
+          <th style="text-align: start; font-size: small;">Hospital Details</th>
+          <th style="text-align: start; font-size: small;">Hospital Details</th>
+          <th style="text-align: start; font-size: small;">Hospital Details</th> -->
+                      <tr>
+                        <td class="example-element-name">
+                          <span style="font-weight: 500; font-size: small;">
+                            Email : </span>{{element.email}} </td>
+                        <td class="example-element-name">
+                          <span style="font-weight: 500; font-size: small;">
+                            Contact No : </span>{{element.contact}} </td>
+                        <!-- <td rowspan="2"> -->
+                          <td>
+                          <div *ngIf="element.status == 1" style="float: right;">
+                            <button mat-raised-button class="mybtn_red" [disabled]="inProcessSave"
+                              [class.spinner]="inProcessSave" (click)="hospitalDelete(element.id)">Delete</button>
+                            &nbsp;
+                            &nbsp;
+                            <button mat-raised-button class="mybtn_gray" [disabled]="inProcessSave"
+                              [class.spinner]="inProcessSave" (click)="hospitalDisable(element.id)">Disable</button>
+                              &nbsp;
+                            &nbsp;
+                            <button mat-raised-button class="mybtn_blue" [disabled]="inProcessSave"
+                              [class.spinner]="inProcessSave" (click)="addUser(element.id)">Add New User</button>
+                          </div>
+                          <div *ngIf="element.status == 2">
+                            <button mat-raised-button class="mybtn_green" [disabled]="inProcessSave"
+                              [class.spinner]="inProcessSave" (click)="hospitalEnable(element.id)">Enable</button>
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td *ngIf="element.clients.length != 0">
+                    <b>Appointment Details</b>
+                    <table style="margin-bottom: 5px;">
+
+                      <tr *ngFor="let mana of element.clients">
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            NO : </span>{{'0'+mana.id}}
+                        </td>
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            Name : </span>{{mana.name}}
+                        </td>
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            Email : </span>{{mana.email}}
+                        </td>
+                        <td class="borderbottom">
+                          <span style="font-weight: 500; font-size: small;">
+                            Contact : </span>{{mana.contact}}
+                        </td>
+                        <td class="borderbottom">
+
+
+                          <!-- <div class="lable_blue" *ngIf="mana.status == 1">Waiting</div> -->
+                          <div class="lable_green" *ngIf="mana.status == 1">Active</div>
+                          <!-- <div class="lable_yellow" *ngIf="mana.status == 3">Not Visited</div> -->
+                          <!-- <div class="lable_gray" *ngIf="mana.status == 4">Channelling Expired</div> -->
+                          <!-- <div class="lable_red" *ngIf="mana.status == 5">Channelling Deleted</div> -->
+
+                        </td>
+                        <td class="borderbottom">
+
+
+                          <div *ngIf="mana.status == 1" style="float: right;">
+                            <button mat-raised-button class="mybtn_s_red" [disabled]="inProcessSave"
+                              [class.spinner]="inProcessSave" (click)="deleteManager(mana.id)">Delete</button>
+                              &nbsp;&nbsp;
+                              <button mat-raised-button class="mybtn_s_blue" [disabled]="inProcessSave"
+                              [class.spinner]="inProcessSave" (click)="resetPassword(mana.id)">Reset Password</button>
+                          </div>
+
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </td>
+
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+          [class.example-expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+    </div>
+
+    <br>
+    <br>
+  </div>
+</div>

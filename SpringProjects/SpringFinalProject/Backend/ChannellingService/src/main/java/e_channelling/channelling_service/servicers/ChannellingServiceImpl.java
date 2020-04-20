@@ -763,7 +763,7 @@ public class ChannellingServiceImpl implements ChannellingService {
 
                 integersCat.removeAll(integersCat);
 
-                httpHeaders = new HttpHeaders();
+//                httpHeaders = new HttpHeaders();
                 httpEntityString = new HttpEntity<>("", httpHeaders);
 
                 responseEntityDoctor = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_DOCTOR_SERVICE + "/doctor/find/" + channelling.getDoctor(), HttpMethod.GET, httpEntityString, Doctor.class);

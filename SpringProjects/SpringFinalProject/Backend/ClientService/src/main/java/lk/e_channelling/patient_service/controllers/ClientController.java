@@ -170,6 +170,11 @@ public class ClientController {
         return clientService.findUsernameById(id);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/findByHospital/{id}")
+    public List<Client> findByHospitalAndStatusNot(@PathVariable Integer id){
+        return clientService.findByHospitalAndStatusNot(id);
+    }
+
 
 //    public boolean checkAppointments(Patient patient) {
 //

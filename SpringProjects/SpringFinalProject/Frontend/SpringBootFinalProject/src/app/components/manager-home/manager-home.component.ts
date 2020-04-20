@@ -87,9 +87,9 @@ export class ManagerHomeComponent implements OnInit {
   ngOnInit(): void {
     this.data.userDetails.subscribe((user) => (this.userDetails = user));
 
-    // if (this.userDetails == null || this.userDetails.type != 2) {
-    //   this.router.navigate(['../'], { relativeTo: this.route });
-    // }
+    if (this.userDetails == null || this.userDetails.type != 2) {
+      this.router.navigate(['../'], { relativeTo: this.route });
+    }
 
     this.loadData();
 
