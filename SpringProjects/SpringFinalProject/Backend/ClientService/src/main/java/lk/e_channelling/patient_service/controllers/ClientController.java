@@ -147,7 +147,13 @@ public class ClientController {
     public Client findDetailsById(@PathVariable Integer id, Principal principal){
         return clientService.findDetailsById(id, principal.getName());
     }
-    
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/findDetailsByUsername")
+    public Client findDetailsByUsername(Principal principal){
+        return clientService.findDetailsByUsername(principal.getName());
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/findDetailsByIdClear/{id}")
     public Client findDetailsById(@PathVariable Integer id){
         return clientService.findDetailsById(id);

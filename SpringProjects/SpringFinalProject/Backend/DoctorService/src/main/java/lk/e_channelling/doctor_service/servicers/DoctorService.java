@@ -26,5 +26,5 @@ public interface DoctorService {
 
     public Optional<Doctor> findById(Integer id);
 
-    Category[] getCats(Integer id);
+    Category[] getCats(Integer id, String token);
 }

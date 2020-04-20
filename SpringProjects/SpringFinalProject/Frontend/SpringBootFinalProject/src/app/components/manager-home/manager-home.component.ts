@@ -1,3 +1,4 @@
+import { ChannellingFormComponent } from './../channelling-form/channelling-form.component';
 import { ManagerRegComponent } from './../manager-reg/manager-reg.component';
 import { Category } from './../../modles/category-model';
 import { CategoryService } from './../../services/category/category.service';
@@ -196,6 +197,13 @@ export class ManagerHomeComponent implements OnInit {
 
     this.loadData();
 
+  }
+
+  openAddChannellingDialog(){
+    this.dialog.open(ChannellingFormComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
   }
 
   openAddDoctorDialog(){

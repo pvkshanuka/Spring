@@ -5,13 +5,14 @@ import e_channelling.channelling_service.dto.ChannellingSearchByIdsDto;
 import e_channelling.channelling_service.dto.ChannellingSearchDTO;
 import e_channelling.channelling_service.dto.ResponseDto;
 import e_channelling.channelling_service.models.Channelling;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 public interface ChannellingService {
 
-    public ResponseDto save(@RequestBody Channelling channelling);
+    public ResponseDto save(@RequestBody Channelling channelling, String token, String name);
 
     public ResponseDto update(@RequestBody Channelling channelling);
 
@@ -26,7 +27,7 @@ public interface ChannellingService {
 
     public boolean checkHospital(Integer id);
 
-    public boolean checkDoctor(Integer id);
+    public boolean checkDoctor(Integer id, HttpHeaders httpHeaders);
 
     public boolean checkAppointments(Integer id);
 

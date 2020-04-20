@@ -119,7 +119,6 @@ export class ChannellingFormComponent implements OnInit {
   }
 
   save() {
-    this.hospital.setValue('1');
 
     console.log(this.channellingForm.value);
 

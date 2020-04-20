@@ -145,11 +145,11 @@ public class DoctorController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getCats/{id}")
-    public Category[] getCats(@PathVariable Integer id) {
+    public Category[] getCats(@PathVariable Integer id, @RequestHeader("Authorization") String token) {
 //    public List<Doctor> searchByCat(@RequestBody Doctor doctor) {
         try {
 
-            return doctorService.getCats(id);
+            return doctorService.getCats(id,token);
 
         } catch (Exception e) {
             e.printStackTrace();

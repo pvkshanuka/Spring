@@ -459,6 +459,19 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client findDetailsByUsername(String username) {
+        Optional<Client> optional = clientRepository.findByEmail(username);
+
+        if (optional.isPresent()){
+            Client client = optional.get();
+            return client;
+        }else {
+            return null;
+        }
+
+    }
+
+    @Override
     public ResponseDto updatePw(Client client, String name, String token) {
 
         System.out.println(client + " >>>>>>>>>");

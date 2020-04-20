@@ -1,10 +1,10 @@
-<mat-grid-list cols="5" rowHeight="fit" class="mygridlist">
-  <mat-grid-tile></mat-grid-tile>
-  <mat-grid-tile colspan="3">
-    <form [formGroup]="channellingForm" (ngSubmit)="save()" class="mycontainer">
-      <div class="title">
-        <h2>Add Channelling</h2>
-      </div>
+<h2 mat-dialog-title>Add New Channelling</h2>
+
+<form [formGroup]="channellingForm" (ngSubmit)="save()" class="example-form">
+
+  <mat-dialog-content>
+    <div class="mycontainer">
+
 
       <!-- <mat-form-field class="example-half-width-full-height">
         <mat-label>Doctor</mat-label>
@@ -30,7 +30,7 @@
         </mat-hint>
         <mat-error align="end" *ngIf="doctor.errors?.required">Doctor is required</mat-error>
       </mat-form-field>
-<!--
+      <!--
       <mat-form-field class="example-half-width-full-height">
         <mat-label>Day</mat-label>
         <mat-select formControlName="day" required>
@@ -80,15 +80,16 @@
       </mat-form-field>
 
       <mat-form-field class="example-half-width-full-height">
-        <input class="cursor_pointer" readonly="readonly" formControlName="startTime" matInput [min]="minDate" (dateTimeInput)="onStartDateChange($event)" [owlDateTime]="dt1"
-          [owlDateTimeTrigger]="dt1" placeholder="Start Date Time" />
+        <input class="cursor_pointer" readonly="readonly" formControlName="startTime" matInput [min]="minDate"
+          (dateTimeInput)="onStartDateChange($event)" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1"
+          placeholder="Start Date Time" />
         <owl-date-time #dt1></owl-date-time>
         <mat-error align="end" *ngIf="startTime.errors?.required">Start date time is required</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-half-width-full-height">
-        <input class="cursor_pointer" readonly="readonly" formControlName="endTime" matInput [min]="selectedDate" (dateTimeInput)="show($event)" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
-          placeholder="End Date Time" />
+        <input class="cursor_pointer" readonly="readonly" formControlName="endTime" matInput [min]="selectedDate"
+          (dateTimeInput)="show($event)" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="End Date Time" />
         <owl-date-time #dt2></owl-date-time>
         <mat-error align="end" *ngIf="endTime.errors?.required">End date time is required</mat-error>
       </mat-form-field>
@@ -102,15 +103,23 @@
       </mat-form-field>
       <br />
       <br />
-      <div align="end">
+      <!-- <div align="end">
         <button mat-raised-button (click)="test()">Close</button>&nbsp;
         <button type="submit" mat-raised-button color="primary" [disabled]="channellingForm.invalid || inProcessSave"
           [class.spinner]="inProcessSave">
           Save
         </button>
-      </div>
-    </form>
+      </div> -->
+    </div>
 
-  </mat-grid-tile>
-  <mat-grid-tile></mat-grid-tile>
-</mat-grid-list>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close>Close</button>
+    <button type="submit" mat-raised-button mat-dialog-close color="primary" [disabled]="channellingForm.invalid || inProcessSave"
+          [class.spinner]="inProcessSave">
+          Save
+        </button>
+  </mat-dialog-actions>
+
+</form>

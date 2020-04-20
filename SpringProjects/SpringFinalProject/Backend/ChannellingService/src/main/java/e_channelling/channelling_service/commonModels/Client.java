@@ -17,7 +17,7 @@ public class Client {
 
     private Integer user_id;
 
-    private Integer hospital_id;
+    private Integer hospital;
 
     private String name;
 

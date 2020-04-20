@@ -1,10 +1,7 @@
 package e_channelling.channelling_service.servicers;
 
 import e_channelling.channelling_service.ChannellingServiceApplication;
-import e_channelling.channelling_service.commonModels.Appointment;
-import e_channelling.channelling_service.commonModels.Category;
-import e_channelling.channelling_service.commonModels.Doctor;
-import e_channelling.channelling_service.commonModels.Hospital;
+import e_channelling.channelling_service.commonModels.*;
 import e_channelling.channelling_service.dto.ChannellingDto;
 import e_channelling.channelling_service.dto.ChannellingSearchByIdsDto;
 import e_channelling.channelling_service.dto.ChannellingSearchDTO;
@@ -41,65 +38,85 @@ public class ChannellingServiceImpl implements ChannellingService {
     RestTemplate restTemplate;
 
     @Override
-    public ResponseDto save(Channelling channelling) {
+    public ResponseDto save(Channelling channelling, String token, String name) {
 
         try {
-            channelling.setId(null);
-            channelling.setStatus("1");
 
-            if (validation.saveValidator(channelling)) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.add("Authorization", token);
 
-                if (checkChannelling(channelling)) {
+            HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
 
-                    if (checkDoctorAvailabilityInHospital(channelling)) {
+            ResponseEntity<Client> responseEntity = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_CLIENT_SERVICE + "/client/findDetailsByUsername", HttpMethod.GET, httpEntity, Client.class);
 
-                        if (checkHospital(channelling.getHospital())) {
+            if (null != responseEntity.getBody()) {
+                Client client = responseEntity.getBody();
+//                System.out.println(client);
+//                System.out.println(name);
 
-                            if (checkDoctor(channelling.getDoctor())) {
+                channelling.setId(null);
+                channelling.setStatus("1");
+                channelling.setHospital(client.getHospital());
 
-                                Duration gap = Duration.between(channelling.getEndTime(), channelling.getStartTime());
+                if (validation.saveValidator(channelling)) {
+
+                    if (checkChannelling(channelling)) {
+
+                        if (checkDoctorAvailabilityInHospital(channelling)) {
+
+                            if (checkHospital(channelling.getHospital())) {
+
+                                if (checkDoctor(channelling.getDoctor(),httpHeaders)) {
+
+                                    Duration gap = Duration.between(channelling.getEndTime(), channelling.getStartTime());
 
 //                        System.out.println(">>>>>>>> " + Duration.between(channelling.getEndTime(), channelling.getStartTime()).abs().toMinutes());
 
-                                if (channelling.getStartTime().isBefore(channelling.getEndTime()) && Instant.now().isBefore(channelling.getStartTime()) && gap.abs().toMinutes() >= ChannellingServiceApplication.CHANNELLING_DURATION_MIN && gap.abs().toMinutes() <= ChannellingServiceApplication.CHANNELLING_DURATION_MAX) {
+                                    if (channelling.getStartTime().isBefore(channelling.getEndTime()) && Instant.now().isBefore(channelling.getStartTime()) && gap.abs().toMinutes() >= ChannellingServiceApplication.CHANNELLING_DURATION_MIN && gap.abs().toMinutes() <= ChannellingServiceApplication.CHANNELLING_DURATION_MAX) {
 //                    if (channelling.getStartTime().isBefore(channelling.getEndTime()) && Instant.now().isBefore(channelling.getStartTime()) && gap.abs().toMinutes() >= ChannellingServiceApplication.CHANNELLING_DURATION_MIN && gap.abs().toMinutes() <= ChannellingServiceApplication.CHANNELLING_DURATION_MAX) {
 
-                                    Channelling save = channellingRepository.save(channelling);
+                                        Channelling save = channellingRepository.save(channelling);
 
-                                    if (save.equals(null)) {
-                                        System.out.println("Channelling Save Failed.!");
-                                        return new ResponseDto(false, "Channelling Save Failed.!");
+                                        if (save.equals(null)) {
+                                            System.out.println("Channelling Save Failed.!");
+                                            return new ResponseDto(false, "Channelling Save Failed.!");
+                                        } else {
+                                            System.out.println("Channelling Saved Successfully.!");
+                                            return new ResponseDto(true, "Channelling Saved Successfully.!");
+                                        }
                                     } else {
-                                        System.out.println("Channelling Saved Successfully.!");
-                                        return new ResponseDto(true, "Channelling Saved Successfully.!");
+                                        System.out.println("Invalid Channelling Times.!");
+                                        return new ResponseDto(false, "Invalid Channelling Times.!");
                                     }
+
                                 } else {
-                                    System.out.println("Invalid Channelling Times.!");
-                                    return new ResponseDto(false, "Invalid Channelling Times.!");
+                                    System.out.println("Channelling Save Failed (Invalid Doctor).!");
+                                    return new ResponseDto(false, "Channelling Save Failed (Invalid Doctor).!");
                                 }
 
                             } else {
-                                System.out.println("Channelling Save Failed (Invalid Doctor).!");
-                                return new ResponseDto(false, "Channelling Save Failed (Invalid Doctor).!");
+                                System.out.println("Channelling Save Failed (Invalid Hospital).!");
+                                return new ResponseDto(false, "Channelling Save Failed (Invalid Hospital).!");
                             }
 
                         } else {
-                            System.out.println("Channelling Save Failed (Invalid Hospital).!");
-                            return new ResponseDto(false, "Channelling Save Failed (Invalid Hospital).!");
+                            System.out.println("Doctor is not available.!");
+                            return new ResponseDto(false, "Doctor is not available.!");
                         }
 
                     } else {
-                        System.out.println("Doctor is not available.!");
-                        return new ResponseDto(false, "Doctor is not available.!");
+                        System.out.println("Channelling Already Added to Room " + channelling.getRoom() + ".!");
+                        return new ResponseDto(false, "Channelling Already Added to Room " + channelling.getRoom() + ".!");
                     }
-
                 } else {
-                    System.out.println("Channelling Already Added to Room " + channelling.getRoom() + ".!");
-                    return new ResponseDto(false, "Channelling Already Added to Room " + channelling.getRoom() + ".!");
+                    System.out.println("Invalid Channelling Details.!");
+                    return new ResponseDto(false, "Invalid Channelling Details.!");
                 }
+
             } else {
-                System.out.println("Invalid Channelling Details.!");
-                return new ResponseDto(false, "Invalid Channelling Details.!");
+                System.out.println("Invalid Manager.!");
+                return new ResponseDto(false, "Invalid Manager.!");
             }
 
         } catch (Exception e) {
@@ -446,9 +463,9 @@ public class ChannellingServiceImpl implements ChannellingService {
     }
 
     @Override
-    public boolean checkDoctor(Integer id) {
+    public boolean checkDoctor(Integer id, HttpHeaders httpHeaders) {
 
-        HttpHeaders httpHeaders = new HttpHeaders();
+//        HttpHeaders httpHeaders = new HttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>("", httpHeaders);
 
         ResponseEntity<Boolean> responseEntity = restTemplate.exchange("http://" + ChannellingServiceApplication.DOMAIN_DOCTOR_SERVICE + "/doctor/findById/" + id, HttpMethod.GET, httpEntity, Boolean.class);
@@ -707,7 +724,7 @@ public class ChannellingServiceImpl implements ChannellingService {
                             channelling.setStatus("4");
                             channellingRepository.save(channelling);
 
-                        }else{
+                        } else {
                             throw new ChannellingException("Channelling searchByHospital(Appointment status update to 4) exception occurred in ChannellingServiceImpl.searchByHospital", null);
                         }
 
@@ -722,7 +739,7 @@ public class ChannellingServiceImpl implements ChannellingService {
                             channelling.setStatus("4");
                             channellingRepository.save(channelling);
 
-                        }else{
+                        } else {
                             throw new ChannellingException("Channelling searchByHospital(Appointment status update to 4) exception occurred in ChannellingServiceImpl.searchByHospital", null);
                         }
                     } else if (channelling.getStatus().equals("2")) {
@@ -731,10 +748,10 @@ public class ChannellingServiceImpl implements ChannellingService {
 
                         if (responseEntityBoolean.getBody()) {
 
-                        channelling.setStatus("3");
-                        channellingRepository.save(channelling);
+                            channelling.setStatus("3");
+                            channellingRepository.save(channelling);
 
-                        }else{
+                        } else {
                             throw new ChannellingException("Channelling searchByHospital(Appointment status update to 3) exception occurred in ChannellingServiceImpl.searchByHospital", null);
                         }
 
@@ -947,9 +964,9 @@ public class ChannellingServiceImpl implements ChannellingService {
     @Override
     public Channelling findById(Integer id) {
         Optional<Channelling> optional = channellingRepository.findById(id);
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             return optional.get();
-        }else {
+        } else {
             return null;
         }
     }

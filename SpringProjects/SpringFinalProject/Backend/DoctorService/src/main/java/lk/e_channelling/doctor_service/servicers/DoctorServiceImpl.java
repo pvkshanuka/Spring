@@ -347,7 +347,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Category[] getCats(Integer id) {
+    public Category[] getCats(Integer id,String token) {
         try {
 
             Optional<Doctor> optional = doctorRepository.findById(id);
@@ -360,6 +360,7 @@ public class DoctorServiceImpl implements DoctorService {
 
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                httpHeaders.add("Authorization", token);
 
                 HttpEntity<Object> httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
 

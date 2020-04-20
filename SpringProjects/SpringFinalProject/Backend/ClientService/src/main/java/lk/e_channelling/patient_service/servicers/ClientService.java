@@ -30,6 +30,8 @@ public interface ClientService {
 
     Client findDetailsById(Integer id);
 
+    Client findDetailsByUsername(String username);
+
     ResponseDto updatePw(Client client, String name, String token);
 
     boolean findByEmailAndHospital(String email, Integer hospital);

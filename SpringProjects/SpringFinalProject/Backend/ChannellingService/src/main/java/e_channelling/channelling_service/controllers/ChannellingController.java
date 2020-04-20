@@ -7,6 +7,7 @@ import e_channelling.channelling_service.dto.ResponseDto;
 import e_channelling.channelling_service.models.Channelling;
 import e_channelling.channelling_service.servicers.ChannellingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -22,12 +23,13 @@ public class ChannellingController {
     @Autowired
     ChannellingService channellingService;
 
+    @PreAuthorize("hasRole('ROLE_operator')")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseDto save(@RequestBody Channelling channelling) {
+    public ResponseDto save(@RequestBody Channelling channelling, @RequestHeader("Authorization") String token, Principal principal) {
 
         try {
 
-            return channellingService.save(channelling);
+            return channellingService.save(channelling,token,principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();
