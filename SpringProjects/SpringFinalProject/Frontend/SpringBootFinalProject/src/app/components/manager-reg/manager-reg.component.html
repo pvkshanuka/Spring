@@ -1,4 +1,8 @@
-<h2 mat-dialog-title>Add New Manager</h2>
+<h2 mat-dialog-title *ngIf="this.hospital && this.hospital != 'admin'">Add New Manager</h2>
+
+<h2 mat-dialog-title *ngIf="this.hospital && this.hospital === 'admin'">Add New Admin</h2>
+
+
 
 <form class="example-form" [formGroup]="clientForm" (ngSubmit)="save()">
 
@@ -46,8 +50,12 @@
 
   <mat-dialog-actions align="end">
     <button mat-raised-button mat-dialog-close>Close</button>
-    <button type="submit" mat-raised-button mat-dialog-close color="accent" [disabled]="clientForm.invalid || inProcess"
+    <button type="submit" *ngIf="this.hospital && this.hospital != 'admin'" mat-raised-button mat-dialog-close color="accent" [disabled]="clientForm.invalid || inProcess"
       [class.spinner]="inProcess">Add New Manager</button>
+
+      <button type="submit" *ngIf="this.hospital && this.hospital === 'admin'" mat-raised-button mat-dialog-close color="accent" [disabled]="clientForm.invalid || inProcess"
+      [class.spinner]="inProcess">Add New Admin</button>
+      
   </mat-dialog-actions>
 
 </form>

@@ -10,11 +10,13 @@ import { ChannellingDTO } from './../../DTOs/channelling-dto';
 import { MatPaginator } from '@angular/material/paginator';
 import { HospitalDTO } from './../../DTOs/hospital-dto';
 import { UserDetails, DataService } from './../../services/data/data.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, QueryList, ViewChildren } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DoctorDTO } from 'src/app/DTOs/doctor-dto';
 import { DoctorFormComponent } from '../doctor-form/doctor-form.component';
+import { HospitalFormComponent } from '../hospital-form/hospital-form.component';
+
 
 @Component({
   selector: 'app-admin-home',
@@ -34,8 +36,7 @@ import { DoctorFormComponent } from '../doctor-form/doctor-form.component';
 export class AdminHomeComponent implements OnInit {
 
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatPaginator) paginatorDoc: MatPaginator;
+  @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
 
   DATA_ROWS: HospitalDTO[];
   DATA_ROWS_DOC: DoctorDTO[];
@@ -58,7 +59,7 @@ export class AdminHomeComponent implements OnInit {
 
   // channellingSearchDTO: ChannellingSearchDTO;
 
-  inProcessSave = false;
+  inProcessSave = true;
 
   userData;
 
@@ -103,15 +104,25 @@ export class AdminHomeComponent implements OnInit {
     this.dialog.open(ManagerRegComponent, {
       height: 'fit',
       width: 'fit',
+      data: {
+        hospital: 'admin'
+      }
     });
   }
 
   openAddDoctorDialog() {
-    console.log('openAddDoctorDialog');
+    this.dialog.open(DoctorFormComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
   }
 
   openAddHospitalDialog() {
     console.log('openAddHospitalDialog');
+    this.dialog.open(HospitalFormComponent, {
+      height: 'fit',
+      width: 'fit',
+    });
   }
 
   resetSearch() {
@@ -220,7 +231,6 @@ export class AdminHomeComponent implements OnInit {
         doctor: data
       }
     });
-    this.loadData();
   }
 
   resetPassword(id){
@@ -329,7 +339,7 @@ export class AdminHomeComponent implements OnInit {
 
     // console.log(this.selected_doc);
 
-
+    this.inProcessSave = true;
 
     console.log(this.hos_search_name);
 
@@ -338,17 +348,20 @@ export class AdminHomeComponent implements OnInit {
         console.log(response);
         this.DATA_ROWS = response;
         this.dataSource = new MatTableDataSource(this.DATA_ROWS);
-        this.dataSource.paginator = this.paginator;
+        this.dataSource.paginator = this.paginator.toArray()[0];
       },
       error => {
         console.log(error);
         // this.inProcess = false;
       }
     );
+
+    this.inProcessSave = false;
+
   }
 
   loadDataDoc() {
-
+    this.inProcessSave = true;
     console.log(this.doc_search_name);
 
     this._doctorService.findByNameStartsWith(this.doc_search_name).subscribe(
@@ -356,13 +369,15 @@ export class AdminHomeComponent implements OnInit {
         console.log(response);
         this.DATA_ROWS_DOC = response;
         this.dataSourceDoc = new MatTableDataSource(this.DATA_ROWS_DOC);
-        this.dataSourceDoc.paginator = this.paginatorDoc;
+        this.dataSourceDoc.paginator = this.paginator.toArray()[1];
       },
       error => {
         console.log(error);
         // this.inProcess = false;
       }
     );
+    this.inProcessSave = false;
+
   }
 
   loadUserData() {

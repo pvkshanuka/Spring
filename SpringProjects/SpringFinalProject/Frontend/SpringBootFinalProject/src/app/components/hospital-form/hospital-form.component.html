@@ -1,47 +1,43 @@
-<mat-grid-list cols="5" rowHeight="fit" class="mygridlist">
-  <mat-grid-tile></mat-grid-tile>
-  <mat-grid-tile colspan="3">
-    <form [formGroup]="hospitalForm" class="mycontainer" (ngSubmit)=save()>
-      <div class="title">
-        <h2>Add Hospital</h2>
-      </div>
+<h2 mat-dialog-title style="margin-bottom: 0px;">Add Hospital</h2>
+<form [formGroup]="hospitalForm" class="mycontainer" (ngSubmit)=save()>
 
-      <mat-form-field class="example-full-width-height">
-        <mat-label>Name</mat-label>
-        <input formControlName="name" matInput type="text" required />
-        <mat-error align="end" *ngIf="name.errors?.required">Name is required</mat-error>
-        <mat-error align="end" *ngIf="name.errors?.minlength">Name must be at least 4 characters</mat-error>
-      </mat-form-field>
+  <mat-dialog-content>
 
-      <mat-form-field class="example-half-width-full-height">
-        <mat-label>City</mat-label>
-        <input formControlName="city" matInput type="text" required />
-        <mat-error align="end" *ngIf="city.errors?.required">City is required</mat-error>
-        <mat-error align="end" *ngIf="city.errors?.minlength">City must be at least 4 characters</mat-error>
-      </mat-form-field>
+    <mat-form-field class="example-full-width-height">
+      <mat-label>Name</mat-label>
+      <input formControlName="name" matInput type="text" required />
+      <mat-error align="end" *ngIf="name.errors?.required">Name is required</mat-error>
+      <mat-error align="end" *ngIf="name.errors?.minlength">Name must be at least 4 characters</mat-error>
+    </mat-form-field>
 
-      <mat-form-field class="example-half-width-full-height">
-        <mat-label>Contact Number</mat-label>
-        <input formControlName="contact" type="number" matInput placeholder="Ex. 771234567" required />
-        <span matPrefix>+94&nbsp;</span>
-        <span matSuffix></span>
-        <mat-error align="end" *ngIf="contact.errors?.required">Contact is required</mat-error>
-        <mat-error align="end" *ngIf="contact.errors?.pattern">Invalid contact number</mat-error>
-      </mat-form-field>
+    <mat-form-field class="example-half-width-full-height">
+      <mat-label>City</mat-label>
+      <input formControlName="city" matInput type="text" required />
+      <mat-error align="end" *ngIf="city.errors?.required">City is required</mat-error>
+      <mat-error align="end" *ngIf="city.errors?.minlength">City must be at least 4 characters</mat-error>
+    </mat-form-field>
 
-      <mat-form-field class="example-full-width-height">
-        <mat-label>Email</mat-label>
-        <input formControlName="email" matInput type="text" required />
-        <mat-error align="end" *ngIf="email.errors?.required">Email is required</mat-error>
-        <mat-error align="end" *ngIf="email.errors?.email">Invalid email</mat-error>
-      </mat-form-field>
-      <br />
-      <br />
-      <div align="end">
-        <button mat-raised-button (click)="show()">Close</button>&nbsp;
-        <button type="submit" [disabled]="hospitalForm.invalid || inProcess" [class.spinner]="inProcess" mat-raised-button color="primary">Add Hospital</button>
-      </div>
-    </form>
-  </mat-grid-tile>
-  <mat-grid-tile></mat-grid-tile>
-</mat-grid-list>
+    <mat-form-field class="example-half-width-full-height">
+      <mat-label>Contact Number</mat-label>
+      <input formControlName="contact" type="number" matInput placeholder="Ex. 771234567" required />
+      <span matPrefix>+94&nbsp;</span>
+      <span matSuffix></span>
+      <mat-error align="end" *ngIf="contact.errors?.required">Contact is required</mat-error>
+      <mat-error align="end" *ngIf="contact.errors?.pattern">Invalid contact number</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width-height">
+      <mat-label>Email</mat-label>
+      <input formControlName="email" matInput type="text" required />
+      <mat-error align="end" *ngIf="email.errors?.required">Email is required</mat-error>
+      <mat-error align="end" *ngIf="email.errors?.email">Invalid email</mat-error>
+    </mat-form-field>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button type="submit" [disabled]="hospitalForm.invalid || inProcess" [class.spinner]="inProcess" mat-raised-button mat-dialog-close
+      color="primary">Add Hospital</button>
+    <button mat-raised-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</form>

@@ -170,7 +170,7 @@ public class HospitalServiceImpl implements HospitalService {
 
                 if (null != responseEntity.getBody()){
 
-                    hospitalResponseDtos.add(new HospitalResponseDto(hospital.getId(),hospital.getName(),hospital.getEmail(),hospital.getEmail(),hospital.getContact(),responseEntity.getBody(),hospital.getStatus()));
+                    hospitalResponseDtos.add(new HospitalResponseDto(hospital.getId(),hospital.getName(),hospital.getCity(),hospital.getEmail(),hospital.getContact(),responseEntity.getBody(),hospital.getStatus()));
 
                 }
 

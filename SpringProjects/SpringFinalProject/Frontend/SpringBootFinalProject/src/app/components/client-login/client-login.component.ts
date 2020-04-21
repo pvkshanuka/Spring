@@ -14,6 +14,8 @@ import {
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Route } from '@angular/compiler/src/core';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -32,6 +34,7 @@ export class ClientLoginComponent implements OnInit {
   });
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar,
@@ -79,6 +82,14 @@ export class ClientLoginComponent implements OnInit {
             });
 
             console.log(this.userDetails);
+
+            if (this.userDetails.type == 1) {
+              this.router.navigate(['admin']);
+            } else if (this.userDetails.type == 2) {
+              this.router.navigate(['manager']);
+            } else {
+              this.router.navigate(['home']);
+            }
 
           } else {
             console.log('Not success');

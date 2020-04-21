@@ -200,7 +200,7 @@ public class ClientServiceImpl implements ClientService {
             if (optional.isPresent()) {
                 Client logedClient = optional.get();
 
-                if (null != logedClient.getHospital() && logedClient.getType() == 1) {
+                if (logedClient.getType() == 1) {
 
 
 //            System.out.println(client.getPassword());
@@ -292,6 +292,93 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public ResponseDto saveAdmin(Client client, String token, String name) {
+        try {
+            System.out.println("saveAdmin");
+            Optional<Client> optional = clientRepository.findByEmail(name);
+
+            if (optional.isPresent()) {
+                Client logedClient = optional.get();
+
+                if (logedClient.getType() == 1) {
+
+
+//            System.out.println(client.getPassword());
+                    if (validation.saveValidator(client)) {
+
+                        client.setId(null);
+                        client.setStatus("1");
+
+                        if (!clientRepository.findByEmail(client.getEmail()).isPresent()) {
+
+                            if (sendWelcomeEmail(client.getEmail())) {
+
+                                HttpHeaders httpHeaders = new HttpHeaders();
+                                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                                httpHeaders.add("Authorization", token);
+
+                                PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                                        .useDigits(true)
+                                        .useLower(true)
+                                        .useUpper(true)
+                                        .build();
+
+                                client.setPassword(passwordGenerator.generate(8));
+//                                client.setHospital(logedClient.getHospital());
+
+                                System.out.println(client.getPassword() + " >>>>>>>>>>>>>");
+
+
+                                HttpEntity<Object> httpEntity = new HttpEntity<>(new Login(client.getEmail(), client.getPassword(), 1), httpHeaders);
+
+                                ResponseEntity<Integer> responseEntity = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_OAUTH_SERVICE + "/authenticate/saveAdmin", HttpMethod.POST, httpEntity, Integer.class);
+
+                                if (null != responseEntity.getBody()) {
+
+                                    client.setUser_id(responseEntity.getBody());
+                                    client.setType(1);
+                                    Client savedClient = clientRepository.save(client);
+
+                                    sendCredentialsEmailAdmin(logedClient.getName(), savedClient.getName(), savedClient.getEmail(), savedClient.getPassword());
+
+                                    System.out.println("Admin Saved Successfully.!");
+                                    return new ResponseDto(true, "Admin Saved Successfully.!");
+
+                                } else {
+                                    System.out.println("Admin Saving Failed.!");
+                                    return new ResponseDto(false, "Admin Saving Failed.!");
+                                }
+
+                            } else {
+                                System.out.println("Invalid Email Address.!");
+                                return new ResponseDto(false, "Invalid Email Address.!");
+                            }
+
+                        } else {
+                            System.out.println("Email Already Added.!");
+                            return new ResponseDto(false, "Email Already Added.!");
+                        }
+
+
+                    } else {
+                        System.out.println("Invalid Admin Details.!");
+                        return new ResponseDto(false, "Invalid Admin Details.!");
+                    }
+                } else {
+                    System.out.println("No Privilage.!");
+                    return new ResponseDto(false, "No Privilage.!");
+                }
+            } else {
+                System.out.println("No Privilage.!");
+                return new ResponseDto(false, "No Privilage.!");
+            }
+
+        } catch (Exception e) {
+            throw new ClientException("Client saveAdmin exception occurred in ClientServiceImpl.saveAdmin", e);
+        }
+    }
+
+    @Override
     public boolean sendWelcomeEmail(String email) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -346,6 +433,21 @@ public class ClientServiceImpl implements ClientService {
         }
     }
 
+    private void sendCredentialsEmailAdmin(String createdname, String name, String email, String password) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("Welcome " + name);
+            message.setText("You are appointed as a ADMIN in Medicare E-Channelling Websile by " + createdname + "\n" +
+                    "Your credentials below \n" +
+                    "Username : " + email + "\n" +
+                    "Password : " + password);
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public ResponseDto update(Client client, String name) {

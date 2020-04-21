@@ -50,6 +50,7 @@ export class DoctorFormComponent implements OnInit {
     private _doctorService: DoctorService
   ) {
 
+    if(dialogData){
     console.log('>>>>>>>>>>>>>>>>>>>');
     console.log(dialogData);
 
@@ -59,6 +60,8 @@ export class DoctorFormComponent implements OnInit {
 
     this.doc_name = dialogData.doctor.name;
     this.doc_contact = dialogData.doctor.contact;
+
+    }
 
   }
 
@@ -177,6 +180,8 @@ export class DoctorFormComponent implements OnInit {
             });
 
             this.doctorForm.reset();
+
+            window.location.reload();
 
           } else {
             this._snackBar.open(response.message, '', {

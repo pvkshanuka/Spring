@@ -73,7 +73,25 @@ public class ClientController {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("log exception");
-            return new ResponseDto(false, "Client Save Failed.!");
+            return new ResponseDto(false, "Manager Save Failed.!");
+        }
+
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @RequestMapping(method = RequestMethod.POST, value = "/saveAdmin")
+    public ResponseDto saveAdmin(@RequestBody Client client, @RequestHeader("Authorization") String token, Principal principal) {
+        System.out.println("saveAdmin AWA");
+        try {
+
+            client.setType(ClientServiceApplication.CLIENT_TYPE_CUSTOMER);
+            return clientService.saveAdmin(client,token,principal.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return new ResponseDto(false, "Admin Save Failed.!");
         }
 
     }

@@ -45,4 +45,6 @@ public interface ClientService {
     ResponseDto saveManagerByAdmin(Client client, String token, String name);
 
     ResponseDto resetPassword(Integer id, String name, String token);
+
+    ResponseDto saveAdmin(Client client, String token, String name);
 }

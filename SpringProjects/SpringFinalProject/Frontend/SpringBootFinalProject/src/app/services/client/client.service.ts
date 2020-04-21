@@ -1,14 +1,14 @@
+import { DataService } from './../data/data.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ClientService {
-
   _url = 'http://localhost:8040/client';
 
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient, private data: DataService) {}
 
   save(clientData: any) {
     return this._http.post<any>(this._url, clientData);
@@ -24,6 +24,10 @@ export class ClientService {
 
   saveManagerByAdmin(clientData: any) {
     return this._http.post<any>(this._url + '/saveManagerByAdmin', clientData);
+  }
+
+  saveAdmin(clientData: any) {
+    return this._http.post<any>(this._url + '/saveAdmin', clientData);
   }
 
   sendSampleEmail(email) {
@@ -46,29 +50,39 @@ export class ClientService {
     return this._http.get<any>(this._url + '/resetPassword/' + id);
   }
 
+  logOut() {
+    sessionStorage.removeItem('id');
+    sessionStorage.removeItem('hospital');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('name');
+    sessionStorage.removeItem('type');
+
+    this.data.changeUserDetails(null);
+    window.location.reload();
+  }
+
   logIn(loginData: any) {
     // console.log('OAuthService' + this._url);
     console.log(loginData);
 
+    //   loginData.client_id = 'mobile';
+    //   loginData.client_secret = 'pin';
 
+    //   console.log(loginData);
 
-  //   loginData.client_id = 'mobile';
-  //   loginData.client_secret = 'pin';
+    //   const httpOptions = {
+    //     headers: new HttpHeaders({
+    //         'Content-Type': 'application/x-www-form-urlencoded',
+    //         Authorization: 'Basic ' + btoa('mobile' + ':' + 'pin')
+    //     })
+    // };
 
-  //   console.log(loginData);
+    //   const body = 'client_id=mobile&client_secret=pin&grant_type=password&username={2}&password={3}'
+    //       .replace('{2}', loginData.username)
+    //       .replace('{3}', loginData.password);
 
-  //   const httpOptions = {
-  //     headers: new HttpHeaders({
-  //         'Content-Type': 'application/x-www-form-urlencoded',
-  //         Authorization: 'Basic ' + btoa('mobile' + ':' + 'pin')
-  //     })
-  // };
-
-  //   const body = 'client_id=mobile&client_secret=pin&grant_type=password&username={2}&password={3}'
-  //       .replace('{2}', loginData.username)
-  //       .replace('{3}', loginData.password);
-
-  //   console.log(body);
+    //   console.log(body);
 
     // return this._http.post<any>(this._url, body, httpOptions);
     return this._http.post<any>(this._url + '/login', loginData);
@@ -85,5 +99,4 @@ export class ClientService {
 
     // );
   }
-
 }

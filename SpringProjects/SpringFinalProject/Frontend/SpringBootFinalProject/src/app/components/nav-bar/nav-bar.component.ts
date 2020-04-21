@@ -20,6 +20,19 @@ export class NavBarComponent implements OnInit {
     this.data.userDetails.subscribe(user => this.userDetails = user);
   }
 
+  logOut(){
+
+    sessionStorage.removeItem('id');
+    sessionStorage.removeItem('hospital');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('name');
+    sessionStorage.removeItem('type');
+
+    this.data.changeUserDetails(null);
+    window.location.reload();
+  }
+
   openSignUpDialog() {
     this.dialog.open(ClientRegComponent, {
       height: 'fit',

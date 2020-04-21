@@ -16,19 +16,17 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 @Component({
   selector: 'app-manager-reg',
   templateUrl: './manager-reg.component.html',
-  styleUrls: ['./manager-reg.component.css']
+  styleUrls: ['./manager-reg.component.css'],
 })
 export class ManagerRegComponent implements OnInit {
-clientForm = this.fb.group(
-    {
-      name: ['', [Validators.required, Validators.minLength(4)]],
-      age: ['', [Validators.required, Validators.min(16), Validators.max(100)]],
-      contact: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
-      email: ['', [Validators.required, Validators.email]],
-      type: [1, ],
-      hospital: ['', ]
-    }
-  );
+  clientForm = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(4)]],
+    age: ['', [Validators.required, Validators.min(16), Validators.max(100)]],
+    contact: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
+    email: ['', [Validators.required, Validators.email]],
+    type: [1],
+    hospital: [''],
+  });
 
   userDetails: UserDetails;
 
@@ -43,9 +41,9 @@ clientForm = this.fb.group(
     private _clientService: ClientService,
     private _snackBar: MatSnackBar
   ) {
-
-    this.hospital = dialogData.hospital;
-
+    if (dialogData != null) {
+      this.hospital = dialogData.hospital;
+    }
   }
 
   ngOnInit(): void {
@@ -77,78 +75,114 @@ clientForm = this.fb.group(
   }
 
   save() {
-    if(this.hospital){
+    if (this.hospital && this.hospital != 'admin') {
       console.log('awaaa ' + this.hospital);
       this.saveManagerByAdmin(this.hospital);
-    }else{
-    console.log('awaaa else');
+    } else if (this.hospital === 'admin') {
+        console.log('awaaa save' + this.hospital);
+        this.saveAdmin();
+      }else{
 
+      console.log('awaaa else');
+
+      this.inProcess = true;
+      if (this.clientForm.valid) {
+        console.log(this.clientForm.value);
+
+        this._clientService.saveManager(this.clientForm.value).subscribe(
+          (response) => {
+            // console.log(response);
+            if (response.success) {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-success'],
+              });
+            } else {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-error'],
+              });
+            }
+            this.inProcess = false;
+          },
+          (error) => {
+            console.log(error);
+            this.inProcess = false;
+            this._snackBar.open('Sign Up Error!', '', {
+              duration: 3000,
+              panelClass: ['snackbar-error'],
+            });
+          }
+        );
+      }
+    }
+  }
+
+  saveAdmin(){
+    console.log('saveAdmin');
     this.inProcess = true;
     if (this.clientForm.valid) {
-      console.log(this.clientForm.value);
 
-      this._clientService.saveManager(this.clientForm.value).subscribe(
-      (response) => {
-        // console.log(response);
-        if (response.success) {
-          this._snackBar.open(response.message, '', {
-            duration: 3000,
-            panelClass: ['snackbar-success'],
-          });
-        } else {
-          this._snackBar.open(response.message, '', {
+      console.log(this.clientForm.value);
+      this._clientService.saveAdmin(this.clientForm.value).subscribe(
+        (response) => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success'],
+            });
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error'],
+            });
+          }
+          this.inProcess = false;
+        },
+        (error) => {
+          console.log(error);
+          this.inProcess = false;
+          this._snackBar.open('Sign Up Error!', '', {
             duration: 3000,
             panelClass: ['snackbar-error'],
           });
         }
-        this.inProcess = false;
-      },
-      (error) => {
-        console.log(error);
-        this.inProcess = false;
-        this._snackBar.open('Sign Up Error!', '', {
-          duration: 3000,
-          panelClass: ['snackbar-error'],
-        });
-      }
-    );
-
+      );
     }
   }
-  }
 
-  saveManagerByAdmin(hospital){
+  saveManagerByAdmin(hospital) {
     this.inProcess = true;
     if (this.clientForm.valid) {
       this.clientForm.value.hospital = hospital;
 
       console.log(this.clientForm.value);
       this._clientService.saveManagerByAdmin(this.clientForm.value).subscribe(
-      (response) => {
-        // console.log(response);
-        if (response.success) {
-          this._snackBar.open(response.message, '', {
-            duration: 3000,
-            panelClass: ['snackbar-success'],
-          });
-        } else {
-          this._snackBar.open(response.message, '', {
+        (response) => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success'],
+            });
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error'],
+            });
+          }
+          this.inProcess = false;
+        },
+        (error) => {
+          console.log(error);
+          this.inProcess = false;
+          this._snackBar.open('Sign Up Error!', '', {
             duration: 3000,
             panelClass: ['snackbar-error'],
           });
         }
-        this.inProcess = false;
-      },
-      (error) => {
-        console.log(error);
-        this.inProcess = false;
-        this._snackBar.open('Sign Up Error!', '', {
-          duration: 3000,
-          panelClass: ['snackbar-error'],
-        });
-      }
-    );
-
+      );
     }
   }
 
@@ -163,5 +197,4 @@ clientForm = this.fb.group(
       }
     );
   }
-
 }
