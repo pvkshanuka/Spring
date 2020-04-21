@@ -1,6 +1,7 @@
 package lk.e_channelling.doctor_service.controllers;
 
 import lk.e_channelling.doctor_service.commonModels.Category;
+import lk.e_channelling.doctor_service.dto.DoctorDto;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
 import lk.e_channelling.doctor_service.models.DoctorCategory;
@@ -27,7 +28,7 @@ public class DoctorController {
 
         try {
 
-                return doctorService.save(doctor,token, principal.getName());
+            return doctorService.save(doctor, token, principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,12 +38,13 @@ public class DoctorController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_operator')")
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseDto update(@RequestBody Doctor doctor, @RequestHeader("Authorization") String token, Principal principal) {
 
         try {
 
-            return doctorService.update(doctor,token,principal.getName());
+            return doctorService.update(doctor, token, principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +53,7 @@ public class DoctorController {
         }
 
     }
-
+    @PreAuthorize("hasRole('ROLE_admin')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseDto delete(@PathVariable int id) {
 
@@ -72,6 +74,36 @@ public class DoctorController {
         try {
 
             return doctorService.searchAll();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @RequestMapping(method = RequestMethod.GET, value = "findByNameStartsWith/{doc_name}")
+    public List<DoctorDto> findByNameStartsWith(@PathVariable(required = false) String doc_name, @RequestHeader("Authorization") String token, Principal principal) {
+        System.out.println("findByNameStartsWith/doc_name");
+        try {
+
+            return doctorService.findByNameStartsWith(doc_name, token, principal.getName());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("log exception");
+            return null;
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_admin')")
+    @RequestMapping(method = RequestMethod.GET, value = "findByNameStartsWith/")
+    public List<DoctorDto> findByNameStartsWithNoName(@RequestHeader("Authorization") String token, Principal principal) {
+        System.out.println("findByNameStartsWith/");
+        try {
+
+            return doctorService.findByNameStartsWith("", token, principal.getName());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,7 +181,7 @@ public class DoctorController {
 //    public List<Doctor> searchByCat(@RequestBody Doctor doctor) {
         try {
 
-            return doctorService.getCats(id,token);
+            return doctorService.getCats(id, token);
 
         } catch (Exception e) {
             e.printStackTrace();

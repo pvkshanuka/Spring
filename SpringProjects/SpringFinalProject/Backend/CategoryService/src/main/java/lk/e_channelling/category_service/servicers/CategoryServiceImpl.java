@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -171,7 +172,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         try {
 
-            return categoryRepository.findAllById(integers);
+            List<Category> categories = categoryRepository.findAllById(integers);
+
+
+
+            return categories.stream()
+                    .filter(category -> !"0".equals(category.getStatus()))
+            .collect(Collectors.toList());
 
         } catch (Exception e) {
             throw new CategoryException("Category searchAllFromIds exception occurred in AppointmentServiceImpl.searchAllFromIds", e);

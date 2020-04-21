@@ -13,6 +13,8 @@ import { UserDetails, DataService } from './../../services/data/data.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
+import { DoctorDTO } from 'src/app/DTOs/doctor-dto';
+import { DoctorFormComponent } from '../doctor-form/doctor-form.component';
 
 @Component({
   selector: 'app-admin-home',
@@ -33,19 +35,26 @@ export class AdminHomeComponent implements OnInit {
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator) paginatorDoc: MatPaginator;
 
   DATA_ROWS: HospitalDTO[];
+  DATA_ROWS_DOC: DoctorDTO[];
+
   dataSource;
+  dataSourceDoc;
 
   hos_search_name = '';
+  doc_search_name = '';
 
 
   // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
   columnsToDisplay = ['id', 'name', 'city', 'status'];
+  columnsToDisplayDoc = ['id', 'name', 'contact'];
 
   userDetails: UserDetails;
 
   expandedElement: HospitalDTO | null;
+  expandedElementDoc: DoctorDTO | null;
 
   // channellingSearchDTO: ChannellingSearchDTO;
 
@@ -76,6 +85,8 @@ export class AdminHomeComponent implements OnInit {
     }
 
     this.loadData();
+    this.loadDataDoc();
+
 
     this.loadUserData();
 
@@ -107,6 +118,13 @@ export class AdminHomeComponent implements OnInit {
     this.hos_search_name = '';
 
     this.loadData();
+
+  }
+
+  resetSearchDoc() {
+    this.doc_search_name = '';
+
+    this.loadDataDoc();
 
   }
 
@@ -150,6 +168,59 @@ export class AdminHomeComponent implements OnInit {
         );
       });
 
+  }
+
+  doctorDelete(id){
+    console.log('doctorDelete : '+id);
+
+    const snackBarAlt = this._snackBar.open('Are you sure you want to Delete Doctor?', 'Yes', {
+      duration: 3000,
+      panelClass: ['snackbar-confirm'],
+    });
+
+    snackBarAlt.onAction().subscribe(() => {
+
+      console.log('Deleting : ' + id);
+      this.inProcessSave = true;
+      this._doctorService.delete(id).subscribe(
+          response => {
+            // console.log(response);
+            if (response.success) {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-success']
+              });
+              this.loadData();
+            } else {
+              this._snackBar.open(response.message, '', {
+                duration: 3000,
+                panelClass: ['snackbar-error']
+              });
+            }
+            this.inProcessSave = false;
+          },
+          error => {
+            console.log(error);
+            this.inProcessSave = false;
+            this._snackBar.open('Delete error!', '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        );
+      });
+  }
+
+  doctorUpdate(data){
+    console.log('doctorUpdate : '+data);
+    this.dialog.open(DoctorFormComponent, {
+      height: 'fit',
+      width: 'fit',
+      data: {
+        doctor: data
+      }
+    });
+    this.loadData();
   }
 
   resetPassword(id){
@@ -268,6 +339,24 @@ export class AdminHomeComponent implements OnInit {
         this.DATA_ROWS = response;
         this.dataSource = new MatTableDataSource(this.DATA_ROWS);
         this.dataSource.paginator = this.paginator;
+      },
+      error => {
+        console.log(error);
+        // this.inProcess = false;
+      }
+    );
+  }
+
+  loadDataDoc() {
+
+    console.log(this.doc_search_name);
+
+    this._doctorService.findByNameStartsWith(this.doc_search_name).subscribe(
+      response => {
+        console.log(response);
+        this.DATA_ROWS_DOC = response;
+        this.dataSourceDoc = new MatTableDataSource(this.DATA_ROWS_DOC);
+        this.dataSourceDoc.paginator = this.paginatorDoc;
       },
       error => {
         console.log(error);

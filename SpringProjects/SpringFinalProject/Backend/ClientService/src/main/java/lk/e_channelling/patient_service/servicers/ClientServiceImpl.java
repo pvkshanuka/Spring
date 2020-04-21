@@ -515,16 +515,21 @@ public class ClientServiceImpl implements ClientService {
                     final Client client = optional.get();
                     if (client.getStatus().equals("1")) {
 
+                        if (client.getType() == 2) {
 
-                        HttpEntity<String> httpEntityString = new HttpEntity<>("", httpHeaders);
 
-                        ResponseEntity<Boolean> responseEntityBool = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findByIdAndStatus/" + client.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
+                            HttpEntity<String> httpEntityString = new HttpEntity<>("", httpHeaders);
 
-                        if (responseEntityBool.getBody()) {
+                            ResponseEntity<Boolean> responseEntityBool = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findByIdAndStatus/" + client.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
 
-                            return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), client.getHospital(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
+                            if (responseEntityBool.getBody()) {
+
+                                return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), client.getHospital(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
+                            } else {
+                                return new LoginResponseDto(null, "", "", null, "", "", null, "Deleted Hospital.!", false);
+                            }
                         } else {
-                            return new LoginResponseDto(null, "", "", null, "", "", null, "Deleted Hospital.!", false);
+                            return new LoginResponseDto(client.getId(), client.getName(), client.getEmail(), client.getHospital(), oAuthResponseDto.getAccess_token(), oAuthResponseDto.getRefresh_token(), client.getType(), "", true);
                         }
                     } else {
                         return new LoginResponseDto(null, "", "", null, "", "", null, "Invalid Login Details.!", false);

@@ -1,5 +1,5 @@
-<h2 mat-dialog-title style="margin-bottom: 0px;">Add Doctor</h2>
-
+<h2 mat-dialog-title *ngIf="!doctorData" style="margin-bottom: 0px;">Add Doctor</h2>
+<h2 mat-dialog-title *ngIf="doctorData" style="margin-bottom: 0px;">Update Doctor</h2>
 
 
 <mat-dialog-content>
@@ -8,7 +8,7 @@
 
         <mat-form-field class="example-full-width-height">
           <mat-label>Name</mat-label>
-          <input formControlName="name" matInput type="text" required />
+          <input formControlName="name" [(ngModel)]="doc_name" matInput type="text" required />
           <span matPrefix>Dr.&nbsp;</span>
           <mat-error align="end" *ngIf="name.errors?.required">Name is required</mat-error>
           <mat-error align="end" *ngIf="name.errors?.minlength">Name must be at least 4 characters</mat-error>
@@ -16,7 +16,7 @@
 
         <mat-form-field class="example-half-width-full-height">
           <mat-label>Contact Number</mat-label>
-          <input formControlName="contact" type="number" matInput placeholder="Ex. 771234567" required />
+          <input formControlName="contact" [(ngModel)]="doc_contact" type="number" matInput placeholder="Ex. 771234567" required />
           <span matPrefix>+94&nbsp;</span>
           <span matSuffix></span>
           <mat-error align="end" *ngIf="contact.errors?.required">Contact is required</mat-error>
@@ -25,13 +25,21 @@
 
         <mat-form-field class="example-half-width-full-height">
           <mat-label>Category</mat-label>
-          <mat-select formControlName="doctorCategories" multiple>
+          <mat-select formControlName="doctorCategories" [(ngModel)]="doc_cats" multiple>
             <!-- <mat-option><span class="default-option">None</span></mat-option> -->
             <div *ngFor="let cat of categorys">
               <mat-option value="{{cat.id}}">{{cat.category}}</mat-option>
 
             </div>
           </mat-select>
+          <mat-hint align="end" *ngIf="doctorData && doctorData.doctor.categories.length > 0">
+            <b>Previous Categories : </b>
+
+            <span *ngFor="let cat of doctorData.doctor.categories">
+              {{cat.category+ '| '}}
+            </span>
+
+          </mat-hint>
         </mat-form-field>
 
         <mat-form-field class="example-half-width-full-height">
@@ -48,9 +56,13 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button type="submit" mat-raised-button mat-dialog-close color="primary" [disabled]="doctorForm.invalid || inProcessSave"
+  <button type="submit" *ngIf="!doctorData" mat-raised-button mat-dialog-close color="primary" [disabled]="doctorForm.invalid || inProcessSave"
             [class.spinner]="inProcessSave" form="doctorForm">
             Add Doctor
+          </button>
+          <button type="button" (click)="update()" *ngIf="doctorData" mat-raised-button mat-dialog-close color="primary" [disabled]="doctorForm.invalid || inProcessSave"
+            [class.spinner]="inProcessSave" form="doctorForm">
+            Update Doctor
           </button>
   <button mat-raised-button mat-dialog-close>Close</button>
 </mat-dialog-actions>

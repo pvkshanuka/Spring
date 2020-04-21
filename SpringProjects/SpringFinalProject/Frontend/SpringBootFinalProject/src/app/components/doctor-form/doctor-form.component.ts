@@ -1,8 +1,9 @@
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CategoryDTO } from './../../DTOs/category-dto';
 import { DoctorService } from './../../services/doctor/doctor.service';
 import { CategoryService } from '../../services/category/category.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Component, OnInit, NgModule } from '@angular/core';
+import { Component, OnInit, NgModule, Inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Category } from 'src/app/modles/category-model';
 
@@ -23,22 +24,43 @@ export class DoctorFormComponent implements OnInit {
 
   categorys;
 
+  doctorData;
+
+  doc_id;
+  doc_name;
+  doc_contact;
+  doc_cats;
+
   categoryForm = this.fb.group({
     category: ['', [Validators.required, Validators.minLength(4)]]
   });
 
   doctorForm = this.fb.group({
+    id: [],
     name: ['', [Validators.required, Validators.minLength(4)]],
     contact: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
     doctorCategories: []
   });
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) dialogData,
     private fb: FormBuilder,
     private _snackBar: MatSnackBar,
     private _categoryService: CategoryService,
     private _doctorService: DoctorService
-  ) {}
+  ) {
+
+    console.log('>>>>>>>>>>>>>>>>>>>');
+    console.log(dialogData);
+
+    this.doctorData = dialogData;
+
+    this.doc_id = dialogData.doctor.id;
+
+    this.doc_name = dialogData.doctor.name;
+    this.doc_contact = dialogData.doctor.contact;
+
+  }
 
   ngOnInit(): void {
     this.loadCategorys();
@@ -146,6 +168,55 @@ export class DoctorFormComponent implements OnInit {
       }
 
       this._doctorService.save(this.doctorForm.value).subscribe(
+        response => {
+          // console.log(response);
+          if (response.success) {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-success']
+            });
+
+            this.doctorForm.reset();
+
+          } else {
+            this._snackBar.open(response.message, '', {
+              duration: 3000,
+              panelClass: ['snackbar-error']
+            });
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    }
+
+    this.inProcessSave = false;
+  }
+
+  update() {
+    this.inProcessSave = true;
+    if (this.doctorForm.valid) {
+      this.doctorForm.value.id=this.doc_id;
+
+      const cats = this.categories.value;
+
+      if (cats != null) {
+        const catArray = [];
+
+        for (let i = 0; i < cats.length; i++) {
+          catArray.push({
+            categoryid: cats[i]
+          });
+        }
+
+        this.doctorForm.controls.doctorCategories.setValue(catArray);
+
+      } else {
+        this.doctorForm.controls.doctorCategories.setValue(null);
+      }
+      this.doctorForm.value.id=this.doc_id;
+      this._doctorService.update(this.doctorForm.value).subscribe(
         response => {
           // console.log(response);
           if (response.success) {

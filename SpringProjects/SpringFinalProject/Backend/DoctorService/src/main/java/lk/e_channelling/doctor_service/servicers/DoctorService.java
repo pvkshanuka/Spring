@@ -1,6 +1,7 @@
 package lk.e_channelling.doctor_service.servicers;
 
 import lk.e_channelling.doctor_service.commonModels.Category;
+import lk.e_channelling.doctor_service.dto.DoctorDto;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,4 +28,6 @@ public interface DoctorService {
     public Optional<Doctor> findById(Integer id);
 
     Category[] getCats(Integer id, String token);
+
+    List<DoctorDto> findByNameStartsWith(String doc_name, String token, String name);
 }

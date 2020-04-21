@@ -2,6 +2,7 @@ package lk.e_channelling.doctor_service.servicers;
 
 import lk.e_channelling.doctor_service.DoctorServiceApplication;
 import lk.e_channelling.doctor_service.commonModels.Category;
+import lk.e_channelling.doctor_service.dto.DoctorDto;
 import lk.e_channelling.doctor_service.exceptions.DoctorException;
 import lk.e_channelling.doctor_service.dto.ResponseDto;
 import lk.e_channelling.doctor_service.models.Doctor;
@@ -101,7 +102,6 @@ public class DoctorServiceImpl implements DoctorService {
     public ResponseDto update(Doctor doctor, String token, String name) {
 
         try {
-
             if (validation.doctorSaveValidator(doctor)) {
 
 //Checking categories are available or not
@@ -118,14 +118,19 @@ public class DoctorServiceImpl implements DoctorService {
 
 //Checking Doctor is deleted or not
                         if (doctorfromDB.getStatus().equals("1")) {
-
+                            List<DoctorCategory> doctorCategoriesDB= new ArrayList<>();
+                            doctorCategoriesDB.addAll(doctorfromDB.getDoctorCategories());
                             if (null != doctor.getDoctorCategories()) {
 
                                 boolean isFound = false;
 
                                 List<DoctorCategory> doctorCategories = new ArrayList<>();
 
-                                List<DoctorCategory> doctorCategoriesDB = doctorfromDB.getDoctorCategories();
+                                List<DoctorCategory> doctorCategoriesRec= new ArrayList<>();
+
+
+                                doctorCategoriesRec.addAll(doctor.getDoctorCategories());
+
 
 //                                for (DoctorCategory doctorCategory : doctor.getDoctorCategories()) {
 //
@@ -161,9 +166,13 @@ public class DoctorServiceImpl implements DoctorService {
                                             //Checking if db loaded doctor's category status equal 1
                                             if (!doctorCategoryDB.getStatus().equals("1")) {
                                                 doctorCategoryDB.setStatus("1");
-                                                doctorCategories.add(doctorCategoryDB);
-                                            }else {
+//                                                doctorCategories.add(doctorCategoryDB);
+                                                doctorCategoriesRec.remove(doctorCategory);
                                                 doctorCategoriesDB.remove(doctorCategoryDB);
+                                            } else {
+                                                doctorCategoriesRec.remove(doctorCategory);
+                                                doctorCategoriesDB.remove(doctorCategoryDB);
+                                                doctorCategoriesRec.add(doctorCategoryDB);
                                             }
 
                                             isFound = true;
@@ -171,27 +180,43 @@ public class DoctorServiceImpl implements DoctorService {
                                         }
                                     }
 
-                                    if (!isFound) {
-                                        doctorCategory.setStatus("1");
-                                        doctorCategory.setDoctor(doctor);
-                                        doctorCategories.add(doctorCategory);
-                                    }
+//                                    if (!isFound) {
+//                                        doctorCategory.setStatus("1");
+//                                        doctorCategory.setDoctor(doctor);
+//                                        doctorCategories.add(doctorCategory);
+//                                    }
                                     isFound = false;
                                 }
 
                                 doctorCategoriesDB.forEach(doctorCategory -> doctorCategory.setStatus("0"));
 
-                                doctorCategories.forEach(doctorCategory -> System.out.println("DC - Cat ID : "+doctorCategory.getCategoryid()+"| Doctor :"+doctorCategory.getDoctor().getId()+"| Status : "+doctorCategory.getStatus()));
-                                doctorCategoriesDB.forEach(doctorCategory -> System.out.println("DCDB - Cat ID : "+doctorCategory.getCategoryid()+"| Doctor :"+doctorCategory.getDoctor().getId()+"| Status : "+doctorCategory.getStatus()));
+//                                doctorCategoriesRec.forEach(doctorCategory -> System.out.println("DCRec - Cat ID : " + doctorCategory.getCategoryid() + "| Doctor :" + doctorCategory.getDoctor().getId() + "| Status : " + doctorCategory.getStatus()));
+//                                doctorCategoriesDB.forEach(doctorCategory -> System.out.println("DCDB - Cat ID : " + doctorCategory.getCategoryid() + "| Doctor :" + doctorCategory.getDoctor().getId() + "| Status : " + doctorCategory.getStatus()));
+
+
+                                doctorCategoriesRec.forEach(doctorCategory -> {
+                                    doctorCategory.setStatus("1");
+                                    doctorCategory.setDoctor(doctor);
+                                });
 
                                 doctorCategories.addAll(doctorCategoriesDB);
+                                doctorCategories.addAll(doctorCategoriesRec);
 
                                 doctor.setDoctorCategories(doctorCategories);
+
+                                doctorCategories.forEach(doctorCategory -> System.out.println("DC - ID : " + doctorCategory.getId() + "| Cat ID : " + doctorCategory.getCategoryid() + "| Doctor :" + doctorCategory.getDoctor().getId() + "| Status : " + doctorCategory.getStatus()));
+
+                            }else{
+
+                                doctorCategoriesDB.forEach(doctorCategory -> doctorCategory.setStatus("0"));
+
+                                doctor.setDoctorCategories(doctorCategoriesDB);
+
                             }
 
-                            doctor.setContact(doctorfromDB.getContact());
+//                            doctor.setContact(doctorfromDB.getContact());
 
-
+//                            System.out.println(doctor.getDoctorCategories());
                             doctorRepository.save(doctor);
 
                             System.out.println("Doctor Updated Successfully.!");
@@ -347,12 +372,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Category[] getCats(Integer id,String token) {
+    public Category[] getCats(Integer id, String token) {
         try {
 
             Optional<Doctor> optional = doctorRepository.findById(id);
 
-            if (optional.isPresent()){
+            if (optional.isPresent()) {
 
                 List<Integer> doctorCategoryIds = new ArrayList<>();
 
@@ -368,13 +393,56 @@ public class DoctorServiceImpl implements DoctorService {
 
                 return responseEntity.getBody();
 
-            }else{
+            } else {
                 System.out.println("Invalid doctor id to get categories");
                 return null;
             }
 
         } catch (Exception e) {
             throw new DoctorException("Doctor category getting exception occurred in DoctorServiceImpl.getCats", e);
+        }
+    }
+
+    @Override
+    public List<DoctorDto> findByNameStartsWith(String doc_name, String token, String name) {
+        try {
+
+            List<Doctor> doctors = doctorRepository.findByNameStartsWithAndStatusNot(doc_name, "0");
+
+            List<DoctorDto> doctorDtos = new ArrayList<>();
+
+            List<Integer> doctorCategoryIds = new ArrayList<>();
+
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.add("Authorization", token);
+
+            HttpEntity<Object> httpEntity;
+
+            ResponseEntity<Category[]> responseEntiy;
+
+            for (Doctor doctor : doctors) {
+
+                doctor.getDoctorCategories().forEach(doctorCategory -> {
+                    if (!doctorCategory.getStatus().equals("0")) {
+                        doctorCategoryIds.add(doctorCategory.getCategoryid());
+                    }
+                });
+
+                httpEntity = new HttpEntity<Object>(doctorCategoryIds, httpHeaders);
+
+                responseEntiy = restTemplate.exchange("http://" + DoctorServiceApplication.DOMAIN_CATEGORY_SERVICE + "/checkCategories", HttpMethod.POST, httpEntity, Category[].class);
+                ;
+
+                doctorDtos.add(new DoctorDto(doctor.getId(), doctor.getName(), doctor.getContact(), responseEntiy.getBody(), doctor.getStatus()));
+                doctorCategoryIds.removeAll(doctorCategoryIds);
+            }
+
+            return doctorDtos;
+
+        } catch (Exception e) {
+            throw new DoctorException("Doctor findByNameStartsWith exception occurred in DoctorServiceImpl.findByNameStartsWith", e);
         }
     }
 
@@ -398,7 +466,7 @@ public class DoctorServiceImpl implements DoctorService {
 
                 ResponseEntity<Category[]> responseEntity = restTemplate.exchange("http://" + DoctorServiceApplication.DOMAIN_CATEGORY_SERVICE + "/checkCategories", HttpMethod.POST, httpEntity, Category[].class);
 
-                Category[]allById = responseEntity.getBody();
+                Category[] allById = responseEntity.getBody();
 
                 return allById != null && allById.length == doctorCategoryIds.size();
 

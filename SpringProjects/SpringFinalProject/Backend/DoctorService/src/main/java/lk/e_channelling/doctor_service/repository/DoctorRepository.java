@@ -20,5 +20,5 @@ public interface DoctorRepository extends JpaRepository<Doctor,Integer> {
     List<Doctor> findAllByStatus(String status);
 
 
-
+    List<Doctor> findByNameStartsWithAndStatusNot(String doc_name, String s);
 }
