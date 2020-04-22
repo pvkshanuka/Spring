@@ -381,7 +381,11 @@ public class DoctorServiceImpl implements DoctorService {
 
                 List<Integer> doctorCategoryIds = new ArrayList<>();
 
-                optional.get().getDoctorCategories().forEach(doctorCategory -> doctorCategoryIds.add(doctorCategory.getCategoryid()));
+                optional.get().getDoctorCategories().forEach(doctorCategory -> {
+                if (!doctorCategory.getStatus().equals("0")) {
+                    doctorCategoryIds.add(doctorCategory.getCategoryid());
+                }
+                });
 
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);

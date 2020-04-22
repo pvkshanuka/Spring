@@ -70,6 +70,7 @@ public class HospitalController {
 //        return null;
 //    }
 
+    //    accessBy ['client']
     @RequestMapping(method = RequestMethod.GET)
     public List<Hospital> search() {
         return hospitalService.search();
@@ -97,6 +98,7 @@ public class HospitalController {
         return hospitalService.findByIdAndStatus(id,"1");
     }
 
+//    accessBy ['client']
     @RequestMapping(method = RequestMethod.GET,value = "/findById/{id}")
     public Hospital findById(@PathVariable Integer id){
 

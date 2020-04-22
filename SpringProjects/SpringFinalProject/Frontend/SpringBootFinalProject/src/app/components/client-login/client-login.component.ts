@@ -61,9 +61,6 @@ export class ClientLoginComponent implements OnInit {
         response => {
           console.log(response);
           if (response.isSuccess) {
-            console.log('success');
-            console.log(response.username);
-            console.log(response.token);
 
             sessionStorage.setItem('id', response.id);
             sessionStorage.setItem('hospital', response.hospital);

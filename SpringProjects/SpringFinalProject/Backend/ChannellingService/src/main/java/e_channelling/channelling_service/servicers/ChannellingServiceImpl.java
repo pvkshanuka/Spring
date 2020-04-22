@@ -847,6 +847,7 @@ public class ChannellingServiceImpl implements ChannellingService {
             return channellingDtos;
 
         } else {
+            System.out.println("CLIENT RESPONSE NULL");
             return null;
         }
     }

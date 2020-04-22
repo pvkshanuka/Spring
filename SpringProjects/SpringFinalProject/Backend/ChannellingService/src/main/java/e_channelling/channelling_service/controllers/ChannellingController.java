@@ -103,6 +103,7 @@ public class ChannellingController {
 
     }
 
+    //    accessBy ['client']
     @RequestMapping(method = RequestMethod.POST, value = "/search")
     public List<ChannellingDto> search(@RequestBody ChannellingSearchDTO channellingSearchDTO) {
 //    public List<ChannellingDto> search() {
@@ -125,7 +126,6 @@ public class ChannellingController {
 //    public List<ChannellingDto> search() {
 
         try {
-
 //            return channellingService.search(channelling);
             return channellingService.searchByHospital(channellingSearchDTO, principal.getName(),token);
 

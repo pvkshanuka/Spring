@@ -103,3 +103,48 @@ tr.example-element-row:not(.example-expanded-row):active {
   font-size: 30px;
   color: #0066ff;
 }
+
+.lable_red{
+  color: white;
+  background-color: red;
+  font-weight: 500;
+  border-radius: 5px;
+  padding: 1px 4px 1px 4px;
+  width: fit-content;
+}
+
+.lable_yellow{
+  color: white;
+  background-color: rgb(238, 214, 0);
+  font-weight: 500;
+  border-radius: 5px;
+  padding: 1px 4px 1px 4px;
+  width: fit-content;
+}
+
+.lable_green{
+  color: white;
+  background-color: rgb(51, 219, 0);
+  font-weight: 500;
+  border-radius: 5px;
+  padding: 1px 4px 1px 4px;
+  width: fit-content;
+}
+
+.lable_blue{
+  color: white;
+  background-color: rgb(34, 34, 255);
+  font-weight: 500;
+  border-radius: 5px;
+  padding: 1px 4px 1px 4px;
+  width: fit-content;
+}
+
+.lable_gray{
+  color: white;
+  background-color: rgb(87, 87, 87);
+  font-weight: 500;
+  border-radius: 5px;
+  padding: 1px 4px 1px 4px;
+  width: fit-content;
+}

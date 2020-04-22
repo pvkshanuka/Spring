@@ -87,6 +87,7 @@ public class CatrgoryController {
         }
     }
 
+    //    accessBy ['client']
     @RequestMapping(method = RequestMethod.GET)
 //    @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_operator')")
     public List<Category> searchAll() {

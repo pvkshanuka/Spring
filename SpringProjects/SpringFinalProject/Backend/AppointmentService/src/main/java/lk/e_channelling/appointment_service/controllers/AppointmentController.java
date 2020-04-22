@@ -23,8 +23,8 @@ public class AppointmentController {
     AppointmentService appointmentService;
 
     //    Accessing []
+    @PreAuthorize("hasRole('ROLE_client')")
     @RequestMapping(method = RequestMethod.POST)
-//    @PreAuthorize("hasRole('ROLE_client')")
     public ResponseDto save(@RequestBody Appointment appointment, @RequestHeader("Authorization") String token) {
 
         try {

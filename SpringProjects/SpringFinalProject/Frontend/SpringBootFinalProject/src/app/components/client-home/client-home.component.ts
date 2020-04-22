@@ -54,7 +54,7 @@ export class ClientHomeComponent implements OnInit {
   dateNow = new Date();
 
   // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
-  columnsToDisplay = ['doctor', 'hospital', 'price', 'startTime'];
+  columnsToDisplay = ['doctor', 'hospital', 'price', 'startTime','status'];
 
   expandedElement: ChannellingDTO | null;
 

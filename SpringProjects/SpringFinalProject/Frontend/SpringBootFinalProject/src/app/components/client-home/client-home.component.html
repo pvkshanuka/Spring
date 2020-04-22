@@ -14,42 +14,62 @@
 
   <div class="mycontainer">
 
-<p class="titleheader"> Welcome <span>{{userDetails.name}}</span></p>
-<br>
-<br>
-<p class="title">&nbsp;&nbsp;&nbsp; Personal Details</p>
-<br>
-<table width="75%">
-  <tr>
-    <td><h2>Name :</h2></td>
-    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.name}}</h3></td>
+    <p class="titleheader"> Welcome <span>{{userDetails.name}}</span></p>
+    <br>
+    <br>
+    <p class="title">&nbsp;&nbsp;&nbsp; Personal Details</p>
+    <br>
+    <table width="75%">
+      <tr>
+        <td>
+          <h2>Name :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.name}}</h3>
+        </td>
 
-    <td><h2>Age :</h2></td>
-    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.age}}</h3></td>
+        <td>
+          <h2>Age :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.age}}</h3>
+        </td>
 
-  </tr>
+      </tr>
 
-  <tr>
-    <td><h2>Contact No :</h2></td>
-    <td style="text-align: left"><h3 *ngIf="userData">{{userData.contact}}</h3></td>
+      <tr>
+        <td>
+          <h2>Contact No :</h2>
+        </td>
+        <td style="text-align: left">
+          <h3 *ngIf="userData">{{userData.contact}}</h3>
+        </td>
 
-    <td><h2>Email :</h2></td>
-    <td style="text-align: left;"><h3 *ngIf="userData">{{userData.email}}</h3></td>
+        <td>
+          <h2>Email :</h2>
+        </td>
+        <td style="text-align: left;">
+          <h3 *ngIf="userData">{{userData.email}}</h3>
+        </td>
 
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
 
-    <td></td>
-    <td>
-      <button mat-raised-button color="primary" (click)="openUpdateDialog()" style="margin:auto; display:block;">Update</button>
+        <td></td>
+        <td>
+          <button mat-raised-button color="primary" (click)="openUpdateDialog()"
+            style="margin:auto; display:block;">Update</button>
 
-    </td>
+        </td>
 
-  </tr>
-</table>
-
+      </tr>
+    </table>
+    <br>
+    <br>
+    <p class="title">&nbsp;&nbsp;&nbsp; Appointment Details</p>
+    <br>
     <table class="example-full-width" cellspacing="0">
       <tr>
 
@@ -63,44 +83,45 @@
               <mat-option value="1">Planed</mat-option>
               <mat-option value="2">Attended</mat-option>
               <mat-option value="3">Not Attended</mat-option>
+              <mat-option value="4">Expired Channelling</mat-option>
               <!-- </div> -->
             </mat-select>
           </mat-form-field>
 
-          </td>
+        </td>
 
-          <td>
+        <td>
 
 
-            <mat-form-field class="example-half-width-full-height">
-              <mat-label>Doctor</mat-label>
-              <span matPrefix>Dr.&nbsp;</span>
-              <mat-select (selectionChange)="loadData()" [(ngModel)]="selected_doc">
-                <mat-option><span class="default-option">None</span></mat-option>
-                <div *ngFor="let doc of DOCTORS">
-                  <mat-option value="{{doc.id}}">{{doc.name}}</mat-option>
+          <mat-form-field class="example-half-width-full-height">
+            <mat-label>Doctor</mat-label>
+            <span matPrefix>Dr.&nbsp;</span>
+            <mat-select (selectionChange)="loadData()" [(ngModel)]="selected_doc">
+              <mat-option><span class="default-option">None</span></mat-option>
+              <div *ngFor="let doc of DOCTORS">
+                <mat-option value="{{doc.id}}">{{doc.name}}</mat-option>
 
-                </div>
-              </mat-select>
-            </mat-form-field>
+              </div>
+            </mat-select>
+          </mat-form-field>
 
-          </td>
+        </td>
 
-          <td>
+        <td>
 
-            <mat-form-field class="example-half-width-full-height">
-              <input (dateTimeInput)="loadData()" [(ngModel)]="selected_date" class="cursor_pointer" readonly="readonly"
-                matInput [min]="dateNow" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Date" />
-              <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
-            </mat-form-field>
+          <mat-form-field class="example-half-width-full-height">
+            <input (dateTimeInput)="loadData()" [(ngModel)]="selected_date" class="cursor_pointer" readonly="readonly"
+              matInput [min]="dateNow" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Date" />
+            <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+          </mat-form-field>
 
-          </td>
+        </td>
 
-          <td>
+        <td>
 
-            <button mat-raised-button (click)="resetSearch()" style="margin:auto; display:block;">Reset</button>
+          <button mat-raised-button (click)="resetSearch()" style="margin:auto; display:block;">Reset & Reload</button>
 
-          </td>
+        </td>
 
       </tr>
     </table>
@@ -142,6 +163,17 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element" style=" cursor: pointer;">
+            <div class="lable_blue" *ngIf="element.status == 1">Waiting</div>
+            <div class="lable_green" *ngIf="element.status == 2">Visited</div>
+            <div class="lable_yellow" *ngIf="element.status == 3">Not Visited</div>
+            <div class="lable_gray" *ngIf="element.status == 4">Channelling Expired</div>
+            <div class="lable_red" *ngIf="element.status == 5">Channelling Deleted</div>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="expandedDetail">
           <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length"
             style="background-color: rgb(234, 251, 255);">
@@ -170,9 +202,9 @@
                       End Time : </span>{{element.channellingDto.endTime | date:'shortTime' }} </td>
                 </tr>
               </table>
-              <button *ngIf="element.status == 1" mat-raised-button color="accent" style="margin: 10px 0px 10px 0px;font-size: small;cursor: auto;"
-                [disabled]="inProcessSave" [class.spinner]="inProcessSave"
-                (click)="deleteAppoinment(element.id)">Delete</button>
+              <button *ngIf="element.status == 1" mat-raised-button color="accent"
+                style="margin: 10px 0px 10px 0px;font-size: small;cursor: auto;" [disabled]="inProcessSave"
+                [class.spinner]="inProcessSave" (click)="deleteAppoinment(element.id)">Delete</button>
             </div>
           </td>
         </ng-container>

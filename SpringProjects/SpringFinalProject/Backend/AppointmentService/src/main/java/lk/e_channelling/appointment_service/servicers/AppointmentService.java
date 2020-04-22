@@ -25,7 +25,7 @@ public interface AppointmentService {
 
     public boolean checkClient(Integer id, String token);
 
-    public boolean checkChannelling(Integer id);
+    public boolean checkChannelling(Integer id, String token);
 
     public boolean updateStatusByChannelling(Integer id, String status);
 

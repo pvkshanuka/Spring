@@ -11,7 +11,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(HttpMethod.GET,"/hospital/findByIdAndStatus/*");
-//        web.ignoring().antMatchers(HttpMethod.POST,"/client/login");
+        web.ignoring().antMatchers(HttpMethod.GET,"/hospital");
+        web.ignoring().antMatchers(HttpMethod.GET,"/hospital/findById/*");
 
 
     }

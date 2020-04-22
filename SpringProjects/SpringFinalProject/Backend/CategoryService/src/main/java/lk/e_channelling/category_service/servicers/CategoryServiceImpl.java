@@ -175,10 +175,13 @@ public class CategoryServiceImpl implements CategoryService {
             List<Category> categories = categoryRepository.findAllById(integers);
 
 
-
-            return categories.stream()
+            List<Category> collect = categories.stream()
                     .filter(category -> !"0".equals(category.getStatus()))
-            .collect(Collectors.toList());
+                    .collect(Collectors.toList());
+
+            System.out.println(collect);
+
+            return collect;
 
         } catch (Exception e) {
             throw new CategoryException("Category searchAllFromIds exception occurred in AppointmentServiceImpl.searchAllFromIds", e);

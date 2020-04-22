@@ -81,9 +81,9 @@ export class AdminHomeComponent implements OnInit {
 
     this.data.userDetails.subscribe((user) => (this.userDetails = user));
 
-    if (this.userDetails == null || this.userDetails.type != 1) {
-      this.router.navigate(['../'], { relativeTo: this.route });
-    }
+    // if (this.userDetails == null || this.userDetails.type != 1) {
+    //   this.router.navigate(['../'], { relativeTo: this.route });
+    // }
 
     this.loadData();
     this.loadDataDoc();

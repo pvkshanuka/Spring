@@ -103,11 +103,11 @@ export class ManagerHomeComponent implements OnInit {
 
   loadData() {
 
-    // console.log(this.selected_doc);
+    console.log(this.userDetails);
 
     this.channellingSearchDTO = new ChannellingSearchDTO(
       parseInt(this.selected_cat),
-      1,
+      this.userDetails.hospital,
       parseInt(this.selected_doc),
       new Date(this.selected_date),
     );

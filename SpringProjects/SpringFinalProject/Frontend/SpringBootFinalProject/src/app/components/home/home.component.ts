@@ -101,7 +101,7 @@ export class HomeComponent implements OnInit {
   // }
 
   loadData() {
-
+    this.inProcessSave = true;
     console.log(this.selected_doc);
 
     this.channellingSearchDTO = new ChannellingSearchDTO(
@@ -115,15 +115,17 @@ export class HomeComponent implements OnInit {
 
     this._channellingService.loadAll(this.channellingSearchDTO).subscribe(
       response => {
+        console.log(response);
         this.DATA_ROWS = response;
         this.dataSource = new MatTableDataSource(this.DATA_ROWS);
         this.dataSource.paginator = this.paginator;
       },
       error => {
         console.log(error);
-        // this.inProcess = false;
+
       }
     );
+    this.inProcessSave = false;
   }
 
   loadCategorys() {

@@ -51,7 +51,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
                     appointment.setId(null);
 
-                    if (checkChannelling(appointment.getChannelling())) {
+                    if (checkChannelling(appointment.getChannelling(), token)) {
 
                         appointment.setStatus("1");
                         appointment.setDate(Instant.now());
@@ -184,11 +184,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public boolean checkChannelling(Integer id) {
+    public boolean checkChannelling(Integer id, String token) {
         try {
 
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.add("Authorization", token);
 
             HttpEntity<String> httpEntity = new HttpEntity<String>("", httpHeaders);
 

@@ -69,6 +69,7 @@ public class DoctorController {
 
     }
 
+    //    accessBy ['client']
     @RequestMapping(method = RequestMethod.GET)
     public List<Doctor> searchAll() {
         try {
