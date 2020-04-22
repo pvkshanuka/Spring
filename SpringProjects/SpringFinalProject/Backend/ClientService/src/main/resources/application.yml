@@ -27,8 +27,6 @@ spring:
           protocol: smtp
     username: futuresoftcus@gmail.com
 
-server:
-  port: 8040
 security:
   oauth2:
     resource:
