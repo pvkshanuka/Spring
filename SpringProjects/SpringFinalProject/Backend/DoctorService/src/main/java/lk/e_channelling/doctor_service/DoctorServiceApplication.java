@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableEurekaClient
 public class DoctorServiceApplication {
 
-	public static final String DOMAIN_CATEGORY_SERVICE = "192.168.1.107:8030/category";
+	public static final String DOMAIN_CATEGORY_SERVICE = "localhost:8030/category";
 	public static final byte NAME_MIN_LENGTH = 4;
 	public static final byte CONTACT_MAX_LENGTH = 10;
 	public static final byte CONTACT_MIN_LENGTH = 9;

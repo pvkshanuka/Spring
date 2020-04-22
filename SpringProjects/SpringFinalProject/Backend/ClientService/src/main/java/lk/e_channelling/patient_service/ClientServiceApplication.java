@@ -21,7 +21,7 @@ public class ClientServiceApplication {
 	public static final int CLIENT_TYPE_CUSTOMER = 3;
 
 	public static final String DOMAIN_OAUTH_SERVICE = "localhost:9191";
-	public static final String DOMAIN_HOSPITAL_SERVICE = "169.254.31.42:8010";
+	public static final String DOMAIN_HOSPITAL_SERVICE = "localhost:8010";
 
 	public static final String OAUTH_CLIENT_ID = "mobile";
 	public static final String OAUTH_CLIENT_SECRET = "pin";

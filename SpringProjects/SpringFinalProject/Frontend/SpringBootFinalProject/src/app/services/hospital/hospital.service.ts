@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class HospitalService {
 
-  _url = 'http://169.254.31.42:8010/hospital';
+  _url = 'http://localhost:8010/hospital';
 
   constructor(private _http: HttpClient) { }
 

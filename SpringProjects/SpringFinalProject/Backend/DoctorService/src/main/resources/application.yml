@@ -12,7 +12,7 @@ spring:
 security:
   oauth2:
     resource:
-      token-info-uri: http://192.168.1.107:9191/oauth/check_token
+      token-info-uri: http://localhost:9191/oauth/check_token
     client:
       client-id: mobile
       client-secret: pin

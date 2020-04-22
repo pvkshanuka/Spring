@@ -23,9 +23,9 @@ public class ChannellingServiceApplication {
 
     public static final String DOMAIN_DOCTOR_SERVICE = "localhost:8020";
 
-    public static final String DOMAIN_CATGORY_SERVICE = "192.168.1.107:8030";
+    public static final String DOMAIN_CATGORY_SERVICE = "localhost:8030";
 
-    public static final String DOMAIN_CLIENT_SERVICE = "192.168.1.107:8040";
+    public static final String DOMAIN_CLIENT_SERVICE = "localhost:8040";
 
 
 
