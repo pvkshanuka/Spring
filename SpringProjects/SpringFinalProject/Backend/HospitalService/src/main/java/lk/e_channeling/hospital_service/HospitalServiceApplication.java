@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableEurekaClient
 public class HospitalServiceApplication {
 
-	public static final String DOMAIN_CLIENT_SERVICE = "localhost:8040";
+	public static final String DOMAIN_CLIENT_SERVICE = "192.168.1.107:8040";
 
 	public static final byte NAME_MIN_LENGTH = 4;
 

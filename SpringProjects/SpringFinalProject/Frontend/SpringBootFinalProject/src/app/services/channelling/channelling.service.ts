@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ChannellingService {
 
-  _url = 'http://localhost:8060/channelling';
+  _url = 'http://169.254.31.42:8060/channelling';
 
   constructor(private _http: HttpClient) { }
 

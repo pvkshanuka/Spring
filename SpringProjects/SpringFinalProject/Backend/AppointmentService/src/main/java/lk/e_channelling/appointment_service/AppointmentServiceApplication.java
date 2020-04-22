@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableEurekaClient
 public class AppointmentServiceApplication {
 
-	public static final String DOMAIN_CLIENT_SERVICE = "localhost:8040";
+	public static final String DOMAIN_CLIENT_SERVICE = "192.168.1.107:8040";
 	public static final String DOMAIN_CHANNELLING_SERVICE = "localhost:8060";
 	public static final String OAUTH_CLIENT_ID = "mobile";
 	public static final String OAUTH_CLIENT_SECRET = "pin";
