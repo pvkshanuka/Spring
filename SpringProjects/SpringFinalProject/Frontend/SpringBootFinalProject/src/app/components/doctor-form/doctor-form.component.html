@@ -45,7 +45,7 @@
         <mat-form-field class="example-half-width-full-height">
           <mat-label>New Category</mat-label>
           <input #newcat matInput type="text" />
-          <button mat-button matSuffix mat-stroked-button aria-label="search" [disabled]="inProcess"
+          <button type="button" mat-button matSuffix mat-stroked-button aria-label="search" [disabled]="inProcess"
             [class.spinner]="inProcess" (click)="addNewCat(newcat.value)">
             Add
           </button>

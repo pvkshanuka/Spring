@@ -104,10 +104,12 @@ export class ManagerHomeComponent implements OnInit {
   loadData() {
 
     console.log(this.userDetails);
+    console.log(sessionStorage.getItem('hospital'));
 
+// sessionStorage.setItem('hospital', response.hospital);
     this.channellingSearchDTO = new ChannellingSearchDTO(
       parseInt(this.selected_cat),
-      this.userDetails.hospital,
+      parseInt(sessionStorage.getItem('hospital')),
       parseInt(this.selected_doc),
       new Date(this.selected_date),
     );

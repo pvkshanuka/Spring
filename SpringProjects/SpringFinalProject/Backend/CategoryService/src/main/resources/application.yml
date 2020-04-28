@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://mysql-category:3306/echannelling_category?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/echannelling_category?createDatabaseIfNotExist=true
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver

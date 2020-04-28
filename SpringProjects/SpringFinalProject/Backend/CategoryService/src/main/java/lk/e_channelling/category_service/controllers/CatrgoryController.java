@@ -2,6 +2,7 @@ package lk.e_channelling.category_service.controllers;
 
 import lk.e_channelling.category_service.dto.ResponseDto;
 import lk.e_channelling.category_service.models.Category;
+import lk.e_channelling.category_service.models.Result;
 import lk.e_channelling.category_service.servicers.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -118,6 +119,38 @@ public class CatrgoryController {
     public List<Category> checkCategories(@RequestBody List<Integer> integers) {
 
         return categoryService.searchAllFromIds(integers);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/result/{id}")
+    public String result(@PathVariable int id) {
+
+        try {
+
+            for (int x = id; x <= (id + 1000); ++x) {
+
+                categoryService.result(x);
+
+            }
+
+            return "All Results Saved.!";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error.!";
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/resultSearch/{name}")
+    public List<Result> result(@PathVariable String name) {
+
+        try {
+            System.out.println(name);
+           return categoryService.findByName(name);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

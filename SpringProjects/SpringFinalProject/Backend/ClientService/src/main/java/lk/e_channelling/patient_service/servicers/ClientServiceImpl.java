@@ -621,7 +621,7 @@ public class ClientServiceImpl implements ClientService {
 
 
                             HttpEntity<String> httpEntityString = new HttpEntity<>("", httpHeaders);
-
+                            System.out.println("HERE >>>>>>>>>>>>>>");
                             ResponseEntity<Boolean> responseEntityBool = restTemplate.exchange("http://" + ClientServiceApplication.DOMAIN_HOSPITAL_SERVICE + "/hospital/findByIdAndStatus/" + client.getHospital(), HttpMethod.GET, httpEntityString, Boolean.class);
 
                             if (responseEntityBool.getBody()) {
